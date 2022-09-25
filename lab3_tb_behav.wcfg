@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="lab3_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="lab3_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="30754840fs"></ZoomStartTime>
+      <ZoomEndTime time="68704841fs"></ZoomEndTime>
+      <Cursor1Time time="44536928fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="126"></NameColumnWidth>
+      <ValueColumnWidth column_width="146"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="95" />
+   <wvobject fp_name="/lab3_tb/clk_50M" type="logic">
+      <obj_property name="ElementShortName">clk_50M</obj_property>
+      <obj_property name="ObjectShortName">clk_50M</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/clk_11M0592" type="logic">
+      <obj_property name="ElementShortName">clk_11M0592</obj_property>
+      <obj_property name="ObjectShortName">clk_11M0592</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/push_btn" type="logic">
+      <obj_property name="ElementShortName">push_btn</obj_property>
+      <obj_property name="ObjectShortName">push_btn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/reset_btn" type="logic">
+      <obj_property name="ElementShortName">reset_btn</obj_property>
+      <obj_property name="ObjectShortName">reset_btn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/touch_btn" type="array">
+      <obj_property name="ElementShortName">touch_btn[3:0]</obj_property>
+      <obj_property name="ObjectShortName">touch_btn[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dip_sw" type="array">
+      <obj_property name="ElementShortName">dip_sw[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dip_sw[31:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/leds" type="array">
+      <obj_property name="ElementShortName">leds[15:0]</obj_property>
+      <obj_property name="ObjectShortName">leds[15:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dpy0" type="array">
+      <obj_property name="ElementShortName">dpy0[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dpy0[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dpy1" type="array">
+      <obj_property name="ElementShortName">dpy1[7:0]</obj_property>
+      <obj_property name="ObjectShortName">dpy1[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/alu/a" type="array">
+      <obj_property name="ElementShortName">a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/alu/b" type="array">
+      <obj_property name="ElementShortName">b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/alu/op" type="array">
+      <obj_property name="ElementShortName">op[3:0]</obj_property>
+      <obj_property name="ObjectShortName">op[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/alu/y" type="array">
+      <obj_property name="ElementShortName">y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">y[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/waddr" type="array">
+      <obj_property name="ElementShortName">waddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">waddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/wdata" type="array">
+      <obj_property name="ElementShortName">wdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/wen" type="logic">
+      <obj_property name="ElementShortName">wen</obj_property>
+      <obj_property name="ObjectShortName">wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/raddr_a" type="array">
+      <obj_property name="ElementShortName">raddr_a[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr_a[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rdata_a" type="array">
+      <obj_property name="ElementShortName">rdata_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/raddr_b" type="array">
+      <obj_property name="ElementShortName">raddr_b[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr_b[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rdata_b" type="array">
+      <obj_property name="ElementShortName">rdata_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/data" type="array">
+      <obj_property name="ElementShortName">data[0:32][16:0]</obj_property>
+      <obj_property name="ObjectShortName">data[0:32][16:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_raddr_a" type="array">
+      <obj_property name="ElementShortName">rf_raddr_a[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_raddr_a[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_rdata_a" type="array">
+      <obj_property name="ElementShortName">rf_rdata_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_rdata_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_raddr_b" type="array">
+      <obj_property name="ElementShortName">rf_raddr_b[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_raddr_b[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_rdata_b" type="array">
+      <obj_property name="ElementShortName">rf_rdata_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_rdata_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_waddr" type="array">
+      <obj_property name="ElementShortName">rf_waddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_waddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_wdata" type="array">
+      <obj_property name="ElementShortName">rf_wdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_wdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_we" type="logic">
+      <obj_property name="ElementShortName">rf_we</obj_property>
+      <obj_property name="ObjectShortName">rf_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_a" type="array">
+      <obj_property name="ElementShortName">alu_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_b" type="array">
+      <obj_property name="ElementShortName">alu_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_op" type="array">
+      <obj_property name="ElementShortName">alu_op[3:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_op[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_y" type="array">
+      <obj_property name="ElementShortName">alu_y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_y[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/step" type="logic">
+      <obj_property name="ElementShortName">step</obj_property>
+      <obj_property name="ObjectShortName">step</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/dip_sw" type="array">
+      <obj_property name="ElementShortName">dip_sw[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dip_sw[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/leds" type="array">
+      <obj_property name="ElementShortName">leds[15:0]</obj_property>
+      <obj_property name="ObjectShortName">leds[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/inst_reg" type="array">
+      <obj_property name="ElementShortName">inst_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_reg[31:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_rtype" type="logic">
+      <obj_property name="ElementShortName">is_rtype</obj_property>
+      <obj_property name="ObjectShortName">is_rtype</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_itype" type="logic">
+      <obj_property name="ElementShortName">is_itype</obj_property>
+      <obj_property name="ObjectShortName">is_itype</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_peek" type="logic">
+      <obj_property name="ElementShortName">is_peek</obj_property>
+      <obj_property name="ObjectShortName">is_peek</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_poke" type="logic">
+      <obj_property name="ElementShortName">is_poke</obj_property>
+      <obj_property name="ObjectShortName">is_poke</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/imm" type="array">
+      <obj_property name="ElementShortName">imm[15:0]</obj_property>
+      <obj_property name="ObjectShortName">imm[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rd" type="array">
+      <obj_property name="ElementShortName">rd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rs1" type="array">
+      <obj_property name="ElementShortName">rs1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rs2" type="array">
+      <obj_property name="ElementShortName">rs2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/opcode" type="array">
+      <obj_property name="ElementShortName">opcode[3:0]</obj_property>
+      <obj_property name="ObjectShortName">opcode[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/delay" type="array">
+      <obj_property name="ElementShortName">delay[2:0]</obj_property>
+      <obj_property name="ObjectShortName">delay[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/my_trigger/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/my_trigger/in" type="logic">
+      <obj_property name="ElementShortName">in</obj_property>
+      <obj_property name="ObjectShortName">in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/my_trigger/out" type="logic">
+      <obj_property name="ElementShortName">out</obj_property>
+      <obj_property name="ObjectShortName">out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/my_trigger/last_in" type="logic">
+      <obj_property name="ElementShortName">last_in</obj_property>
+      <obj_property name="ObjectShortName">last_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/reset" type="logic">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_raddr_a" type="array">
+      <obj_property name="ElementShortName">rf_raddr_a[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_raddr_a[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_rdata_a" type="array">
+      <obj_property name="ElementShortName">rf_rdata_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_rdata_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_raddr_b" type="array">
+      <obj_property name="ElementShortName">rf_raddr_b[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_raddr_b[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_rdata_b" type="array">
+      <obj_property name="ElementShortName">rf_rdata_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_rdata_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_waddr" type="array">
+      <obj_property name="ElementShortName">rf_waddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_waddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_wdata" type="array">
+      <obj_property name="ElementShortName">rf_wdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rf_wdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rf_we" type="logic">
+      <obj_property name="ElementShortName">rf_we</obj_property>
+      <obj_property name="ObjectShortName">rf_we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_a" type="array">
+      <obj_property name="ElementShortName">alu_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_b" type="array">
+      <obj_property name="ElementShortName">alu_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_op" type="array">
+      <obj_property name="ElementShortName">alu_op[3:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_op[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/alu_y" type="array">
+      <obj_property name="ElementShortName">alu_y[15:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_y[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/step" type="logic">
+      <obj_property name="ElementShortName">step</obj_property>
+      <obj_property name="ObjectShortName">step</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/dip_sw" type="array">
+      <obj_property name="ElementShortName">dip_sw[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dip_sw[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/leds" type="array">
+      <obj_property name="ElementShortName">leds[15:0]</obj_property>
+      <obj_property name="ObjectShortName">leds[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/inst_reg" type="array">
+      <obj_property name="ElementShortName">inst_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_rtype" type="logic">
+      <obj_property name="ElementShortName">is_rtype</obj_property>
+      <obj_property name="ObjectShortName">is_rtype</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_itype" type="logic">
+      <obj_property name="ElementShortName">is_itype</obj_property>
+      <obj_property name="ObjectShortName">is_itype</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_peek" type="logic">
+      <obj_property name="ElementShortName">is_peek</obj_property>
+      <obj_property name="ObjectShortName">is_peek</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/is_poke" type="logic">
+      <obj_property name="ElementShortName">is_poke</obj_property>
+      <obj_property name="ObjectShortName">is_poke</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/imm" type="array">
+      <obj_property name="ElementShortName">imm[15:0]</obj_property>
+      <obj_property name="ObjectShortName">imm[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rd" type="array">
+      <obj_property name="ElementShortName">rd[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rs1" type="array">
+      <obj_property name="ElementShortName">rs1[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs1[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/rs2" type="array">
+      <obj_property name="ElementShortName">rs2[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs2[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/opcode" type="array">
+      <obj_property name="ElementShortName">opcode[3:0]</obj_property>
+      <obj_property name="ObjectShortName">opcode[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/c/delay" type="array">
+      <obj_property name="ElementShortName">delay[2:0]</obj_property>
+      <obj_property name="ObjectShortName">delay[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/waddr" type="array">
+      <obj_property name="ElementShortName">waddr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">waddr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/wdata" type="array">
+      <obj_property name="ElementShortName">wdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wdata[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/wen" type="logic">
+      <obj_property name="ElementShortName">wen</obj_property>
+      <obj_property name="ObjectShortName">wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/raddr_a" type="array">
+      <obj_property name="ElementShortName">raddr_a[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr_a[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rdata_a" type="array">
+      <obj_property name="ElementShortName">rdata_a[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata_a[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/raddr_b" type="array">
+      <obj_property name="ElementShortName">raddr_b[4:0]</obj_property>
+      <obj_property name="ObjectShortName">raddr_b[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/rdata_b" type="array">
+      <obj_property name="ElementShortName">rdata_b[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rdata_b[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/data" type="array">
+      <obj_property name="ElementShortName">data[0:32][16:0]</obj_property>
+      <obj_property name="ObjectShortName">data[0:32][16:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab3_tb/dut/rf/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+</wave_config>

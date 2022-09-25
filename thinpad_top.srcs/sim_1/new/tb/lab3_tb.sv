@@ -3,17 +3,17 @@ module lab3_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 æŒ‰é’®å¼€å…³ï¼Œå¸¦æ¶ˆæŠ–ç”µè·¯ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
-  reg reset_btn;  // BTN6 å¤ä½æŒ‰é’®ï¼Œå¸¦æ¶ˆæŠ–ç”µè·¯ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
+  reg push_btn;   // BTN5 °´Å¥¿ª¹Ø£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
+  reg reset_btn;  // BTN6 ¸´Î»°´Å¥£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4ï¼ŒæŒ‰é’®å¼€å…³ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
-  reg [31:0] dip_sw;   // 32 ä½æ‹¨ç å¼€å…³ï¼Œæ‹¨åˆ°â€œONâ€æ—¶ä¸º 1
+  reg [3:0] touch_btn; // BTN1~BTN4£¬°´Å¥¿ª¹Ø£¬°´ÏÂÊ±Îª 1
+  reg [31:0] dip_sw;   // 32 Î»²¦Âë¿ª¹Ø£¬²¦µ½¡°ON¡±Ê±Îª 1
 
-  wire [15:0] leds;  // 16 ä½ LEDï¼Œè¾“å‡ºæ—¶ 1 ç‚¹äº®
-  wire [7:0] dpy0;   // æ•°ç ç®¡ä½ä½ä¿¡å·ï¼ŒåŒ…æ‹¬å°æ•°ç‚¹ï¼Œè¾“å‡º 1 ç‚¹äº®
-  wire [7:0] dpy1;   // æ•°ç ç®¡é«˜ä½ä¿¡å·ï¼ŒåŒ…æ‹¬å°æ•°ç‚¹ï¼Œè¾“å‡º 1 ç‚¹äº®
+  wire [15:0] leds;  // 16 Î» LED£¬Êä³öÊ± 1 µãÁÁ
+  wire [7:0] dpy0;   // ÊıÂë¹ÜµÍÎ»ĞÅºÅ£¬°üÀ¨Ğ¡Êıµã£¬Êä³ö 1 µãÁÁ
+  wire [7:0] dpy1;   // ÊıÂë¹Ü¸ßÎ»ĞÅºÅ£¬°üÀ¨Ğ¡Êıµã£¬Êä³ö 1 µãÁÁ
 
-  // å®éªŒ 3 ç”¨åˆ°çš„æŒ‡ä»¤æ ¼å¼
+  // ÊµÑé 3 ÓÃµ½µÄÖ¸Áî¸ñÊ½
   `define inst_rtype(rd, rs1, rs2, op) \
     {7'b0, rs2, rs1, 3'b0, rd, op, 3'b001}
 
@@ -37,13 +37,13 @@ module lab3_tb;
     ROL = 4'b1010
   } opcode_t;
 
-  logic is_rtype, is_itype, is_load, is_store, is_unknown;
-  logic [15:0] imm;
-  logic [4:0] rd, rs1, rs2;
-  logic [3:0] opcode;
-
+//  logic is_rtype, is_itype, is_load, is_store, is_unknown;
+//  logic [15:0] imm;
+//  logic [4:0] rd, rs1, rs2;
+//  logic [3:0] opcode;
+logic [3:0] i;
   initial begin
-    // åœ¨è¿™é‡Œå¯ä»¥è‡ªå®šä¹‰æµ‹è¯•è¾“å…¥åºåˆ—ï¼Œä¾‹å¦‚ï¼š
+    // ÔÚÕâÀï¿ÉÒÔ×Ô¶¨Òå²âÊÔÊäÈëĞòÁĞ£¬ÀıÈç£º
     dip_sw = 32'h0;
     touch_btn = 0;
     reset_btn = 0;
@@ -53,27 +53,59 @@ module lab3_tb;
     reset_btn = 1;
     #100;
     reset_btn = 0;
-    #1000;  // ç­‰å¾…å¤ä½ç»“æŸ
+    #1000;  // µÈ´ı¸´Î»½áÊø
+    
+    dip_sw = `inst_poke(5'h1, -16'h63);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #1000;
+    
+    dip_sw = `inst_poke(5'h2, 16'h4);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #2000;
+    
+    dip_sw = `inst_rtype(5'h3, 5'h1, 5'h2, 4'h1);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #1000;
+    
+    dip_sw = `inst_peek(5'h3, 16'h111);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #2000;
 
-    // æ ·ä¾‹ï¼šä½¿ç”¨ POKE æŒ‡ä»¤ä¸ºå¯„å­˜å™¨èµ‹éšæœºåˆå€¼
-    for (int i = 1; i < 32; i = i + 1) begin
-      #100;
-      rd = i;   // only lower 5 bits
-      dip_sw = `inst_poke(rd, $urandom_range(0, 65536));
-      push_btn = 1;
-
-      #100;
-      push_btn = 0;
-
-      #1000;
+    // ÑùÀı£ºÊ¹ÓÃ POKE Ö¸ÁîÎª¼Ä´æÆ÷¸³Ëæ»ú³õÖµ
+    for (i = 4'h1; i <= 10; i = i + 1) begin
+        dip_sw = `inst_rtype(5'h3, 5'h1, 5'h2, i);
+        #500;
+        push_btn = 1;
+        #500;
+        push_btn = 0;
+        #1000;
+        
+        dip_sw = `inst_peek(5'h3, 16'h111);
+        #500;
+        push_btn = 1;
+        #500;
+        push_btn = 0;
+        #2000;
     end
 
-    // TODO: éšæœºæµ‹è¯•å„ç§æŒ‡ä»¤
+    // TODO: Ëæ»ú²âÊÔ¸÷ÖÖÖ¸Áî
 
     #10000 $finish;
   end
 
-  // å¾…æµ‹è¯•ç”¨æˆ·è®¾è®¡
+  // ´ı²âÊÔÓÃ»§Éè¼Æ
   lab3_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -114,7 +146,7 @@ module lab3_tb;
       .flash_we_n()
   );
 
-  // æ—¶é’Ÿæº
+  // Ê±ÖÓÔ´
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)
