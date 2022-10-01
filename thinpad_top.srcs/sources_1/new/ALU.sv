@@ -33,21 +33,19 @@ module ALU(
         end
         
         else if (op == 7) begin
-            y = a << b;
+            y = a << (b & 15);
         end
         
         else if (op == 8) begin
-           y = a >> b;
+           y = a >> (b & 15);
         end
         
         else if (op == 9) begin
-            y = signed'(a) >>> b;
+            y = signed'(a) >>> (b & 15);
         end
         
         else if (op == 10) begin
-          for (i=15; i>=0; i=i-1) begin
-            y[i] = a[(i-b+16)%16];
-          end
+          y =  32'hFFFF & (a << (b & 15)) | (a >> (16 - (b & 15)));
         end
         
         else begin
