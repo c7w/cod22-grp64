@@ -135,6 +135,7 @@ module lab5_top (
 
       // TODO: 添加需要的控制信号，例如按键开关？
       .addr_i(dip_sw),
+      .leds_o(leds),
 
       // wishbone master
       .wb_cyc_o(wbm_cyc_o),

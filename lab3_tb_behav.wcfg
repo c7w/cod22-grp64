@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="2635001fs"></ZoomEndTime>
-      <Cursor1Time time="0fs"></Cursor1Time>
+      <ZoomEndTime time="883000001fs"></ZoomEndTime>
+      <Cursor1Time time="917631720fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="126"></NameColumnWidth>
-      <ValueColumnWidth column_width="142"></ValueColumnWidth>
+      <NameColumnWidth column_width="194"></NameColumnWidth>
+      <ValueColumnWidth column_width="138"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="46" />
+   <WVObjectSize size="110" />
    <wvobject fp_name="/lab5_tb/dut/u_lab5_master/clk_i" type="logic">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -203,5 +203,389 @@
    <wvobject fp_name="/lab5_tb/dut/sram_controller_base/SRAM_BYTE_WIDTH" type="array">
       <obj_property name="ElementShortName">SRAM_BYTE_WIDTH[31:0]</obj_property>
       <obj_property name="ObjectShortName">SRAM_BYTE_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[0]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[0][7:0]</obj_property>
+      <obj_property name="label">bmem0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[0]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[0][15:8]</obj_property>
+      <obj_property name="label">bmem1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[0]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[0][7:0]</obj_property>
+      <obj_property name="label">bmem2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[0]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[0][15:8]</obj_property>
+      <obj_property name="label">bmem3</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[1]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[1][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][7:0]</obj_property>
+      <obj_property name="label">bmem4</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[1]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[1][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[1][15:8]</obj_property>
+      <obj_property name="label">bmem5</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[1]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[1][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][7:0]</obj_property>
+      <obj_property name="label">bmem6</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[1]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[1][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[1][15:8]</obj_property>
+      <obj_property name="label">bmem7</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[2]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][7:0]</obj_property>
+      <obj_property name="label">bmem8</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[2]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[2][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[2][15:8]</obj_property>
+      <obj_property name="label">bmem9</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[2]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[2][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][7:0]</obj_property>
+      <obj_property name="label">bmem10</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[2]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[2][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[2][15:8]</obj_property>
+      <obj_property name="label">bmem11</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[3]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[3][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[3][7:0]</obj_property>
+      <obj_property name="label">bmem12</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[3]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[3][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[3][15:8]</obj_property>
+      <obj_property name="label">bmem13</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[3]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[3][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[3][7:0]</obj_property>
+      <obj_property name="label">bmem14</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[3]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[3][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[3][15:8]</obj_property>
+      <obj_property name="label">bmem15</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[4]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[4][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[4][7:0]</obj_property>
+      <obj_property name="label">bmem16</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[4]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[4][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[4][15:8]</obj_property>
+      <obj_property name="label">bmem17</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[4]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[4][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[4][7:0]</obj_property>
+      <obj_property name="label">bmem18</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[4]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[4][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[4][15:8]</obj_property>
+      <obj_property name="label">bmem19</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[5]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[5][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[5][7:0]</obj_property>
+      <obj_property name="label">bmem20</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[5]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[5][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[5][15:8]</obj_property>
+      <obj_property name="label">bmem21</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[5]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[5][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[5][7:0]</obj_property>
+      <obj_property name="label">bmem22</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[5]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[5][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[5][15:8]</obj_property>
+      <obj_property name="label">bmem23</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[6]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[6][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[6][7:0]</obj_property>
+      <obj_property name="label">bmem24</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[6]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[6][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[6][15:8]</obj_property>
+      <obj_property name="label">bmem25</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[6]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[6][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[6][7:0]</obj_property>
+      <obj_property name="label">bmem26</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[6]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[6][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[6][15:8]</obj_property>
+      <obj_property name="label">bmem27</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[7]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[7][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[7][7:0]</obj_property>
+      <obj_property name="label">bmem28</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[7]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[7][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[7][15:8]</obj_property>
+      <obj_property name="label">bmem29</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[7]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[7][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[7][7:0]</obj_property>
+      <obj_property name="label">bmem30</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[7]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[7][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[7][15:8]</obj_property>
+      <obj_property name="label">bmem31</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[8][7:0]</obj_property>
+      <obj_property name="label">bmem32</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[8][15:8]</obj_property>
+      <obj_property name="label">bmem33</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[8][7:0]</obj_property>
+      <obj_property name="label">bmem34</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[8]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[8][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[8][15:8]</obj_property>
+      <obj_property name="label">bmem35</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[9]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[9][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[9][7:0]</obj_property>
+      <obj_property name="label">bmem36</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[9]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[9][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[9][15:8]</obj_property>
+      <obj_property name="label">bmem37</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[9]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[9][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[9][7:0]</obj_property>
+      <obj_property name="label">bmem38</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[9]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[9][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[9][15:8]</obj_property>
+      <obj_property name="label">bmem39</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[10]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[10][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[10][7:0]</obj_property>
+      <obj_property name="label">bmem40</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[10]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[10][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[10][15:8]</obj_property>
+      <obj_property name="label">bmem41</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[10]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[10][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[10][7:0]</obj_property>
+      <obj_property name="label">bmem42</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[10]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[10][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[10][15:8]</obj_property>
+      <obj_property name="label">bmem43</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[11]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[11][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[11][7:0]</obj_property>
+      <obj_property name="label">bmem44</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[11]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[11][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[11][15:8]</obj_property>
+      <obj_property name="label">bmem45</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[11]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[11][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[11][7:0]</obj_property>
+      <obj_property name="label">bmem46</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[11]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[11][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[11][15:8]</obj_property>
+      <obj_property name="label">bmem47</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[12]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[12][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[12][7:0]</obj_property>
+      <obj_property name="label">bmem48</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[12]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[12][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[12][15:8]</obj_property>
+      <obj_property name="label">bmem49</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[12]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[12][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[12][7:0]</obj_property>
+      <obj_property name="label">bmem50</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[12]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[12][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[12][15:8]</obj_property>
+      <obj_property name="label">bmem51</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[13]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[13][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[13][7:0]</obj_property>
+      <obj_property name="label">bmem52</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[13]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[13][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[13][15:8]</obj_property>
+      <obj_property name="label">bmem53</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[13]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[13][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[13][7:0]</obj_property>
+      <obj_property name="label">bmem54</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[13]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[13][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[13][15:8]</obj_property>
+      <obj_property name="label">bmem55</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[14]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[14][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[14][7:0]</obj_property>
+      <obj_property name="label">bmem56</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[14]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[14][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[14][15:8]</obj_property>
+      <obj_property name="label">bmem57</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[14]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[14][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[14][7:0]</obj_property>
+      <obj_property name="label">bmem58</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[14]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[14][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[14][15:8]</obj_property>
+      <obj_property name="label">bmem59</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array0[15]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[15][7:0]</obj_property>
+      <obj_property name="label">bmem60</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base1/mem_array1[15]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[15][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[15][15:8]</obj_property>
+      <obj_property name="label">bmem61</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array0[15]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[15][7:0]</obj_property>
+      <obj_property name="ObjectShortName">[15][7:0]</obj_property>
+      <obj_property name="label">bmem62</obj_property>
+   </wvobject>
+   <wvobject fp_name="/lab5_tb/base2/mem_array1[15]" type="array">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[15][15:8]</obj_property>
+      <obj_property name="ObjectShortName">[15][15:8]</obj_property>
+      <obj_property name="label">bmem63</obj_property>
    </wvobject>
 </wave_config>
