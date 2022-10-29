@@ -10,14 +10,14 @@ module IF_im #(
     output wire ack,
 
     // wishbone master
-    output wire wb_cyc_o, // done
-    output wire wb_stb_o, // done
-    input wire wb_ack_i, // done
-    output wire [ADDR_WIDTH-1:0] wb_adr_o, // done
-    output wire [DATA_WIDTH-1:0] wb_dat_o, // done
-    input wire [DATA_WIDTH-1:0] wb_dat_i, // done
-    output wire [DATA_WIDTH/8-1:0] wb_sel_o, // done
-    output wire wb_we_o // done
+    output wire wb_cyc_o, 
+    output wire wb_stb_o, 
+    input wire wb_ack_i, 
+    output wire [ADDR_WIDTH-1:0] wb_adr_o, 
+    output wire [DATA_WIDTH-1:0] wb_dat_o, 
+    input wire [DATA_WIDTH-1:0] wb_dat_i, 
+    output wire [DATA_WIDTH/8-1:0] wb_sel_o, 
+    output wire wb_we_o 
 
 );
     // Assembling as a wishbone master driving Instruction Memory.

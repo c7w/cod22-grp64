@@ -2,11 +2,18 @@ module IF_pc_mux #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-    input wire [ADDR_WIDTH-1:0] pc_nxt_prediction,
-    output wire[ADDR_WIDTH-1:0] pc_nxt
+    input wire [`PC_MUX_WIDTH-1:0] pc_mux_ctr,
+    input wire [ADDR_WIDTH-1:0] pc_curr,
+    input wire [ADDR_WIDTH-1:0] branch_addr,
+    output wire [ADDR_WIDTH-1:0] pc_nxt
 );
 
-    assign pc_nxt = pc_nxt_prediction;
-    // TODO : add branching prediction?
+    always_comb begin
+        pc_nxt = pc_curr + 4;
+
+        if (pc_mux_ctr == `PC_MUX_BRANCH) begin
+            pc_nxt = branch_addr;
+        end
+    end
 
 endmodule

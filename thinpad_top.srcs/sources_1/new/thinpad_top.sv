@@ -96,130 +96,185 @@ module thinpad_top (
                        // 后级电路复位信号应当由它生成（见下）
   );
 
-  logic reset_of_clk10M;
-  // 异步复位，同步释放，将 locked 信号转为后级电路的复位 reset_of_clk10M
-  always_ff @(posedge clk_10M or negedge locked) begin
-    if (~locked) reset_of_clk10M <= 1'b1;
-    else reset_of_clk10M <= 1'b0;
-  end
+  // logic reset_of_clk10M;
+  // // 异步复位，同步释放，将 locked 信号转为后级电路的复位 reset_of_clk10M
+  // always_ff @(posedge clk_10M or negedge locked) begin
+  //   if (~locked) reset_of_clk10M <= 1'b1;
+  //   else reset_of_clk10M <= 1'b0;
+  // end
 
-  always_ff @(posedge clk_10M or posedge reset_of_clk10M) begin
-    if (reset_of_clk10M) begin
-      // Your Code
-    end else begin
-      // Your Code
-    end
-  end
+  // always_ff @(posedge clk_10M or posedge reset_of_clk10M) begin
+  //   if (reset_of_clk10M) begin
+  //     // Your Code
+  //   end else begin
+  //     // Your Code
+  //   end
+  // end
 
-  // 不使用内存、串口时，禁用其使能信号
-  assign base_ram_ce_n = 1'b1;
-  assign base_ram_oe_n = 1'b1;
-  assign base_ram_we_n = 1'b1;
+  // // 不使用内存、串口时，禁用其使能信号
+  // assign base_ram_ce_n = 1'b1;
+  // assign base_ram_oe_n = 1'b1;
+  // assign base_ram_we_n = 1'b1;
 
-  assign ext_ram_ce_n = 1'b1;
-  assign ext_ram_oe_n = 1'b1;
-  assign ext_ram_we_n = 1'b1;
+  // assign ext_ram_ce_n = 1'b1;
+  // assign ext_ram_oe_n = 1'b1;
+  // assign ext_ram_we_n = 1'b1;
 
-  assign uart_rdn = 1'b1;
-  assign uart_wrn = 1'b1;
+  // assign uart_rdn = 1'b1;
+  // assign uart_wrn = 1'b1;
 
-  // 数码管连接关系示意图，dpy1 同理
-  // p=dpy0[0] // ---a---
-  // c=dpy0[1] // |     |
-  // d=dpy0[2] // f     b
-  // e=dpy0[3] // |     |
-  // b=dpy0[4] // ---g---
-  // a=dpy0[5] // |     |
-  // f=dpy0[6] // e     c
-  // g=dpy0[7] // |     |
-  //           // ---d---  p
+  // // 数码管连接关系示意图，dpy1 同理
+  // // p=dpy0[0] // ---a---
+  // // c=dpy0[1] // |     |
+  // // d=dpy0[2] // f     b
+  // // e=dpy0[3] // |     |
+  // // b=dpy0[4] // ---g---
+  // // a=dpy0[5] // |     |
+  // // f=dpy0[6] // e     c
+  // // g=dpy0[7] // |     |
+  // //           // ---d---  p
 
-  // 7 段数码管译码器演示，将 number 用 16 进制显示在数码管上面
-  logic [7:0] number;
-  SEG7_LUT segL (
-      .oSEG1(dpy0),
-      .iDIG (number[3:0])
-  );  // dpy0 是低位数码管
-  SEG7_LUT segH (
-      .oSEG1(dpy1),
-      .iDIG (number[7:4])
-  );  // dpy1 是高位数码管
+  // // 7 段数码管译码器演示，将 number 用 16 进制显示在数码管上面
+  // logic [7:0] number;
+  // SEG7_LUT segL (
+  //     .oSEG1(dpy0),
+  //     .iDIG (number[3:0])
+  // );  // dpy0 是低位数码管
+  // SEG7_LUT segH (
+  //     .oSEG1(dpy1),
+  //     .iDIG (number[7:4])
+  // );  // dpy1 是高位数码管
 
-  logic [15:0] led_bits;
-  assign leds = led_bits;
+  // logic [15:0] led_bits;
+  // assign leds = led_bits;
 
-  always_ff @(posedge push_btn or posedge reset_btn) begin
-    if (reset_btn) begin  // 复位按下，设置 LED 为初始值
-      led_bits <= 16'h1;
-    end else begin  // 每次按下按钮开关，LED 循环左移
-      led_bits <= {led_bits[14:0], led_bits[15]};
-    end
-  end
+  // always_ff @(posedge push_btn or posedge reset_btn) begin
+  //   if (reset_btn) begin  // 复位按下，设置 LED 为初始值
+  //     led_bits <= 16'h1;
+  //   end else begin  // 每次按下按钮开关，LED 循环左移
+  //     led_bits <= {led_bits[14:0], led_bits[15]};
+  //   end
+  // end
 
-  // 直连串口接收发送演示，从直连串口收到的数据再发送出去
-  logic [7:0] ext_uart_rx;
-  logic [7:0] ext_uart_buffer, ext_uart_tx;
-  logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
-  logic ext_uart_start, ext_uart_avai;
+  // // 直连串口接收发送演示，从直连串口收到的数据再发送出去
+  // logic [7:0] ext_uart_rx;
+  // logic [7:0] ext_uart_buffer, ext_uart_tx;
+  // logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
+  // logic ext_uart_start, ext_uart_avai;
 
-  assign number = ext_uart_buffer;
+  // assign number = ext_uart_buffer;
 
-  // 接收模块，9600 无检验位
-  async_receiver #(
-      .ClkFrequency(50000000),
-      .Baud(9600)
-  ) ext_uart_r (
-      .clk           (clk_50M),         // 外部时钟信号
-      .RxD           (rxd),             // 外部串行信号输入
-      .RxD_data_ready(ext_uart_ready),  // 数据接收到标志
-      .RxD_clear     (ext_uart_clear),  // 清除接收标志
-      .RxD_data      (ext_uart_rx)      // 接收到的一字节数据
-  );
+  // // 接收模块，9600 无检验位
+  // async_receiver #(
+  //     .ClkFrequency(50000000),
+  //     .Baud(9600)
+  // ) ext_uart_r (
+  //     .clk           (clk_50M),         // 外部时钟信号
+  //     .RxD           (rxd),             // 外部串行信号输入
+  //     .RxD_data_ready(ext_uart_ready),  // 数据接收到标志
+  //     .RxD_clear     (ext_uart_clear),  // 清除接收标志
+  //     .RxD_data      (ext_uart_rx)      // 接收到的一字节数据
+  // );
 
-  assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer 中
-  always_ff @(posedge clk_50M) begin  // 接收到缓冲区 ext_uart_buffer
-    if (ext_uart_ready) begin
-      ext_uart_buffer <= ext_uart_rx;
-      ext_uart_avai   <= 1;
-    end else if (!ext_uart_busy && ext_uart_avai) begin
-      ext_uart_avai <= 0;
-    end
-  end
-  always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发送出去
-    if (!ext_uart_busy && ext_uart_avai) begin
-      ext_uart_tx <= ext_uart_buffer;
-      ext_uart_start <= 1;
-    end else begin
-      ext_uart_start <= 0;
-    end
-  end
+  // assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer 中
+  // always_ff @(posedge clk_50M) begin  // 接收到缓冲区 ext_uart_buffer
+  //   if (ext_uart_ready) begin
+  //     ext_uart_buffer <= ext_uart_rx;
+  //     ext_uart_avai   <= 1;
+  //   end else if (!ext_uart_busy && ext_uart_avai) begin
+  //     ext_uart_avai <= 0;
+  //   end
+  // end
+  // always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发送出去
+  //   if (!ext_uart_busy && ext_uart_avai) begin
+  //     ext_uart_tx <= ext_uart_buffer;
+  //     ext_uart_start <= 1;
+  //   end else begin
+  //     ext_uart_start <= 0;
+  //   end
+  // end
 
-  // 发送模块，9600 无检验位
-  async_transmitter #(
-      .ClkFrequency(50000000),
-      .Baud(9600)
-  ) ext_uart_t (
-      .clk      (clk_50M),         // 外部时钟信号
-      .TxD      (txd),             // 串行信号输出
-      .TxD_busy (ext_uart_busy),   // 发送器忙状态指示
-      .TxD_start(ext_uart_start),  // 开始发送信号
-      .TxD_data (ext_uart_tx)      // 待发送的数据
-  );
+  // // 发送模块，9600 无检验位
+  // async_transmitter #(
+  //     .ClkFrequency(50000000),
+  //     .Baud(9600)
+  // ) ext_uart_t (
+  //     .clk      (clk_50M),         // 外部时钟信号
+  //     .TxD      (txd),             // 串行信号输出
+  //     .TxD_busy (ext_uart_busy),   // 发送器忙状态指示
+  //     .TxD_start(ext_uart_start),  // 开始发送信号
+  //     .TxD_data (ext_uart_tx)      // 待发送的数据
+  // );
 
-  // 图像输出演示，分辨率 800x600@75Hz，像素时钟为 50MHz
-  logic [11:0] hdata;
-  assign video_red   = hdata < 266 ? 3'b111 : 0;  // 红色竖条
-  assign video_green = hdata < 532 && hdata >= 266 ? 3'b111 : 0;  // 绿色竖条
-  assign video_blue  = hdata >= 532 ? 2'b11 : 0;  // 蓝色竖条
-  assign video_clk   = clk_50M;
-  vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
-      .clk        (clk_50M),
-      .hdata      (hdata),        // 横坐标
-      .vdata      (),             // 纵坐标
-      .hsync      (video_hsync),
-      .vsync      (video_vsync),
-      .data_enable(video_de)
-  );
-  /* =========== Demo code end =========== */
+  // // 图像输出演示，分辨率 800x600@75Hz，像素时钟为 50MHz
+  // logic [11:0] hdata;
+  // assign video_red   = hdata < 266 ? 3'b111 : 0;  // 红色竖条
+  // assign video_green = hdata < 532 && hdata >= 266 ? 3'b111 : 0;  // 绿色竖条
+  // assign video_blue  = hdata >= 532 ? 2'b11 : 0;  // 蓝色竖条
+  // assign video_clk   = clk_50M;
+  // vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
+  //     .clk        (clk_50M),
+  //     .hdata      (hdata),        // 横坐标
+  //     .vdata      (),             // 纵坐标
+  //     .hsync      (video_hsync),
+  //     .vsync      (video_vsync),
+  //     .data_enable(video_de)
+  // );
+  // /* =========== Demo code end =========== */
+
+
+    // Controller
+
+    // IF
+
+    logic [ADDR_WIDTH-1:0] pc_addr;
+    logic [ADDR_WIDTH-1:0] pc_nxt;
+    logic [DATA_WIDTH-1:0] instr;
+
+    IF_pc pc (
+        .clk (clk_10M),
+        .rst (rst),
+        .stall(0),
+        .pc_nxt(pc_nxt),
+        .pc_addr(pc_addr),  // output
+        .pc_nxt_prediction()  // dont care now
+    );
+
+    IF_pc_mux pc_mux (
+        .pc_mux_ctr (`PC_MUX_INC), // todo: add support for branching
+        .pc_curr (pc_addr),
+        .branch_addr (),
+        .pc_nxt (pc_nxt)  // output
+    );
+
+    // wishbone master for IM
+    logic wbm_cyc_im,
+    logic wbm_stb_im,
+    logic wbm_ack_im,
+    logic [ADDR_WIDTH-1:0] wbm_adr_im,
+    logic [DATA_WIDTH-1:0] wbm_dat_m2s_im,  // master 2 slave
+    logic [DATA_WIDTH-1:0] wbm_dat_s2m_im,  // slave 2 master
+    logic [DATA_WIDTH/8-1:0] wbm_sel_im,
+    logic wbm_we_im
+
+    IF_im instr_fetcher (
+        .clk(clk_10M),
+        .rst(rst),
+        .pc_addr(pc_addr),
+        .instr(instr),
+        .wb_cyc_o(wbm_cyc_im),
+        .wb_stb_o(wbm_stb_im),
+        .wb_ack_i(wbm_ack_im),
+        .wb_adr_o(wbm_adr_im),
+        .wb_dat_o(wbm_dat_m2s_im),
+        .wb_dat_i(wbm_dat_s2m_im),
+        .wb_sel_o(wbm_sel_im),
+        .wb_we_o(wbm_we_im)
+    );
+
+    IF_DECODER instr_decoder(
+        .instr
+    );
+
 
 endmodule
