@@ -49,6 +49,8 @@ module REG_IF_ID #(
         OP_NOP,
         OP_UNKNOWN
     } OP_Type;
+    
+    OP_Type op_type;
 
     // From instr to op_type
     // TODO: add more instructions
@@ -101,6 +103,10 @@ module REG_IF_ID #(
         endcase
     end
 
+    // Utils for decoding IMMs
+    logic sign; logic[19:0] sign_ext20;
+    assign sign = instr[31];
+    assign sign_ext20 = {20{sign}};
     
     // From op_type to decoding results
     always_comb begin
@@ -122,19 +128,19 @@ module REG_IF_ID #(
 
             OP_LB: begin
                 imm = {sign_ext20[19:0], instr[31:20]}; 
-                imm_en = 1; wb_e = 1;
+                imm_en = 1; wb_en = 1;
                 dm_en = 1; dm_wen = 0;  // Read memory
             end
 
             OP_SB, OP_SW: begin
                 imm = {sign_ext20[19:0], instr[31:25], instr[11:7]}; 
-                imm_en = 1; wb_e = 0;
+                imm_en = 1; wb_en = 0;
                 dm_en = 1; dm_wen = 1;
             end
 
             OP_ADDI, OP_ANDI: begin
-                imm = {sign_ext_20[19:0], instr[31:20]}; 
-                imm_en = 1; wb_e = 1;
+                imm = {sign_ext20[19:0], instr[31:20]}; 
+                imm_en = 1; wb_en = 1;
                 dm_en = 0; dm_wen = 0;
             end
 
@@ -149,95 +155,103 @@ module REG_IF_ID #(
             end
         endcase
     end
-
-    // Utils for decoding IMMs
-    logic sign; logic[19:0] sign_ext20;
-    assign sign = instr[31];
-    assign sign_ext20 = {20{sign}};
-
+    
+    logic pc_mux_ctr_comb;
+    logic [`BC_OP_WIDTH-1:0] bc_op_comb;
+    logic [3:0] alu_op_comb;
+    logic alu_mux_a_ctr_comb;
+    logic alu_mux_b_ctr_comb;
+    logic dm_mux_ctr_comb;
+    
+    assign pc_mux_ctr = pc_mux_ctr_comb;
+    assign bc_op = bc_op_comb;
+    assign alu_op = alu_op_comb;
+    assign alu_mux_a_ctr = alu_mux_a_ctr_comb;
+    assign alu_mux_b_ctr = alu_mux_b_ctr_comb;
+    assign dm_mux_ctr = dm_mux_ctr_comb;
 
     // Decoding for control signals
     always_comb begin
-        pc_mux_ctr = `PC_MUX_INC;
-        bc_op = `BC_OP_FALSE;
-        alu_op = `ALU_OP_UNKNOWN; 
-        alu_mux_a_ctr = `ALU_MUX_A_ZERO;  // zero
-        alu_mux_b_ctr = `ALU_MUX_B_ZERO; // zero
-        dm_mux_ctr = `DM_MUX_ALU;
+        pc_mux_ctr_comb = `PC_MUX_INC;
+        bc_op_comb = `BC_OP_FALSE;
+        alu_op_comb = `ALU_OP_UNKNOWN; 
+        alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;  // zero
+        alu_mux_b_ctr_comb = `ALU_MUX_B_ZERO; // zero
+        dm_mux_ctr_comb = `DM_MUX_ALU;
 
         case (op_type)
             OP_LUI: begin
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_ZERO;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_ALU;
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
             end
 
             OP_BEQ: begin
-                pc_mux_ctr = `PC_MUX_BRANCH;  // Branch if bc_comp output is 1
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_PC;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_ALU;
-                bc_op = `BC_OP_EQU;
+                pc_mux_ctr_comb = `PC_MUX_BRANCH;  // Branch if bc_comp output is 1
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_PC;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+                bc_op_comb = `BC_OP_EQU;
             end
 
 
             OP_LB: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_MEM;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_MEM;
+            end
 
             OP_SB : begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_MEM;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_MEM;
+            end
 
             OP_SW: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_MEM;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_MEM;
+            end
 
             OP_ADDI: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = `ALU_OP_ADD;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_ALU;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
 
             OP_ANDI: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = ALU_OP_AND;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_IMM;
-                dm_mux_ctr = `DM_MUX_ALU;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_AND;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
 
             OP_ADD: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = ALU_OP_AND;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_DATA;
-                dm_mux_ctr = `DM_MUX_ALU;
-            end,
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_AND;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
 
             OP_NOP: begin 
-                pc_mux_ctr = `PC_MUX_INC;
-                alu_op = ALU_OP_UNKNOWN;
-                alu_mux_a_ctr = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr = `ALU_MUX_B_DATA;
-                dm_mux_ctr = `DM_MUX_ALU;
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_UNKNOWN;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
             end
 
         endcase

@@ -6,6 +6,8 @@
 // ALU OP and ALU mux
 `define ALU_OP_WIDTH 4
 `define ALU_MUX_WIDTH 2
+`define ALU_MUX_A_WIDTH 2
+`define ALU_MUX_B_WIDTH 2
 
 `define ALU_OP_UNKNOWN   `ALU_OP_WIDTH'd0
 `define ALU_OP_ADD   `ALU_OP_WIDTH'd1

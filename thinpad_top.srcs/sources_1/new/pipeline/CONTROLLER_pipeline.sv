@@ -1,7 +1,7 @@
 module CONTROLLER_pipeline #(
     parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 32,
-)(
+    parameter DATA_WIDTH = 32
+) (
 
     input wire dm_ack,
 

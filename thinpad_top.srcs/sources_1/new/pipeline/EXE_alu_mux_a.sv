@@ -1,3 +1,7 @@
+`include "../headers/ops.vh"
+`include "../headers/ctrl.vh"
+`include "../headers/branch_comp.vh"
+
 module EXE_alu_mux_a #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -5,7 +9,7 @@ module EXE_alu_mux_a #(
     input wire[`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_i,
     input wire [DATA_WIDTH-1:0] alu_mux_a_data,
     input wire [ADDR_WIDTH-1:0] alu_mux_a_pc,
-    output wire [DATA_WIDTH-1:0] alu_mux_a_o
+    output logic [DATA_WIDTH-1:0] alu_mux_a_o
 );
 
     always_comb begin

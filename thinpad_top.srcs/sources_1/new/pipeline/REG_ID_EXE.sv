@@ -1,3 +1,7 @@
+`include "../headers/ops.vh"
+`include "../headers/ctrl.vh"
+`include "../headers/branch_comp.vh"
+
 module REG_ID_EXE #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -42,7 +46,7 @@ module REG_ID_EXE #(
     output reg dm_en_o,
     output reg dm_wen_o,
     output reg [`DM_MUX_WIDTH-1:0] dm_mux_ctr_o,
-    output wire [DATA_WIDTH-1:0] rf_data_b_o,
+    output reg [DATA_WIDTH-1:0] rf_data_b_o,
 
 
     // MEM -> WB
@@ -50,7 +54,7 @@ module REG_ID_EXE #(
     // input wire[ADDR_WIDTH-1:0] wb_addr_i,
     // input wire[DATA_WIDTH-1:0] wb_data_i,
 
-    output reg wb_en_o,
+    output reg wb_en_o
     // output reg[ADDR_WIDTH-1:0] wb_addr_o,
     // output reg[DATA_WIDTH-1:0] wb_data_o
 );

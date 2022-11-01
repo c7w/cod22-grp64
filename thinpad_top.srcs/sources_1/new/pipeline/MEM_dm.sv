@@ -36,7 +36,7 @@ module MEM_dm #(
         STATE_READ_SRAM,
         STATE_WRITE_SRAM,
         STATE_READ_UART,
-        STATE_WRITE_UART,
+        STATE_WRITE_UART
     } state_t;
     state_t state;
 
@@ -89,8 +89,8 @@ module MEM_dm #(
                 dm_data_o = dm_data_cache;
             end
 
-            STATE
-
+            // STATE
+            // TODO
         endcase
 
     end
