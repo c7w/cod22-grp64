@@ -2,15 +2,15 @@ module RegisterFile(
     input wire clk,
     input wire rst,
     input wire[4:0] waddr,
-    input wire[15:0] wdata,
+    input wire[31:0] wdata,
     input wire wen,
     input wire[4:0] raddr_a,
-    output wire[15:0] rdata_a,
+    output wire[31:0] rdata_a,
     input wire[4:0] raddr_b,
-    output wire[15:0] rdata_b
+    output wire[31:0] rdata_b
 );
 
-    reg [15:0] data [0:31];
+    reg [31:0] data [0:31];
 
     assign rdata_a = data[raddr_a];
     assign rdata_b = data[raddr_b];

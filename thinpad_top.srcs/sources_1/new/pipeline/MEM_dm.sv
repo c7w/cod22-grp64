@@ -1,3 +1,4 @@
+// TODO: Review this file
 module MEM_dm #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -10,6 +11,7 @@ module MEM_dm #(
     input wire dm_wen,
     input wire [ADDR_WIDTH-1:0] dm_addr,
     output wire dm_ack,
+    output wire dm_data,  // TODO : ?
 
     // Wishbone master
     output wire wbm_cyc_o,
@@ -24,6 +26,7 @@ module MEM_dm #(
 );
 
     assign wbm_cyc_o = wbm_stb_o;
+    assign dm_data = wbm_dat_i;
 
     reg [ADDR_WIDTH-1:0] dm_addr_cache;
     reg [DATA_WIDTH-1:0] dm_data_cache;

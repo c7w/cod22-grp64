@@ -224,27 +224,39 @@ module thinpad_top (
 
 
     // Controller
+    logic [3:0] CONTROLLER_stall,
+    logic [3:0] CONTROLLER_bubble,
 
     // IF
 
-    logic [ADDR_WIDTH-1:0] pc_addr;
-    logic [ADDR_WIDTH-1:0] pc_nxt;
-    logic [DATA_WIDTH-1:0] instr;
+    logic [ADDR_WIDTH-1:0] IF_pc_addr;
+    logic [ADDR_WIDTH-1:0] IF_pc_nxt;
+    logic [DATA_WIDTH-1:0] IF_instr;
+    logic [DATA_WIDTH-1:0] IF_imm;
+    logic [4:0] IF_rs1, IF_rs2, IF_rd;
+    logic [`PC_MUX_WIDTH-1:0] IF_pc_mux_ctr;
+    logic [`BC_OP_WIDTH-1:0] IF_BC_op;
+    logic [`ALU_OP_WIDTH-1:0] IF_ALU_op;
+    logic [`ALU_MUX_A_WIDTH-1:0] IF_ALU_mux_a_ctr;
+    logic [`ALU_MUX_B_WIDTH-1:0] IF_ALU_mux_b_ctr;
+    logic [`DM_MUX_WIDTH-1:0] IF_dm_mux_ctr;
+    logic IF_dm_en, IF_dm_wen, IF_wb_en;
+
 
     IF_pc pc (
         .clk (clk_10M),
         .rst (rst),
-        .stall(0),
-        .pc_nxt(pc_nxt),
-        .pc_addr(pc_addr),  // output
-        .pc_nxt_prediction()  // dont care now
+        .stall(0),  // todo: add controller logic
+        .pc_nxt(IF_pc_nxt),
+        .pc_addr(IF_pc_addr),  // output
+        .pc_nxt_prediction()  // todo: add branching prediction
     );
 
     IF_pc_mux pc_mux (
         .pc_mux_ctr (`PC_MUX_INC), // todo: add support for branching
-        .pc_curr (pc_addr),
-        .branch_addr (),
-        .pc_nxt (pc_nxt)  // output
+        .pc_curr (IF_pc_addr),
+        .branch_addr (), // todo: add support for branching
+        .pc_nxt (IF_pc_nxt)  // output
     );
 
     // wishbone master for IM
@@ -258,10 +270,10 @@ module thinpad_top (
     logic wbm_we_im
 
     IF_im instr_fetcher (
-        .clk(clk_10M),
+        .clk(clk_50M),
         .rst(rst),
-        .pc_addr(pc_addr),
-        .instr(instr),
+        .pc_addr(IF_pc_addr),
+        .instr(IF_instr),
         .wb_cyc_o(wbm_cyc_im),
         .wb_stb_o(wbm_stb_im),
         .wb_ack_i(wbm_ack_im),
@@ -272,9 +284,283 @@ module thinpad_top (
         .wb_we_o(wbm_we_im)
     );
 
+    logic [ADDR_WIDTH-1:0] ID_pc_addr;
+    logic [DATA_WIDTH-1:0] ID_imm;
+    logic [4:0] ID_rs1, ID_rs2, ID_rd;
+    logic [`PC_MUX_WIDTH-1:0] ID_pc_mux_ctr;
+    logic [`BC_OP_WIDTH-1:0] ID_BC_op;
+    logic [`ALU_OP_WIDTH-1:0] ID_ALU_op;
+    logic [`ALU_MUX_A_WIDTH-1:0] ID_ALU_mux_a_ctr;
+    logic [`ALU_MUX_B_WIDTH-1:0] ID_ALU_mux_b_ctr;
+    logic [`DM_MUX_WIDTH-1:0] ID_dm_mux_ctr;
+    logic ID_dm_en, ID_dm_wen, ID_wb_en;
+
     IF_DECODER instr_decoder(
-        .instr
+        .instr(IF_instr),
+        .imm(IF_imm),
+        .imm_en(),  // not used
+        .dm_en(IF_dm_en),
+        .dm_wen(IF_dm_wen),
+        .wb_en(IF_wb_en),
+        .rd(IF_rd),
+        .rs1(IF_rs1),
+        .rs2(IF_rs2),
+        .pc_mux_ctr(IF_pc_mux_ctr),
+        .bc_op(IF_BC_op),
+        .alu_op(IF_ALU_op),
+        .alu_mux_a_ctr(IF_ALU_mux_a_ctr),
+        .alu_mux_b_ctr(IF_ALU_mux_b_ctr),
+        .dm_mux_ctr(IF_dm_mux_ctr)
     );
+
+    REG_IF_ID reg_if_id (
+        .clk(clk_10M),
+        .rst(rst),
+        .stall(CONTROLLER_stall[1]),
+        .bubble(CONTROLLER_bubble[0]),
+
+        // IF -> ID
+        .rs1_i(IF_rs1),
+        .rs2_i(IF_rs2),
+        .rd_i(IF_rd),
+        .imm_i(IF_imm),
+        
+        .rs1_o(ID_rs1),
+        .rs2_o(ID_rs2),
+        .rd_o(ID_rd),
+        .imm_o(ID_imm),
+
+        // ID -> EXE
+        .bc_op_i(IF_BC_op),
+        .alu_op_i(IF_ALU_op),
+        .alu_mux_a_ctr_i(IF_ALU_mux_a_ctr),
+        .alu_mux_b_ctr_i(IF_ALU_mux_b_ctr),
+        .pc_mux_ctr_i(IF_pc_mux_ctr),
+
+        .bc_op_o(ID_BC_op),
+        .alu_op_o(ID_ALU_op),
+        .alu_mux_a_ctr_o(ID_ALU_mux_a_ctr),
+        .alu_mux_b_ctr_o(ID_ALU_mux_b_ctr),
+        .pc_mux_ctr_o(ID_pc_mux_ctr),
+
+        // EXE -> MEM
+        .pc_addr_i(IF_pc_addr),
+        .dm_en_i(IF_dm_en),
+        .dm_wen_i(IF_dm_wen),
+        .dm_mux_ctr_i(IF_dm_mux_ctr),
+        
+        .pc_addr_o(ID_pc_addr),
+        .dm_en_o(ID_dm_en),
+        .dm_wen_o(ID_dm_wen),
+        .dm_mux_ctr_o(ID_dm_mux_ctr),
+
+        // MEM -> WB
+        .wb_en_i(IF_wb_en),
+        .wb_en_o(ID_wb_en)
+    );
+
+    logic [4:0] RF_waddr;
+    logic [DATA_WIDTH-1:0] RF_wdata,
+    logic RF_wen,
+    logic [DATA_WIDTH-1:0] RF_data_a, RF_data_b;
+
+
+    RegisterFile rf (
+        .clk(clk_10M),
+        .rst(rst),
+
+        .waddr(RF_waddr),
+        .wdata(RF_wdata),
+        .wen(RF_wen),
+
+        .raddr_a(ID_rf_data_a),
+        .raddr_b(ID_rf_data_b),
+
+        .rdata_a(RF_data_a),
+        .rdata_b(RF_data_b)
+    );
+
+    logic [DATA_WIDTH-1:0] EXE_data_a, EXE_data_b, EXE_imm;
+    logic [`BC_OP_WIDTH-1:0] EXE_bc_op;
+    logic [`ALU_OP_WIDTH-1:0] EXE_ALU_op;
+    logic [`ALU_MUX_A_WIDTH-1:0] EXE_ALU_mux_a_ctr;
+    logic [`ALU_MUX_B_WIDTH-1:0] EXE_ALU_mux_b_ctr;
+    logic [`DM_MUX_WIDTH-1:0] EXE_dm_mux_ctr;
+    logic [`PC_MUX_WIDTH-1:0] EXE_pc_mux_ctr;
+    logic [ADDR_WIDTH-1:0] EXE_pc_addr;
+    logic EXE_dm_en, EXE_dm_wen, EXE_wb_en;
+    logic [4:0] EXE_rd;
+    
+
+    REG_ID_EXE reg_id_exe (
+        .clk(clk_10M),
+        .rst(rst),
+
+        .stall(CONTROLLER_stall[2]),
+        .bubble(CONTROLLER_bubble[1]),
+
+        .imm_i(ID_imm),
+        .rd_i(ID_rd),
+        .imm_o(EXE_imm),
+        .rd_o(EXE_rd),
+
+        .rf_data_a_i(RF_data_a),
+        .bc_op_i(ID_BC_op),
+        .alu_op_i(ID_ALU_op),
+        .alu_mux_a_ctr_i(ID_ALU_mux_a_ctr),
+        .alu_mux_b_ctr_i(ID_ALU_mux_b_ctr),
+        .pc_mux_ctr_i(ID_pc_mux_ctr),
+
+        .rf_data_a_o(EXE_data_a),
+        .bc_op_o(EXE_bc_op),
+        .alu_op_o(EXE_ALU_op),
+        .alu_mux_a_ctr_o(EXE_ALU_mux_a_ctr),
+        .alu_mux_b_ctr_o(EXE_ALU_mux_b_ctr),
+        .pc_mux_ctr_o(EXE_pc_mux_ctr),
+
+
+        .pc_addr_i(ID_pc_addr),
+        .dm_en_i(ID_dm_en),
+        .dm_wen_i(ID_dm_wen),
+        .dm_mux_ctr_i(ID_dm_mux_ctr),
+        .rf_data_b_i(RF_data_b),
+
+        .pc_addr_o(EXE_pc_addr),
+        .dm_en_o(EXE_dm_en),
+        .dm_wen_o(EXE_dm_wen),
+        .dm_mux_ctr_o(EXE_dm_mux_ctr),
+        .rf_data_b_o(EXE_data_b),
+
+
+        .wb_en_i(ID_wb_en),
+        .wb_en_o(EXE_wb_en)
+    );
+
+    
+    logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_o;
+    logic [3:0] alu_op;
+
+    EXE_alu_mux_a exe_alu_mux_a (
+        .alu_mux_a_ctr_i(EXE_ALU_mux_a_ctr),
+        .alu_mux_a_data(EXE_data_a),
+        .alu_mux_a_pc(EXE_pc_addr),
+        .alu_mux_a_o(alu_a)
+    );
+
+    EXE_alu_mux_b exe_alu_mux_b (
+        .alu_mux_b_ctr_i(EXE_ALU_mux_b_ctr),
+        .alu_mux_b_data(EXE_data_b),
+        .alu_mux_b_imm(EXE_imm),
+        .alu_mux_b_o(alu_b)
+    );
+
+    ALU alu (
+        .a(alu_a),
+        .b(alu_b),
+        .op(alu_op),
+        .y(alu_o)
+    );
+
+    logic BC_cond;  // TODO: add branching support
+
+    EXE_branch_comp exe_branch_comp (
+        .bc_op (EXE_bc_op),
+        .data_a(EXE_data_a),
+        .data_b(EXE_data_b),
+        .cond(BC_cond)
+    );
+
+    logic [`DM_MUX_WIDTH-1:0] MEM_dm_mux_ctr;
+    logic [ADDR_WIDTH-1:0] MEM_pc_addr;
+    logic MEM_dm_en, MEM_dm_wen, MEM_wb_en;
+    logic [4:0] MEM_rd;
+
+    logic [DATA_WIDTH-1:0] MEM_alu, MEM_data_b;
+
+    REG_EXE_MEM reg_exe_mem (
+        .clk(clk_10M),
+        .rst(rst),
+
+        .stall(CONTROLLER_stall[3]),
+        .bubble(CONTROLLER_bubble[2]),
+
+        .rd_i(EXE_rd),
+        .rd_o(MEM_rd),
+
+        .pc_addr_i(EXE_pc_addr),
+        .alu_out_i(alu_o),
+        .dm_en_i(EXE_dm_en),
+        .dm_wen_i(EXE_dm_wen),
+        .dm_mux_ctr_i(EXE_dm_mux_ctr),
+        .rf_data_b_i(EXE_data_b),
+
+        .pc_addr_o(MEM_pc_addr),
+        .alu_out_o(MEM_alu),
+        .dm_en_o(MEM_dm_en),
+        .dm_wen_o(MEM_dm_wen),
+        .dm_mux_ctr_o(MEM_dm_mux_ctr),
+        .rf_data_b_o(MEM_data_b),
+
+
+        .wb_en_i(EXE_wb_en),
+        .wb_en_o(MEM_wb_en)
+    );
+
+    logic [DATA_WIDTH-1:0] MEM_wb_data;
+
+    // wishbone master for DM
+    logic wbm_cyc_dm,
+    logic wbm_stb_dm,
+    logic wbm_ack_dm,
+    logic [ADDR_WIDTH-1:0] wbm_adr_dm,
+    logic [DATA_WIDTH-1:0] wbm_dat_m2s_dm,  // master 2 slave
+    logic [DATA_WIDTH-1:0] wbm_dat_s2m_dm,  // slave 2 master
+    logic [DATA_WIDTH/8-1:0] wbm_sel_dm,
+    logic wbm_we_dm
+
+    MEM_dm data_fetcher (
+        .clk (clk_50M),
+        .rst (rst),
+
+        .dm_en(MEM_dm_en),
+        .dm_wen(MEM_dm_wen),
+        .dm_addr(MEM_alu),
+        .dm_ack(), // TODO: ?
+        .dm_data(MEM_dm),
+
+        .wb_cyc_o(wbm_cyc_dm),
+        .wb_stb_o(wbm_stb_dm),
+        .wb_ack_i(wbm_ack_dm),
+        .wb_adr_o(wbm_adr_dm),
+        .wb_dat_o(wbm_dat_m2s_dm),
+        .wb_dat_i(wbm_dat_s2m_dm),
+        .wb_sel_o(wbm_sel_dm),
+        .wb_we_o(wbm_we_dm)
+    );
+
+    MEM_dm_mux (
+        .dm_mux_ctr (MEM_dm_mux_ctr),
+        .dm_mux_pc_addr (MEM_pc_addr),
+        .dm_mux_alu (MEM_alu),
+        .dm_mux_dm(MEM_dm),
+        .dm_mux_o(MEM_wb_data)
+    );
+
+    REG_MEM_WB (
+        .clk(clk_10M),
+        .rst(rst),
+        .bubble(CONTROLLER_bubble[3]),
+
+        .wb_en_i(MEM_wb_en),
+        .wb_addr_i(MEM_rd),
+        .wb_data_i(MEM_wb_data),
+
+        .wb_en_o(RF_wen),
+        .wb_addr_o(RF_waddr),
+        .wb_data_o(RF_wdata)
+    );
+
+
 
 
 endmodule

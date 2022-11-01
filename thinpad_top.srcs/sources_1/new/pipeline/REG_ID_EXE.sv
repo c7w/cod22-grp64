@@ -8,30 +8,37 @@ module REG_ID_EXE #(
     input wire stall, // freeze status
     input wire bubble, // bubble status
 
+    input wire[DATA_WIDTH-1:0] imm_i,
+    input wire [4:0] rd_i,
+    output reg[DATA_WIDTH-1:0] imm_o,
+    output reg [4:0] rd_o, 
+
     // ID -> EXE
     input wire[DATA_WIDTH-1:0] rf_data_a_i,
     input wire [`BC_OP_WIDTH-1:0] bc_op_i,
     input wire [`ALU_OP_WIDTH-1:0] alu_op_i,
     input wire [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_i,
     input wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_i,
+    input wire[`PC_MUX_WIDTH-1:0] pc_mux_ctr_i,
 
     output reg [DATA_WIDTH-1:0] rf_data_a_o,
     output reg [`BC_OP_WIDTH-1:0] bc_op_o,
     output reg [`ALU_OP_WIDTH-1:0] alu_op_o,
     output reg [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_o,
     output reg [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_o,
+    output reg[`PC_MUX_WIDTH-1:0] pc_mux_ctr_o,
 
 
     // EXE -> MEM
     input wire[ADDR_WIDTH-1:0] pc_addr_i,
-    input wire [DATA_WIDTH-1:0] alu_out_i,
+    // input wire [DATA_WIDTH-1:0] alu_out_i,
     input wire dm_en_i,
     input wire dm_wen_i,
     input wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr_i,
     input wire [DATA_WIDTH-1:0] rf_data_b_i,
     
     output reg [ADDR_WIDTH-1:0] pc_addr_o,
-    output reg [DATA_WIDTH-1:0] alu_out_o,
+    // output reg [DATA_WIDTH-1:0] alu_out_o,
     output reg dm_en_o,
     output reg dm_wen_o,
     output reg [`DM_MUX_WIDTH-1:0] dm_mux_ctr_o,
@@ -40,31 +47,36 @@ module REG_ID_EXE #(
 
     // MEM -> WB
     input wire wb_en_i, // write back enabled
-    input wire[ADDR_WIDTH-1:0] wb_addr_i,
-    input wire[DATA_WIDTH-1:0] wb_data_i,
+    // input wire[ADDR_WIDTH-1:0] wb_addr_i,
+    // input wire[DATA_WIDTH-1:0] wb_data_i,
 
     output reg wb_en_o,
-    output reg[ADDR_WIDTH-1:0] wb_addr_o,
-    output reg[DATA_WIDTH-1:0] wb_data_o
+    // output reg[ADDR_WIDTH-1:0] wb_addr_o,
+    // output reg[DATA_WIDTH-1:0] wb_data_o
 );
 
     always_ff @(posedge clk) begin
 
         if (rst) begin
+
+            imm_o <= 0;
+            rd_o <= 0;
+
             // bubble : exe
             rf_data_a_o <= 0;
             bc_op_o <= `BC_OP_TRUE;
             alu_op_o <= `ALU_OP_UNKNOWN;
             alu_mux_a_ctr_o <= `ALU_MUX_A_ZERO;
             alu_mux_b_ctr_o <= `ALU_MUX_B_ZERO;
+            pc_mux_ctr_o <= `PC_MUX_INC;
 
             // bubble : mem
-            pc_addr_o <= 0; alu_out_o <= 0;
+            pc_addr_o <= 0; // alu_out_o <= 0;
             dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU;
             rf_data_b_o <= 0;
             
             // bubble : wb
-            wb_en_o <= 0; wb_addr_o <= 0; wb_data_o <= 0;
+            wb_en_o <= 0; // wb_addr_o <= 0; wb_data_o <= 0;
         end
 
         else begin
@@ -77,21 +89,29 @@ module REG_ID_EXE #(
             else begin
                 
                 if (bubble) begin
+
+                    imm_o <= 0;
+                    rd_o <= 0;
+
                     // bubble : exe
                     rf_data_a_o <= 0;
                     bc_op_o <= `BC_OP_TRUE;
                     alu_op_o <= `ALU_OP_UNKNOWN;
                     alu_mux_a_ctr_o <= `ALU_MUX_A_ZERO;
                     alu_mux_b_ctr_o <= `ALU_MUX_B_ZERO;
+                    pc_mux_ctr_o <= `PC_MUX_INC;
 
                     // bubble : mem
-                    pc_addr_o <= 0; alu_out_o <= 0;
+                    pc_addr_o <= 0; // alu_out_o <= 0;
                     dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU;
                     rf_data_b_o <= 0;
                     
                     // bubble : wb
-                    wb_en_o <= 0; wb_addr_o <= 0; wb_data_o <= 0;
+                    wb_en_o <= 0; // wb_addr_o <= 0; wb_data_o <= 0;
                 end else begin
+
+                    imm_o <= imm_i;
+                    rd_o <= rd_i;
 
                     // normal : exe
                     rf_data_a_o <= rf_data_a_i;
@@ -99,10 +119,11 @@ module REG_ID_EXE #(
                     alu_op_o <= alu_op_i;
                     alu_mux_a_ctr_o <= alu_mux_a_ctr_i;
                     alu_mux_b_ctr_o <= alu_mux_b_ctr_i;
+                    pc_mux_ctr_o <= pc_mux_ctr_i;
 
                     // normal : mem
                     pc_addr_o <= pc_addr_i;
-                    alu_out_o <= alu_out_i;
+                    // alu_out_o <= alu_out_i;
                     dm_en_o <= dm_en_i;
                     dm_wen_o <= dm_wen_i;
                     dm_mux_ctr_o <= dm_mux_ctr_i;
@@ -110,8 +131,8 @@ module REG_ID_EXE #(
 
                     // normal : wb
                     wb_en_o <= wb_en_i;
-                    wb_addr_o <= wb_addr_i;
-                    wb_data_o <= wb_data_i;
+                    // wb_addr_o <= wb_addr_i;
+                    // wb_data_o <= wb_data_i;
                 end
 
             end

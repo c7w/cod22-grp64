@@ -5,7 +5,7 @@ module REG_MEM_WB #(
     input wire clk,
     input wire rst,
 
-    input wire stall, // freeze status
+    input wire bubble, // freeze status
 
     // MEM -> WB
     input wire wb_en_i, // write back enabled
@@ -25,14 +25,14 @@ module REG_MEM_WB #(
             wb_data_o <= 0;
         end
         else begin
-            if (~stall) begin
+            if (~bubble) begin
                 wb_en_o <= wb_en_i;
                 wb_addr_o <= wb_addr_i;
                 wb_data_o <= wb_data_i;
             end else begin
-                if (wb_en_o) begin
-                    wb_en_o <= ~wb_en_o;
-                end
+                wb_en_o <= 0;
+                wb_addr_o <= 0;
+                wb_data_o <= 0;
             end
         end
     end
