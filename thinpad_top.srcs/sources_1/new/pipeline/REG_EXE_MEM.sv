@@ -1,4 +1,4 @@
-module REG_MEM_WB #(
+module REG_EXE_MEM #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (

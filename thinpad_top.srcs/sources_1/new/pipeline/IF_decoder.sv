@@ -1,7 +1,7 @@
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
 
-module REG_IF_ID #(
+module IF_DECODER #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
