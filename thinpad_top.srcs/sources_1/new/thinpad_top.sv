@@ -224,13 +224,38 @@ module thinpad_top (
 
 
     // Controller
-    logic [3:0] CONTROLLER_stall,
-    logic [3:0] CONTROLLER_bubble,
+    logic [3:0] CONTROLLER_stall;
+    logic [3:0] CONTROLLER_bubble;
+    logic CONTROLLER_branching;
+    logic CONTROLLER_dm_ack;
+    logic CONTROLLER_bc_cond;  // TODO: add branching support
+
+    CONTROLLER_pipeline CONTROLLER_pipeline (
+        .dm_ack(CONTROLLER_dm_ack),
+        
+        .ID_rs1(ID_rs1),
+        .ID_rs2(ID_rs2),
+        .EXE_rd(EXE_rd),
+        .EXE_wb_en(EXE_wb_en),
+        .DM_rd(DM_rd),
+        .DM_wb_en(DM_wb_en),
+        .WB_rd(RF_waddr),
+        .WB_wb_en(RF_wen),
+
+        .bc_comp_result(CONTROLLER_bc_cond),
+        .EXE_pc_addr(EXE_pc_addr),
+        .EXE_pc_addr_calculated(alu_o),
+        .EXE_pc_addr_predicted(ID_pc_addr),
+        
+        .branching(CONTROLLER_branching),
+        .stall_o(CONTROLLER_stall),
+        .bubble_o(CONTROLLER_bubble)
+    );
 
     // IF
 
     logic [ADDR_WIDTH-1:0] IF_pc_addr;
-    logic [ADDR_WIDTH-1:0] IF_pc_nxt;
+    logic [ADDR_WIDTH-1:0] IF_pc_nxt, IF_pc_next_prediction;
     logic [DATA_WIDTH-1:0] IF_instr;
     logic [DATA_WIDTH-1:0] IF_imm;
     logic [4:0] IF_rs1, IF_rs2, IF_rd;
@@ -246,28 +271,28 @@ module thinpad_top (
     IF_pc pc (
         .clk (clk_10M),
         .rst (rst),
-        .stall(0),  // todo: add controller logic
+        .stall(CONTROLLER_stall[0]),
         .pc_nxt(IF_pc_nxt),
         .pc_addr(IF_pc_addr),  // output
-        .pc_nxt_prediction()  // todo: add branching prediction
+        .pc_nxt_prediction(IF_pc_next_prediction)  // todo: add branching prediction
     );
 
     IF_pc_mux pc_mux (
-        .pc_mux_ctr (`PC_MUX_INC), // todo: add support for branching
-        .pc_curr (IF_pc_addr),
-        .branch_addr (), // todo: add support for branching
-        .pc_nxt (IF_pc_nxt)  // output
+        .branching(CONTROLLER_branching),
+        .pc_predicted(IF_pc_next_prediction),
+        .branch_addr(alu_o),
+        .pc_nxt(IF_pc_nxt)
     );
 
     // wishbone master for IM
-    logic wbm_cyc_im,
-    logic wbm_stb_im,
-    logic wbm_ack_im,
-    logic [ADDR_WIDTH-1:0] wbm_adr_im,
-    logic [DATA_WIDTH-1:0] wbm_dat_m2s_im,  // master 2 slave
-    logic [DATA_WIDTH-1:0] wbm_dat_s2m_im,  // slave 2 master
-    logic [DATA_WIDTH/8-1:0] wbm_sel_im,
-    logic wbm_we_im
+    logic wbm_cyc_im;
+    logic wbm_stb_im;
+    logic wbm_ack_im;
+    logic [ADDR_WIDTH-1:0] wbm_adr_im;
+    logic [DATA_WIDTH-1:0] wbm_dat_m2s_im;  // master 2 slave
+    logic [DATA_WIDTH-1:0] wbm_dat_s2m_im;  // slave 2 master
+    logic [DATA_WIDTH/8-1:0] wbm_sel_im;
+    logic wbm_we_im;
 
     IF_im instr_fetcher (
         .clk(clk_50M),
@@ -461,13 +486,11 @@ module thinpad_top (
         .y(alu_o)
     );
 
-    logic BC_cond;  // TODO: add branching support
-
     EXE_branch_comp exe_branch_comp (
         .bc_op (EXE_bc_op),
         .data_a(EXE_data_a),
         .data_b(EXE_data_b),
-        .cond(BC_cond)
+        .cond(CONTROLLER_bc_cond)
     );
 
     logic [`DM_MUX_WIDTH-1:0] MEM_dm_mux_ctr;
@@ -509,14 +532,14 @@ module thinpad_top (
     logic [DATA_WIDTH-1:0] MEM_wb_data;
 
     // wishbone master for DM
-    logic wbm_cyc_dm,
-    logic wbm_stb_dm,
-    logic wbm_ack_dm,
-    logic [ADDR_WIDTH-1:0] wbm_adr_dm,
-    logic [DATA_WIDTH-1:0] wbm_dat_m2s_dm,  // master 2 slave
-    logic [DATA_WIDTH-1:0] wbm_dat_s2m_dm,  // slave 2 master
-    logic [DATA_WIDTH/8-1:0] wbm_sel_dm,
-    logic wbm_we_dm
+    logic wbm_cyc_dm;
+    logic wbm_stb_dm;
+    logic wbm_ack_dm;
+    logic [ADDR_WIDTH-1:0] wbm_adr_dm;
+    logic [DATA_WIDTH-1:0] wbm_dat_m2s_dm;  // master 2 slave
+    logic [DATA_WIDTH-1:0] wbm_dat_s2m_dm;  // slave 2 master
+    logic [DATA_WIDTH/8-1:0] wbm_sel_dm; // todo: add support for this
+    logic wbm_we_dm;
 
     MEM_dm data_fetcher (
         .clk (clk_50M),
@@ -525,7 +548,7 @@ module thinpad_top (
         .dm_en(MEM_dm_en),
         .dm_wen(MEM_dm_wen),
         .dm_addr(MEM_alu),
-        .dm_ack(), // TODO: ?
+        .dm_ack(CONTROLLER_dm_ack),
         .dm_data(MEM_dm),
 
         .wb_cyc_o(wbm_cyc_dm),

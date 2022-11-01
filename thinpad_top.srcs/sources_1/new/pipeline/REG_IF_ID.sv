@@ -71,7 +71,7 @@ module REG_IF_ID #(
 
             // bubble : exe
             // rf_data_a_o <= 0;
-            bc_op_o <= `BC_OP_TRUE;
+            bc_op_o <= `BC_OP_FALSE;
             alu_op_o <= `ALU_OP_UNKNOWN;
             alu_mux_a_ctr_o <= `ALU_MUX_A_ZERO;
             alu_mux_b_ctr_o <= `ALU_MUX_B_ZERO;
@@ -102,7 +102,7 @@ module REG_IF_ID #(
 
                     // bubble : exe
                     // rf_data_a_o <= 0;
-                    bc_op_o <= `BC_OP_TRUE;
+                    bc_op_o <= `BC_OP_FALSE;
                     alu_op_o <= `ALU_OP_UNKNOWN;
                     alu_mux_a_ctr_o <= `ALU_MUX_A_ZERO;
                     alu_mux_b_ctr_o <= `ALU_MUX_B_ZERO;

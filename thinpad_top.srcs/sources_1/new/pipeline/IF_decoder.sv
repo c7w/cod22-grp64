@@ -159,7 +159,7 @@ module REG_IF_ID #(
     // Decoding for control signals
     always_comb begin
         pc_mux_ctr = `PC_MUX_INC;
-        bc_op = `BC_OP_TRUE;
+        bc_op = `BC_OP_FALSE;
         alu_op = `ALU_OP_UNKNOWN; 
         alu_mux_a_ctr = `ALU_MUX_A_ZERO;  // zero
         alu_mux_b_ctr = `ALU_MUX_B_ZERO; // zero
