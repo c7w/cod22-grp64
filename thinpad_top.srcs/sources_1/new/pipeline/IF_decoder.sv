@@ -19,12 +19,12 @@ module IF_DECODER #(
     output logic [5:0] rs1,
     output logic [5:0] rs2,
     // control singals
-    output wire pc_mux_ctr,
+    output wire [`PC_MUX_WIDTH-1:0] pc_mux_ctr,
     output wire [`BC_OP_WIDTH-1:0] bc_op,
-    output wire [3:0] alu_op,
-    output wire alu_mux_a_ctr,
-    output wire alu_mux_b_ctr,
-    output wire dm_mux_ctr
+    output wire [`ALU_OP_WIDTH-1:0] alu_op,
+    output wire [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr,
+    output wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr,
+    output wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr
 );
 
     // Decode instr
@@ -252,7 +252,7 @@ module IF_DECODER #(
 
             OP_ADD: begin 
                 pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_AND;
+                alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
                 dm_mux_ctr_comb = `DM_MUX_ALU;

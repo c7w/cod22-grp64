@@ -17,7 +17,8 @@ module CONTROLLER_pipeline #(
     input wire bc_comp_result,
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr,
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr_calculated,  // ALU_out
-    input wire [ADDR_WIDTH-1:0] EXE_pc_addr_predicted, // ID_pc_addr
+    input wire [ADDR_WIDTH-1:0] ID_pc_addr, // ID_pc_addr
+    input wire [ADDR_WIDTH-1:0] IF_pc_addr, // ID_pc_addr
 
     output logic branching,
     output logic[3:0] stall_o,
@@ -52,7 +53,7 @@ module CONTROLLER_pipeline #(
         end
     end
 
-    assign branching = (pc_addr_right != EXE_pc_addr_predicted);
+    assign branching = (EXE_pc_addr != 0) && ~( ID_pc_addr == pc_addr_right || (ID_pc_addr == 0 && IF_pc_addr == pc_addr_right) );
 
     always_comb begin
         stall_o = 4'b0000;

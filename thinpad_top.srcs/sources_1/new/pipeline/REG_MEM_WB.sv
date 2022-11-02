@@ -17,7 +17,7 @@ module REG_MEM_WB #(
     output reg[DATA_WIDTH-1:0] wb_data_o
 );
 
-    always_ff @( clk ) begin : blockName
+    always_ff @( posedge clk ) begin : blockName
         if (rst) begin
             // NOP
             wb_en_o <= 0;

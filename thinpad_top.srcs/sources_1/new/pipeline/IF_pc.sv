@@ -15,7 +15,7 @@ module IF_pc (
         pc_nxt_prediction_comb = pc_addr + 4;
     end
 
-    always_ff @( clk ) begin
+    always_ff @( posedge clk ) begin
         if (rst) begin
             pc_addr <= 32'h80000000;
         end

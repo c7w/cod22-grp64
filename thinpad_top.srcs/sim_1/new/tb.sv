@@ -1,4 +1,10 @@
 `timescale 1ns / 1ps
+
+`default_nettype none
+//`include "../../sources_1/new/headers/ops.vh"
+//`include "../../sources_1/new/headers/ctrl.vh"
+//`include "../../sources_1/new/headers/branch_comp.vh"
+
 module tb;
 
   wire clk_50M, clk_11M0592;
@@ -46,32 +52,32 @@ module tb;
   wire uart_tsre;  // 数据发送完毕标志
 
   // Windows 需要注意路径分隔符的转义，例如 "D:\\foo\\bar.bin"
-  parameter BASE_RAM_INIT_FILE = "/tmp/main.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
+  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\lab6.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
   parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM 初始化文件，请修改为实际的绝对路径
   parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash 初始化文件，请修改为实际的绝对路径
 
   initial begin
     // 在这里可以自定义测试输入序列，例如：
-    dip_sw = 32'h2;
-    touch_btn = 0;
-    reset_btn = 0;
+//    dip_sw = 32'h2;
+//    touch_btn = 0;
+//    reset_btn = 0;
     push_btn = 0;
 
     #100;
     reset_btn = 1;
     #100;
     reset_btn = 0;
-    for (integer i = 0; i < 20; i = i + 1) begin
-      #100;  // 等待 100ns
-      push_btn = 1;  // 按下 push_btn 按钮
-      #100;  // 等待 100ns
-      push_btn = 0;  // 松开 push_btn 按钮
-    end
+//    for (integer i = 0; i < 20; i = i + 1) begin
+//      #100;  // 等待 100ns
+//      push_btn = 1;  // 按下 push_btn 按钮
+//      #100;  // 等待 100ns
+//      push_btn = 0;  // 松开 push_btn 按钮
+//    end
   
-    // 模拟 PC 通过直连串口，向 FPGA 发送字符
-    uart.pc_send_byte(8'h32); // ASCII '2'
-    #10000;
-    uart.pc_send_byte(8'h33); // ASCII '3'
+//    // 模拟 PC 通过直连串口，向 FPGA 发送字符
+//    uart.pc_send_byte(8'h32); // ASCII '2'
+//    #10000;
+//    uart.pc_send_byte(8'h33); // ASCII '3'
   end
 
   // 待测试用户设计
