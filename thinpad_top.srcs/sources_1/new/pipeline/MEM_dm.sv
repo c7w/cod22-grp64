@@ -29,7 +29,6 @@ module MEM_dm #(
 
     assign wbm_cyc_o = wbm_stb_o;
 
-
     // State
     typedef enum logic[3:0] { 
         STATE_IDLE,

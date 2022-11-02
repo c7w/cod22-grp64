@@ -16,6 +16,8 @@ module REG_EXE_MEM #(
     input wire [DATA_WIDTH-1:0] alu_out_i,
     input wire dm_en_i,
     input wire dm_wen_i,
+    input wire [2:0] dm_width_i,
+    input wire dm_sign_ext_i,
     input wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr_i,
     input wire [DATA_WIDTH-1:0] rf_data_b_i,
     
@@ -23,6 +25,8 @@ module REG_EXE_MEM #(
     output reg [DATA_WIDTH-1:0] alu_out_o,
     output reg dm_en_o,
     output reg dm_wen_o,
+    output reg [2:0] dm_width_o,
+    output reg dm_sign_ext_o,
     output reg [`DM_MUX_WIDTH-1:0] dm_mux_ctr_o,
     output reg [DATA_WIDTH-1:0] rf_data_b_o,
 
@@ -44,7 +48,9 @@ module REG_EXE_MEM #(
 
             // bubble : mem
             pc_addr_o <= 0; alu_out_o <= 0;
-            dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU; 
+            dm_en_o <= 0; dm_wen_o <= 0; 
+            dm_width_o <= 4; dm_sign_ext_o <= 1;
+            dm_mux_ctr_o <= `DM_MUX_ALU; 
             rf_data_b_o <= 0;
             
             // bubble : wb
@@ -63,6 +69,7 @@ module REG_EXE_MEM #(
 
                     // bubble
                     pc_addr_o <= 0; alu_out_o <= 0;
+                    dm_width_o <= 4; dm_sign_ext_o <= 1;
                     dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU; rf_data_b_o <= 0;
                     wb_en_o <= 0; // wb_addr_o <= 0; wb_data_o <= 0;
                 end else begin
@@ -74,6 +81,8 @@ module REG_EXE_MEM #(
                     alu_out_o <= alu_out_i;
                     dm_en_o <= dm_en_i;
                     dm_wen_o <= dm_wen_i;
+                    dm_width_o <= dm_width_i;
+                    dm_sign_ext_o <= dm_sign_ext_i;
                     dm_mux_ctr_o <= dm_mux_ctr_i;
                     rf_data_b_o <= rf_data_b_i;
                     wb_en_o <= wb_en_i;

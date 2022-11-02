@@ -12,6 +12,8 @@ module IF_DECODER #(
     output logic imm_en,  // immediate enabled
     output logic dm_en, // data memory enabled
     output logic dm_wen,  // data memory write enabled
+    output logic [2:0] dm_width,
+    output logic dm_sign_ext,
     output logic wb_en,  // write back enabled
     output logic [5:0] rd,
     output logic [5:0] rs1,
@@ -112,7 +114,9 @@ module IF_DECODER #(
     always_comb begin
         // Initial values
         imm = 32'h0; imm_en = 0; wb_en = 0;
-        dm_en = 0; dm_wen = 0;
+        dm_en = 0; dm_wen = 0; 
+        dm_width = 4; dm_sign_ext = 1;
+
         case (op_type)
             OP_LUI: begin
                 imm = {instr[31:12], 12'b0}; 
@@ -130,9 +134,16 @@ module IF_DECODER #(
                 imm = {sign_ext20[19:0], instr[31:20]}; 
                 imm_en = 1; wb_en = 1;
                 dm_en = 1; dm_wen = 0;  // Read memory
+                dm_width = 1;
             end
 
-            OP_SB, OP_SW: begin
+            OP_SB: begin
+                imm = {sign_ext20[19:0], instr[31:25], instr[11:7]}; 
+                imm_en = 1; wb_en = 0;
+                dm_en = 1; dm_wen = 1; dm_width = 1;
+            end
+
+            OP_SW: begin
                 imm = {sign_ext20[19:0], instr[31:25], instr[11:7]}; 
                 imm_en = 1; wb_en = 0;
                 dm_en = 1; dm_wen = 1;
@@ -152,6 +163,7 @@ module IF_DECODER #(
             default: begin
                 imm = 32'h0; imm_en = 0; 
                 wb_en = 0; dm_en = 0; dm_wen = 0;
+                dm_width = 4; dm_sign_ext = 1;
             end
         endcase
     end
