@@ -1,8 +1,8 @@
 module ALU(
-    input wire[15:0] a,
-    input wire[15:0] b,
+    input wire[31:0] a,
+    input wire[31:0] b,
     input wire[3:0] op,
-    output reg[15:0] y
+    output reg[31:0] y
 );
 
     integer i;
@@ -33,19 +33,19 @@ module ALU(
         end
         
         else if (op == 7) begin
-            y = a << (b & 15);
+            y = a << (b & 31);
         end
         
         else if (op == 8) begin
-           y = a >> (b & 15);
+           y = a >> (b & 31);
         end
         
         else if (op == 9) begin
-            y = signed'(a) >>> (b & 15);
+            y = signed'(a) >>> (b & 31);
         end
         
         else if (op == 10) begin
-          y =  32'hFFFF & (a << (b & 15)) | (a >> (16 - (b & 15)));
+          y =  32'hFFFF & (a << (b & 31)) | (a >> (32 - (b & 31)));
         end
         
         else begin

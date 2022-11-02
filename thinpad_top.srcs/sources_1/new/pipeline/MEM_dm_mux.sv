@@ -6,7 +6,7 @@ module MEM_dm_mux #(
     input wire [ADDR_WIDTH-1:0] dm_mux_pc_addr,
     input wire [DATA_WIDTH-1:0] dm_mux_alu,
     input wire [DATA_WIDTH-1:0] dm_mux_dm,
-    output wire [DATA_WIDTH-1:0] dm_mux_o
+    output logic [DATA_WIDTH-1:0] dm_mux_o
 );
 
     always_comb begin

@@ -5,7 +5,7 @@ module IF_pc_mux #(
     input wire branching,
     input wire [ADDR_WIDTH-1:0] pc_predicted,
     input wire [ADDR_WIDTH-1:0] branch_addr,
-    output wire [ADDR_WIDTH-1:0] pc_nxt
+    output logic [ADDR_WIDTH-1:0] pc_nxt
 );
 
     always_comb begin

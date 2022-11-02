@@ -4,10 +4,10 @@ module EXE_branch_comp #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-    input wire [BC_OP_WIDTH-1:0] bc_op,
+    input wire [`BC_OP_WIDTH-1:0] bc_op,
     input wire [DATA_WIDTH-1:0] data_a,
     input wire [DATA_WIDTH-1:0] data_b,
-    output wire cond
+    output logic cond
 );
 
     always_comb begin

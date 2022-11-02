@@ -2,7 +2,7 @@ module controller (
     input wire clk,
     input wire reset,
 
-    // Á¬½Ó¼Ä´æÆ÷¶ÑÄ£¿éµÄÐÅºÅ
+    // ï¿½ï¿½ï¿½Ó¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Åºï¿½
     output reg  [4:0]  rf_raddr_a,
     input  wire [15:0] rf_rdata_a,
     output reg  [4:0]  rf_raddr_b,
@@ -11,21 +11,21 @@ module controller (
     output reg  [15:0] rf_wdata,
     output reg  rf_we,
 
-    // Á¬½Ó ALU Ä£¿éµÄÐÅºÅ
+    // ï¿½ï¿½ï¿½ï¿½ ALU Ä£ï¿½ï¿½ï¿½ï¿½Åºï¿½
     output reg  [15:0] alu_a,
     output reg  [15:0] alu_b,
     output reg  [ 3:0] alu_op,
     input  wire [15:0] alu_y,
 
-    // ¿ØÖÆÐÅºÅ
-    input  wire        step,    // ÓÃ»§°´¼ü×´Ì¬Âö³å
-    input  wire [31:0] dip_sw,  // 32 Î»²¦Âë¿ª¹Ø×´Ì¬
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½
+    input  wire        step,    // ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+    input  wire [31:0] dip_sw,  // 32 Î»ï¿½ï¿½ï¿½ë¿ªï¿½ï¿½×´Ì¬
     output reg  [15:0] leds
 );
 
-  logic [31:0] inst_reg;  // Ö¸Áî¼Ä´æÆ÷
+  logic [31:0] inst_reg;  // Ö¸ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
 
-  // ×éºÏÂß¼­£¬½âÎöÖ¸ÁîÖÐµÄ³£ÓÃ²¿·Ö£¬ÒÀÀµÓÚÓÐÐ§µÄ inst_reg Öµ
+  // ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ÐµÄ³ï¿½ï¿½Ã²ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ inst_reg Öµ
   logic is_rtype, is_itype, is_peek, is_poke;
   logic [15:0] imm;
   logic [4:0] rd, rs1, rs2;
@@ -44,7 +44,7 @@ module controller (
     opcode = inst_reg[6:3];
   end
 
-  // Ê¹ÓÃÃ¶¾Ù¶¨Òå×´Ì¬ÁÐ±í£¬Êý¾ÝÀàÐÍÎª logic [3:0]
+  // Ê¹ï¿½ï¿½Ã¶ï¿½Ù¶ï¿½ï¿½ï¿½×´Ì¬ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª logic [3:0]
   typedef enum logic [3:0] {
     ST_INIT,
     ST_DECODE,
@@ -53,12 +53,12 @@ module controller (
     ST_WRITE_REG
   } state_t;
 
-  // ×´Ì¬»úµ±Ç°×´Ì¬¼Ä´æÆ÷
+  // ×´Ì¬ï¿½ï¿½ï¿½ï¿½Ç°×´Ì¬ï¿½Ä´ï¿½ï¿½ï¿½
   state_t state;
   
   reg[2:0] delay;
 
-  // ×´Ì¬»úÂß¼­
+  // ×´Ì¬ï¿½ï¿½ï¿½ß¼ï¿½
   always_ff @(posedge clk) begin
     if (reset) begin
         rf_raddr_a <= 0;
@@ -101,18 +101,18 @@ module controller (
         end
 
         ST_CALC: begin
-          // TODO: ½«Êý¾Ý½»¸ø ALU
+          // DontCare: ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ ALU
           if (delay == 0) begin
-              // ´ËÊ± RF ½öÓÐµØÖ·
+              // ï¿½ï¿½Ê± RF ï¿½ï¿½ï¿½Ðµï¿½Ö·
               delay <= 1;
           end else if (delay == 1) begin
-              // ´ËÊ±¿ÉÒÔÄÃµ½ RF µÄÊý¾Ý
+              // ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ RF ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
               alu_a <= rf_rdata_a;
               alu_b <= rf_rdata_b;
               alu_op <= opcode;
               delay <= 2;
           end else if (delay == 2) begin
-              // TODO: ²¢´Ó ALU »ñÈ¡½á¹û
+              // DontCare: ï¿½ï¿½ï¿½ï¿½ ALU ï¿½ï¿½È¡ï¿½ï¿½ï¿½
               inst_reg[31:16] <= alu_y;
               state <= ST_WRITE_REG;
               delay <= 0;

@@ -54,7 +54,7 @@ module sram_controller #(
     
     state_t state;
 
-  // TODO: ÊµÏÖ SRAM ¿ØÖÆÆ÷
+  // DontCare: Êµï¿½ï¿½ SRAM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   always @(posedge clk_i, posedge rst_i) begin
     if (rst_i) begin
         state <= STATE_IDLE;
@@ -73,7 +73,7 @@ module sram_controller #(
                 if(wb_we_i) begin
                     state <= STATE_WRITE;
                     sram_be_n <= ~wb_sel_i;
-                    sram_data_o_reg <= wb_dat_i;    // TODO: ???
+                    sram_data_o_reg <= wb_dat_i;    // DontCare: ???
                     sram_data_t_reg <= 0;
                 end else if (~wb_we_i) begin
                     state <= STATE_READ;
@@ -81,7 +81,7 @@ module sram_controller #(
                     sram_be_n <= 0; 
                     sram_data_t_reg <= 1;
                 end
-                sram_addr <= wb_adr_i >> 2;  // TODO: check if this is correct
+                sram_addr <= wb_adr_i >> 2;  // DontCare: check if this is correct
                 sram_ce_n <= 0;
 
               end else begin
@@ -95,7 +95,7 @@ module sram_controller #(
             end
             
             STATE_READ_2: begin
-                wb_dat_o <= sram_data_i;  // TODO: check if this is correct
+                wb_dat_o <= sram_data_i;  // DontCare: check if this is correct
                 wb_ack_o <= 1;
                 sram_ce_n <= 1;
                 sram_oe_n <= 1;

@@ -19,21 +19,25 @@ module CONTROLLER_pipeline #(
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr_calculated,  // ALU_out
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr_predicted, // ID_pc_addr
 
-    output wire branching,
-    output wire[3:0] stall_o,
-    output wire[3:0] bubble_o
+    output logic branching,
+    output logic[3:0] stall_o,
+    output logic[3:0] bubble_o
 );
 
-    wire is_write_EXE = EXE_wb_en && (EXE_rd != 0) && (EXE_rd == ID_rs1 || EXE_rd == ID_rs2);
-    wire is_write_DM = DM_wb_en && (DM_rd != 0) && (DM_rd == ID_rs1 || DM_rd == ID_rs2);
-    wire is_write_WB = WB_wb_en && (WB_rd != 0) && (WB_rd == ID_rs1 || WB_rd == ID_rs2);
+    wire is_write_EXE;
+    assign is_write_EXE = EXE_wb_en && (EXE_rd != 0) && (EXE_rd == ID_rs1 || EXE_rd == ID_rs2);
+    wire is_write_DM;
+    assign is_write_DM = DM_wb_en && (DM_rd != 0) && (DM_rd == ID_rs1 || DM_rd == ID_rs2);
+    wire is_write_WB;
+    assign is_write_WB = WB_wb_en && (WB_rd != 0) && (WB_rd == ID_rs1 || WB_rd == ID_rs2);
 
     wire stall_ID = is_write_EXE || is_write_DM || is_write_WB;
     
     // Stall the whole pipeline if DM is not responding
-    wire stall_DM = ~dm_ack;
+    wire stall_DM;
+    assign stall_DM = ~dm_ack;
 
-    wire [ADDR_WIDTH-1:0] pc_addr_right;
+    logic [ADDR_WIDTH-1:0] pc_addr_right;
 
     always_comb begin
         if (bc_comp_result) begin

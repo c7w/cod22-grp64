@@ -24,7 +24,7 @@ module REG_EXE_MEM #(
     output reg dm_en_o,
     output reg dm_wen_o,
     output reg [`DM_MUX_WIDTH-1:0] dm_mux_ctr_o,
-    output wire [DATA_WIDTH-1:0] rf_data_b_o,
+    output reg [DATA_WIDTH-1:0] rf_data_b_o,
 
 
     // MEM -> WB
