@@ -214,10 +214,11 @@ module thinpad_top #(
     logic [3:0] CONTROLLER_stall;
     logic [3:0] CONTROLLER_bubble;
     logic CONTROLLER_branching;
-    logic CONTROLLER_dm_ack;
     logic CONTROLLER_bc_cond;  // TODO: add branching support
+    logic CONTROLLER_im_ack, CONTROLLER_dm_ack
 
     CONTROLLER_pipeline CONTROLLER_pipeline (
+        .im_ack(CONTROLLER_im_ack),
         .dm_ack(CONTROLLER_dm_ack),
         
         .ID_rs1(ID_rs1),
@@ -286,8 +287,11 @@ module thinpad_top #(
     IF_im instr_fetcher (
         .clk(clk_50M),
         .rst(reset_of_clk10M),
+
         .pc_addr(IF_pc_addr),
         .instr(IF_instr),
+        .im_ack(CONTROLLER_im_ack),
+
         .wb_cyc_o(wbm_cyc_im),
         .wb_stb_o(wbm_stb_im),
         .wb_ack_i(wbm_ack_im),

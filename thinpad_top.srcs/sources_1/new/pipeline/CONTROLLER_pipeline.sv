@@ -2,7 +2,7 @@ module CONTROLLER_pipeline #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-
+    input wire im_ack,
     input wire dm_ack,
 
     input wire [4:0] ID_rs1,
@@ -37,6 +37,9 @@ module CONTROLLER_pipeline #(
     wire stall_DM;
     assign stall_DM = ~dm_ack;
 
+    wire stall_IM;
+    assign stall_IM = ~im_ack;
+
     logic [ADDR_WIDTH-1:0] pc_addr_right;
 
     always_comb begin
@@ -57,7 +60,12 @@ module CONTROLLER_pipeline #(
 
         if (stall_DM) begin
             stall_o = 4'b1111;
-            bubble_o = 0001;
+            bubble_o = 4'b0001;
+        end
+
+        else if (branching) begin
+            stall_o = 4'b0000;
+            bubble_o = 4'b1110; // Bubble 
         end
 
         else if (stall_ID) begin
@@ -65,10 +73,12 @@ module CONTROLLER_pipeline #(
             bubble_o = 4'b0100;
         end
 
-        else if (branching) begin
-            stall_o = 4'b0000;
-            bubble_o = 4'b1110; // Bubble 
+        else if (stall_IM) begin
+            stall_o = 4'b1000;
+            bubble_o = 4'b1000;
         end
+
+
 
     end
 
