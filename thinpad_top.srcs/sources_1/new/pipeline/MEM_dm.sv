@@ -102,7 +102,7 @@ module MEM_dm #(
         else begin 
             case (state)
                 STATE_IDLE: begin
-                    if (dm_en && (~same_request)) begin
+                    if (dm_en) begin
                         
                         // Cache request body for debouncing
                         addr_cached <= dm_addr;
