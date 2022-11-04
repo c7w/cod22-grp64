@@ -46,6 +46,8 @@ module MEM_dm #(
     assign same_request = (dm_en == dm_en_cached) && (dm_wen == dm_wen_cached) && (dm_sign_ext == dm_sign_ext_cached) && (dm_addr == addr_cached) && (dm_data_i == dat_i_cached) && (dm_width == width_cached);
 
     logic dm_ack_cache;
+
+    // TODO: May be buggy?
     assign dm_ack = ((wbm_ack_i || dm_ack_cache) && same_request) || ~dm_en;
 
     

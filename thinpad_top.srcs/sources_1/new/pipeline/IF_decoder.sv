@@ -40,6 +40,7 @@ module IF_DECODER #(
     assign funct7[6:0] = instr[31:25];
 
     typedef enum logic[7:0] { 
+        // Added in lab6
         OP_LUI,
         OP_BEQ,
         OP_LB,
@@ -49,6 +50,48 @@ module IF_DECODER #(
         OP_ANDI,
         OP_ADD,
         OP_NOP,
+
+        // Added in lab7
+        OP_SLTI,
+        OP_SLTIU,
+
+        OP_SLT,
+        OP_SLTU,
+
+        OP_SLLI,
+        OP_SRLI,
+        OP_SRAI,
+
+        OP_SLL,
+        OP_SRL,
+        OP_SRA,
+
+        OP_BNE,
+        OP_BLT,
+        OP_BGE,
+        OP_BLTU,
+        OP_BGEU,
+
+        OP_AUIPC,
+
+        OP_XORI,
+        OP_ORI,
+
+        OP_SUB,
+        OP_XOR,
+        OP_OR,
+        OP_AND,
+
+        OP_LH,
+        OP_LW,
+        OP_LBU,
+        OP_LHU,
+        
+        OP_SH,
+        
+        OP_JAL,
+        OP_JALR,
+
         OP_UNKNOWN
     } OP_Type;
     
@@ -68,6 +111,11 @@ module IF_DECODER #(
             7'b1100011: begin
                 case (funct3)
                     3'b000: op_type = OP_BEQ;
+                    3'b001: op_type = OP_BNE;
+                    3'b100: op_type = OP_BLT;
+                    3'b101: op_type = OP_BGE;
+                    3'b110: op_type = OP_BLTU;
+                    3'b111: op_type = OP_BGEU;
                 endcase
             end
 
@@ -75,6 +123,11 @@ module IF_DECODER #(
             7'b0000011: begin
                 case (funct3) 
                     3'b000: op_type = OP_LB;
+                    3'b100: op_type = OP_LBU;
+                    3'b001: op_type = OP_LH;
+                    3'b101: op_type = OP_LHU;
+                    3'b010: op_type = OP_LW;
+
                 endcase
             end
 
@@ -83,6 +136,7 @@ module IF_DECODER #(
                 case (funct3) 
                     3'b000: op_type = OP_SB;
                     3'b010: op_type = OP_SW;
+                    3'b001: op_type = OP_SH;
                 endcase
             end
 
@@ -91,17 +145,60 @@ module IF_DECODER #(
                 case (funct3) 
                     3'b000: op_type = OP_ADDI;
                     3'b111: op_type = OP_ANDI;
+
+                    3'b010: op_type = OP_SLTI;
+                    3'b011: op_type = OP_SLTIU;
+
+                    3'b001: op_type = OP_SLLI;
+                    3'b101: begin
+                        if (instr[31:27] == 5'b00000) begin
+                            op_type = OP_SRLI;
+                        end
+
+                        else if (instr[31:27] == 5'b01000) begin
+                            op_type = OP_SRAI;
+                        end
+                    end
+
+                    3'b100: op_type = OP_XORI;
+                    3'b110: op_type = OP_ORI;
                 endcase
             end
 
             // R Type
             7'b0110011: begin
                 case ({funct7, funct3}) 
-                    10'b0000000: op_type = OP_ADD;
+                    10'b0000000000: op_type = OP_ADD;
+                    10'b0000000010: op_type = OP_SLT;
+                    10'b0000000011: op_type = OP_SLTU;
+                    10'b0000000001: op_type = OP_SLL;
+                    10'b0000000101: op_type = OP_SRL;
+                    10'b0100000101: op_type = OP_SRA;
+                    10'b0100000000: op_type = OP_SUB;
+                    10'b0000000100: op_type = OP_XOR;
+                    10'b0000000110: op_type = OP_OR;
+                    10'b0000000111: op_type = OP_AND;
+
                 endcase
             end
 
-            default: begin end
+            // AUIPC
+            7'b0010111: begin
+                op_type = OP_AUIPC;
+            end
+
+            // jal
+            7'b1101111: begin
+                op_type = OP_JAL;
+            end
+
+            7'b1100111: begin
+                op_type = OP_JALR;
+            end
+
+            default: begin 
+                op_type = OP_UNKNOWN;
+            end
         endcase
     end
 
