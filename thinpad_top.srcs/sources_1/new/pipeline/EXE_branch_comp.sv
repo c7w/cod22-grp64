@@ -37,6 +37,10 @@ module EXE_branch_comp #(
                 cond = data_a != data_b;
             end
 
+            `BC_OP_TRUE: begin
+                cond = 1'b1;
+            end
+
         endcase
     end
 

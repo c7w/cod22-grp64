@@ -298,7 +298,7 @@ module IF_DECODER #(
 
             
             OP_JAL: begin
-                imm = {sign_ext20[11:0], instr[31], instr[19:12], instr[20], instr[30:21]}; imm_en = 1;
+                imm = {sign_ext20[10:0], instr[31], instr[19:12], instr[20], instr[30:21], 1'b0}; imm_en = 1;
                 wb_en = 1; dm_en = 0; dm_wen = 0;
             end
 
@@ -316,12 +316,12 @@ module IF_DECODER #(
         endcase
     end
     
-    logic pc_mux_ctr_comb;
+    logic [`PC_MUX_WIDTH-1:0] pc_mux_ctr_comb;
     logic [`BC_OP_WIDTH-1:0] bc_op_comb;
     logic [3:0] alu_op_comb;
-    logic alu_mux_a_ctr_comb;
-    logic alu_mux_b_ctr_comb;
-    logic dm_mux_ctr_comb;
+    logic [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_comb;
+    logic [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_comb;
+    logic [`DM_MUX_WIDTH-1:0] dm_mux_ctr_comb;
     
     assign pc_mux_ctr = pc_mux_ctr_comb;
     assign bc_op = bc_op_comb;
@@ -419,7 +419,7 @@ module IF_DECODER #(
 
             OP_SLTI, OP_SLTIU, OP_SLT, OP_SLTU: begin
                 pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_UNKNOWN;
+                alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_BC_RESULT;
                 dm_mux_ctr_comb = `DM_MUX_ALU;
@@ -476,6 +476,7 @@ module IF_DECODER #(
                 alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_PC_INC;
                 alu_op_comb = `ALU_OP_ADD;
+                bc_op_comb = `BC_OP_TRUE;
             end
 
             OP_JALR: begin
@@ -484,6 +485,7 @@ module IF_DECODER #(
                 alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_PC_INC;
                 alu_op_comb = `ALU_OP_ADD;
+                bc_op_comb = `BC_OP_TRUE;
             end
 
         endcase

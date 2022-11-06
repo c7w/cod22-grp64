@@ -329,7 +329,7 @@ module thinpad_top #(
     IF_DECODER instr_decoder(
         .instr(IF_instr),
         .imm(IF_imm),
-        .imm_en(ID_imm_en),
+        .imm_en(IF_imm_en),
         .dm_en(IF_dm_en),
         .dm_wen(IF_dm_wen),
         .dm_width(IF_dm_width),
@@ -520,7 +520,7 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] bc_data_b;
     always_comb begin
         bc_data_b = EXE_data_b;
-        if (EXE_imm_en) begin  // set less than immediate
+        if (EXE_imm_en && EXE_pc_mux_ctr == `PC_MUX_INC && EXE_ALU_mux_b_ctr == `ALU_MUX_B_BC_RESULT) begin  // set less than immediate
             bc_data_b = EXE_imm;
         end
     end

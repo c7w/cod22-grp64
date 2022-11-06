@@ -70,7 +70,7 @@ module CONTROLLER_pipeline #(
 
         else if (branching) begin
             stall_o = 4'b0000;
-            bubble_o = 4'b1110; // Bubble 
+            bubble_o = 4'b1100; // Bubble 
         end
 
         else if (stall_ID) begin
