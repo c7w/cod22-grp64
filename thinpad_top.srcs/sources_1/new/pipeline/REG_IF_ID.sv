@@ -18,11 +18,13 @@ module REG_IF_ID #(
     input wire[4:0] rs2_i,
     input wire[4:0] rd_i,
     input wire[DATA_WIDTH-1:0] imm_i,
+    input wire imm_en_i,
     
     output reg[4:0] rs1_o,
     output reg[4:0] rs2_o,
     output reg[4:0] rd_o,
     output reg[DATA_WIDTH-1:0] imm_o,
+    output reg imm_en_o,
     
 
     // ID -> EXE
@@ -76,6 +78,7 @@ module REG_IF_ID #(
         if (rst) begin
             // bubble : id
             rs1_o <= 0; rs2_o <= 0; rd_o <= 0; imm_o <= 0;
+            imm_en_o <= 0;
 
             // bubble : exe
             // rf_data_a_o <= 0;
@@ -108,6 +111,7 @@ module REG_IF_ID #(
 
                     // bubble : id
                     rs1_o <= 0; rs2_o <= 0; rd_o <= 0; imm_o <= 0;
+                    imm_en_o <= 0;
 
                     // bubble : exe
                     // rf_data_a_o <= 0;
@@ -130,6 +134,7 @@ module REG_IF_ID #(
                     // normal : id
                     rs1_o <= rs1_i; rs2_o <= rs2_i;
                     rd_o <= rd_i; imm_o <= imm_i;
+                    imm_en_o <= imm_en_i;
 
                     // normal : exe
                     // rf_data_a_o <= rf_data_a_i;

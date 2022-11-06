@@ -1,3 +1,6 @@
+`include "../headers/ctrl.vh"
+`include "../headers/branch_comp.vh"
+
 module CONTROLLER_pipeline #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -16,6 +19,7 @@ module CONTROLLER_pipeline #(
 
     input wire bc_comp_result,
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr,
+    input wire [`PC_MUX_WIDTH-1:0] EXE_pc_mux_ctr,
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr_calculated,  // ALU_out
     input wire [ADDR_WIDTH-1:0] ID_pc_addr, // ID_pc_addr
     input wire [ADDR_WIDTH-1:0] IF_pc_addr, // ID_pc_addr
@@ -44,7 +48,7 @@ module CONTROLLER_pipeline #(
     logic [ADDR_WIDTH-1:0] pc_addr_right;
 
     always_comb begin
-        if (bc_comp_result) begin
+        if ((EXE_pc_mux_ctr == `PC_MUX_BRANCH) && bc_comp_result) begin
             pc_addr_right = EXE_pc_addr_calculated;
         end
 

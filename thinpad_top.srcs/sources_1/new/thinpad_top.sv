@@ -220,7 +220,7 @@ module thinpad_top #(
     logic [3:0] CONTROLLER_stall;
     logic [3:0] CONTROLLER_bubble;
     logic CONTROLLER_branching;
-    logic CONTROLLER_bc_cond;  // TODO: add branching support
+    logic CONTROLLER_bc_cond;
     logic CONTROLLER_im_ack, CONTROLLER_dm_ack;
 
     CONTROLLER_pipeline CONTROLLER_pipeline (
@@ -238,7 +238,8 @@ module thinpad_top #(
 
         .bc_comp_result(CONTROLLER_bc_cond),
         .EXE_pc_addr(EXE_pc_addr),
-        .EXE_pc_addr_calculated(alu_o),
+        .EXE_pc_mux_ctr(EXE_pc_mux_ctr),
+        .EXE_pc_addr_calculated(alu_o_branch),
         .ID_pc_addr(ID_pc_addr),
         .IF_pc_addr(IF_pc_addr),
         
@@ -253,6 +254,7 @@ module thinpad_top #(
     logic [ADDR_WIDTH-1:0] IF_pc_nxt, IF_pc_next_prediction;
     logic [DATA_WIDTH-1:0] IF_instr;
     logic [DATA_WIDTH-1:0] IF_imm;
+    logic IF_imm_en;
     logic [4:0] IF_rs1, IF_rs2, IF_rd;
     logic [`PC_MUX_WIDTH-1:0] IF_pc_mux_ctr;
     logic [`BC_OP_WIDTH-1:0] IF_BC_op;
@@ -277,7 +279,7 @@ module thinpad_top #(
     IF_pc_mux pc_mux (
         .branching(CONTROLLER_branching),
         .pc_predicted(IF_pc_next_prediction),
-        .branch_addr(alu_o),
+        .branch_addr(alu_o_branch),
         .pc_nxt(IF_pc_nxt)
     );
 
@@ -312,6 +314,7 @@ module thinpad_top #(
 
     logic [ADDR_WIDTH-1:0] ID_pc_addr;
     logic [DATA_WIDTH-1:0] ID_imm;
+    logic ID_imm_en;
     logic [4:0] ID_rs1, ID_rs2, ID_rd;
     logic [`PC_MUX_WIDTH-1:0] ID_pc_mux_ctr;
     logic [`BC_OP_WIDTH-1:0] ID_BC_op;
@@ -326,7 +329,7 @@ module thinpad_top #(
     IF_DECODER instr_decoder(
         .instr(IF_instr),
         .imm(IF_imm),
-        .imm_en(),  // not used
+        .imm_en(ID_imm_en),
         .dm_en(IF_dm_en),
         .dm_wen(IF_dm_wen),
         .dm_width(IF_dm_width),
@@ -354,11 +357,13 @@ module thinpad_top #(
         .rs2_i(IF_rs2),
         .rd_i(IF_rd),
         .imm_i(IF_imm),
+        .imm_en_i(IF_imm_en),
         
         .rs1_o(ID_rs1),
         .rs2_o(ID_rs2),
         .rd_o(ID_rd),
         .imm_o(ID_imm),
+        .imm_en_o(ID_imm_en),
 
         // ID -> EXE
         .bc_op_i(IF_BC_op),
@@ -415,6 +420,7 @@ module thinpad_top #(
     );
 
     logic [DATA_WIDTH-1:0] EXE_data_a, EXE_data_b, EXE_imm;
+    logic EXE_imm_en;
     logic [`BC_OP_WIDTH-1:0] EXE_bc_op;
     logic [`ALU_OP_WIDTH-1:0] EXE_ALU_op;
     logic [`ALU_MUX_A_WIDTH-1:0] EXE_ALU_mux_a_ctr;
@@ -436,8 +442,10 @@ module thinpad_top #(
         .bubble(CONTROLLER_bubble[2]),
 
         .imm_i(ID_imm),
+        .imm_en_i(ID_imm_en),
         .rd_i(ID_rd),
         .imm_o(EXE_imm),
+        .imm_en_o(EXE_imm_en),
         .rd_o(EXE_rd),
 
         .rf_data_a_i(RF_data_a),
@@ -478,6 +486,14 @@ module thinpad_top #(
 
     
     logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_o;
+    logic [DATA_WIDTH-1:0] alu_o_branch;
+
+    always_comb begin
+        alu_o_branch = alu_o;
+        if (EXE_dm_en == 0 && EXE_dm_wen == 1) begin  // JALR
+            alu_o_branch = alu_o & (~32'h1);
+        end
+    end
 
     EXE_alu_mux_a exe_alu_mux_a (
         .alu_mux_a_ctr_i(EXE_ALU_mux_a_ctr),
@@ -490,6 +506,7 @@ module thinpad_top #(
         .alu_mux_b_ctr_i(EXE_ALU_mux_b_ctr),
         .alu_mux_b_data(EXE_data_b),
         .alu_mux_b_imm(EXE_imm),
+        .alu_mux_b_bc_result(CONTROLLER_bc_cond),
         .alu_mux_b_o(alu_b)
     );
 
@@ -500,10 +517,18 @@ module thinpad_top #(
         .y(alu_o)
     );
 
+    logic [DATA_WIDTH-1:0] bc_data_b;
+    always_comb begin
+        bc_data_b = EXE_data_b;
+        if (EXE_imm_en) begin  // set less than immediate
+            bc_data_b = EXE_imm;
+        end
+    end
+
     EXE_branch_comp exe_branch_comp (
         .bc_op (EXE_bc_op),
         .data_a(EXE_data_a),
-        .data_b(EXE_data_b),
+        .data_b(bc_data_b),
         .cond(CONTROLLER_bc_cond)
     );
 
@@ -559,7 +584,7 @@ module thinpad_top #(
     logic [ADDR_WIDTH-1:0] wbm_adr_dm;
     logic [DATA_WIDTH-1:0] wbm_dat_m2s_dm;  // master 2 slave
     logic [DATA_WIDTH-1:0] wbm_dat_s2m_dm;  // slave 2 master
-    logic [DATA_WIDTH/8-1:0] wbm_sel_dm; // todo: add support for this
+    logic [DATA_WIDTH/8-1:0] wbm_sel_dm; 
     logic wbm_we_dm;
 
     MEM_dm data_fetcher (

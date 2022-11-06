@@ -221,41 +221,92 @@ module IF_DECODER #(
                 dm_en = 0; dm_wen = 0;
             end
 
-            OP_BEQ: begin
+            OP_BEQ, OP_BNE, OP_BLT, OP_BGE, OP_BLTU, OP_BGEU: begin
                 imm = {sign_ext20[18:0], instr[31], instr[7], instr[30:25], instr[11:8], 1'b0};
                 imm_en = 1; wb_en = 0;
                 dm_en = 0; dm_wen = 0;
             end
 
-            OP_LB: begin
+            OP_LB, OP_LH, OP_LW, OP_LBU, OP_LHU: begin
                 imm = {sign_ext20[19:0], instr[31:20]}; 
                 imm_en = 1; wb_en = 1;
                 dm_en = 1; dm_wen = 0;  // Read memory
-                dm_width = 1;
+                case (op_type) 
+                    OP_LB: begin
+                        dm_width = 1; dm_sign_ext = 1;
+                    end
+                    OP_LH: begin
+                        dm_width = 2; dm_sign_ext = 1;
+                    end
+                    OP_LW: begin
+                        dm_width = 4; dm_sign_ext = 1;
+                    end
+                    OP_LBU: begin
+                        dm_width = 1; dm_sign_ext = 0;
+                    end
+                    OP_LHU: begin
+                        dm_width = 2; dm_sign_ext = 0;
+                    end
+                endcase
             end
 
-            OP_SB: begin
+            OP_SB, OP_SH, OP_SW: begin
                 imm = {sign_ext20[19:0], instr[31:25], instr[11:7]}; 
                 imm_en = 1; wb_en = 0;
-                dm_en = 1; dm_wen = 1; dm_width = 1;
+                dm_en = 1; dm_wen = 1; 
+                case (op_type) 
+                    OP_SB: dm_width = 1;
+                    OP_SH: dm_width = 2;
+                    OP_SW: dm_width = 4;
+                endcase    
             end
 
-            OP_SW: begin
-                imm = {sign_ext20[19:0], instr[31:25], instr[11:7]}; 
-                imm_en = 1; wb_en = 0;
-                dm_en = 1; dm_wen = 1;
-            end
-
-            OP_ADDI, OP_ANDI: begin
+            OP_ADDI, OP_ANDI, OP_XORI, OP_ORI: begin
                 imm = {sign_ext20[19:0], instr[31:20]}; 
                 imm_en = 1; wb_en = 1;
                 dm_en = 0; dm_wen = 0;
             end
 
-            OP_ADD: begin
+            OP_ADD, OP_SUB, OP_XOR, OP_OR, OP_AND: begin
                 imm = 32'h0; imm_en = 0; wb_en = 1;
                 dm_en = 0; dm_wen = 0;
             end
+
+
+
+            OP_SLTI, OP_SLTIU: begin
+                imm = {sign_ext20[19:0], instr[31:20]}; 
+                imm_en = 1; wb_en = 1;
+                dm_en = 0; dm_wen = 0;
+            end
+
+            OP_SLT, OP_SLTU, OP_SLL, OP_SRL, OP_SRA: begin
+                imm = 32'h0; imm_en = 0; wb_en = 1;
+                dm_en = 0; dm_wen = 0;
+            end
+
+            OP_SLLI, OP_SRLI, OP_SRAI: begin
+                imm = {27'b0, rs2}; imm_en = 1; wb_en = 1;
+                dm_en = 0; dm_wen = 0;
+            end
+
+
+            OP_AUIPC: begin
+                imm = {instr[31:12], 12'b0}; imm_en = 1; wb_en = 1;
+                dm_en = 0; dm_wen = 0;
+            end
+
+            
+            OP_JAL: begin
+                imm = {sign_ext20[11:0], instr[31], instr[19:12], instr[20], instr[30:21]}; imm_en = 1;
+                wb_en = 1; dm_en = 0; dm_wen = 0;
+            end
+
+            OP_JALR: begin
+                imm = {sign_ext20[19:0], instr[31:20]}; imm_en = 1;
+                wb_en = 1; dm_en = 0; dm_wen = 1;  // use this to specify JALR
+            end
+
 
             default: begin
                 imm = 32'h0; imm_en = 0; 
@@ -297,17 +348,25 @@ module IF_DECODER #(
                 dm_mux_ctr_comb = `DM_MUX_ALU;
             end
 
-            OP_BEQ: begin
+            OP_BEQ, OP_BNE, OP_BLT, OP_BGE, OP_BLTU, OP_BGEU: begin
                 pc_mux_ctr_comb = `PC_MUX_BRANCH;  // Branch if bc_comp output is 1
                 alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_PC;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_ALU;
-                bc_op_comb = `BC_OP_EQU;
+
+                case (op_type)
+                    OP_BEQ: bc_op_comb = `BC_OP_EQU;
+                    OP_BNE: bc_op_comb = `BC_OP_NEQ;
+                    OP_BLT: bc_op_comb = `BC_OP_LT;
+                    OP_BGE: bc_op_comb = `BC_OP_GE;
+                    OP_BLTU: bc_op_comb = `BC_OP_LTU;
+                    OP_BGEU: bc_op_comb = `BC_OP_GEU;
+                endcase
             end
 
 
-            OP_LB: begin 
+            OP_LB, OP_LH, OP_LW, OP_LBU, OP_LHU: begin
                 pc_mux_ctr_comb = `PC_MUX_INC;
                 alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
@@ -315,7 +374,7 @@ module IF_DECODER #(
                 dm_mux_ctr_comb = `DM_MUX_MEM;
             end
 
-            OP_SB : begin 
+            OP_SB, OP_SH, OP_SW : begin 
                 pc_mux_ctr_comb = `PC_MUX_INC;
                 alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
@@ -323,36 +382,31 @@ module IF_DECODER #(
                 dm_mux_ctr_comb = `DM_MUX_MEM;
             end
 
-            OP_SW: begin 
+            OP_ADDI, OP_ANDI, OP_XORI, OP_ORI: begin 
                 pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_ADD;
-                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
-                dm_mux_ctr_comb = `DM_MUX_MEM;
-            end
-
-            OP_ADDI: begin 
-                pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_ALU;
+                case(op_type) 
+                    OP_ADDI: alu_op_comb = `ALU_OP_ADD;
+                    OP_ANDI: alu_op_comb = `ALU_OP_AND;
+                    OP_XORI: alu_op_comb = `ALU_OP_XOR;
+                    OP_ORI: alu_op_comb = `ALU_OP_OR;
+                endcase
             end
 
-            OP_ANDI: begin 
+            OP_ADD, OP_SUB, OP_XOR, OP_OR, OP_AND: begin 
                 pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_AND;
-                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
-                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
-                dm_mux_ctr_comb = `DM_MUX_ALU;
-            end
-
-            OP_ADD: begin 
-                pc_mux_ctr_comb = `PC_MUX_INC;
-                alu_op_comb = `ALU_OP_ADD;
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
                 dm_mux_ctr_comb = `DM_MUX_ALU;
+                case (op_type) 
+                    OP_ADD: alu_op_comb = `ALU_OP_ADD;
+                    OP_SUB: alu_op_comb = `ALU_OP_SUB;
+                    OP_XOR: alu_op_comb = `ALU_OP_XOR;
+                    OP_OR: alu_op_comb = `ALU_OP_OR;
+                    OP_AND: alu_op_comb = `ALU_OP_AND;
+                endcase
             end
 
             OP_NOP: begin 
@@ -361,6 +415,75 @@ module IF_DECODER #(
                 alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
                 dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
+
+            OP_SLTI, OP_SLTIU, OP_SLT, OP_SLTU: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_op_comb = `ALU_OP_UNKNOWN;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_BC_RESULT;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+
+                if (op_type == OP_SLTI || op_type == OP_SLT) begin
+                    bc_op_comb = `BC_OP_LT;
+                end else begin
+                    bc_op_comb = `BC_OP_LTU;
+                end
+
+            end
+
+            OP_SLLI, OP_SRLI, OP_SRAI: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+
+                if (op_type == OP_SLLI) begin
+                    alu_op_comb = `ALU_OP_SLL;
+                end else if (op_type == OP_SRLI) begin
+                    alu_op_comb = `ALU_OP_SLR;
+                end else if (op_type == OP_SRAI) begin
+                    alu_op_comb = `ALU_OP_SAR;
+                end
+            end
+            
+            OP_SLL, OP_SRL, OP_SRA: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_DATA;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+
+                if (op_type == OP_SLL) begin
+                    alu_op_comb = `ALU_OP_SLL;
+                end else if (op_type == OP_SRL) begin
+                    alu_op_comb = `ALU_OP_SLR;
+                end else if (op_type == OP_SRA) begin
+                    alu_op_comb = `ALU_OP_SAR;
+                end
+            end
+
+            OP_AUIPC: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_PC;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+                alu_op_comb = `ALU_OP_ADD;
+            end
+
+            OP_JAL: begin
+                pc_mux_ctr_comb = `PC_MUX_BRANCH;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_PC;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_PC_INC;
+                alu_op_comb = `ALU_OP_ADD;
+            end
+
+            OP_JALR: begin
+                pc_mux_ctr_comb = `PC_MUX_BRANCH;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_DATA;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
+                dm_mux_ctr_comb = `DM_MUX_PC_INC;
+                alu_op_comb = `ALU_OP_ADD;
             end
 
         endcase
