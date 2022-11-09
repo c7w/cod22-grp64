@@ -4,16 +4,39 @@ module RegisterFile(
     input wire[4:0] waddr,
     input wire[31:0] wdata,
     input wire wen,
+    
+    // Read
     input wire[4:0] raddr_a,
-    output wire[31:0] rdata_a,
+    output logic[31:0] rdata_a,
     input wire[4:0] raddr_b,
-    output wire[31:0] rdata_b
+    output logic[31:0] rdata_b,
+    input wire [4:0] raddr_csr,  // TODO: implement this in top module
+    output logic[31:0] rdata_csr
 );
 
     reg [31:0] data [0:31];
 
-    assign rdata_a = data[raddr_a];
-    assign rdata_b = data[raddr_b];
+    // Bypassing when reading
+    // TODO: add bypassing wires from ALU stage and DM stage
+    always_comb begin
+        if (raddr_a == waddr && wen) begin
+            rdata_a = wdata;
+        end else begin
+            rdata_a = data[raddr_a];
+        end
+        if (raddr_b == waddr && wen) begin
+            rdata_b = wdata;
+        end else begin
+            rdata_b = data[raddr_b];
+        end
+        if (raddr_csr == waddr && wen) begin
+            rdata_csr = wdata;
+        end else begin
+            rdata_csr = data[raddr_csr];
+        end
+
+    end
+
 
     always @(posedge clk, posedge rst) begin
         if (rst) begin

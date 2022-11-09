@@ -8,6 +8,7 @@ module EXE_alu_mux_a #(
 ) (
     input wire[`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_i,
     input wire [DATA_WIDTH-1:0] alu_mux_a_data,
+    input wire [DATA_WIDTH-1:0] alu_mux_a_csr, // todo: implement this in top module
     input wire [ADDR_WIDTH-1:0] alu_mux_a_pc,
     output logic [DATA_WIDTH-1:0] alu_mux_a_o
 );
@@ -22,6 +23,10 @@ module EXE_alu_mux_a #(
 
             `ALU_MUX_A_PC: begin
                 alu_mux_a_o = alu_mux_a_pc;
+            end
+
+            `ALU_MUX_A_CSR: begin
+                alu_mux_a_o = alu_mux_a_csr;
             end
         endcase
 

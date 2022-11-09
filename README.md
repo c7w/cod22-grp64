@@ -1,7 +1,26 @@
-Thinpad 模板工程
----------------
+## blabla
 
-工程包含示例代码和所有引脚约束，可以直接编译。
+[X] 基本流水线
 
-代码中包含中文注释，编码为utf-8，在Windows版Vivado下可能出现乱码问题。  
-请用别的代码编辑器打开文件，并将编码改为GBK。
+[ ] 数据旁路
+
+[ ] 异常中断、S 态
+
+[ ] 虚存
+
+[ ] RV32I
+
+[ ] 分支预测
+
+[ ] VGA
+
+
+
+## TODO
+
+实现 csr 相关指令。使用 trivial 的实现方法：当decode到 7'b1110011 时，流水线暂时退化成多周期（PC stall，IF-ID 插 bubble），跑完这条指令再恢复，以支持“原子操作”
+
+ID->EXE (csr_addr, csr_opcode)
+
+CSR_transition(AllCSRs, csr_addr,  x[rs1], imm, csr_opcode; selected_val)
+

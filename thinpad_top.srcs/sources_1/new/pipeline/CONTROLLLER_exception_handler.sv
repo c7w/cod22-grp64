@@ -1,4 +1,4 @@
-// csrs = ['mtvec', 'mscratch', 'mepc', 'mcause', 'mstatus', 'mie', 'mip', 'mtval', 'mideleg', 'medeleg', 'satp', 'sepc', 'scause', 'stval', 'stvec', 'sscratch']
+// csrs = ['priviledge_mode', 'mtvec', 'mscratch', 'mepc', 'mcause', 'mstatus', 'mie', 'mip', 'mtval', 'mideleg', 'medeleg', 'satp', 'sepc', 'scause', 'stval', 'stvec', 'sscratch']
 
 module CONTROLLER_exception_handler #(
     parameter ADDR_WIDTH = 32,
@@ -43,7 +43,8 @@ module CONTROLLER_exception_handler #(
     input wire [31:0] stvec_i,
     input wire [31:0] sscratch_i,
 
-    output [1:0] priviledge_mode_o,
+    // To IF_decoder: bypassing enabled
+    output logic [1:0] priviledge_mode_o,
     output mtvec_t mtvec_o,
     output mscratch_t mscratch_o,
     output mepc_t mepc_o,
@@ -59,27 +60,27 @@ module CONTROLLER_exception_handler #(
     output scause_t scause_o,
     output stval_t stval_o,
     output stvec_t stvec_o,
-    output sscratch_t sscratch_o
-);
+    output sscratch_t sscratch_o,
 
-    // internal registers
-    reg [1:0] priviledge_mode_reg;
-    mtvec_t mtvec_reg;
-    mscratch_t mscratch_reg;
-    mepc_t mepc_reg;
-    mcause_t mcause_reg;
-    mstatus_t mstatus_reg;
-    mie_t mie_reg;
-    mip_t mip_reg;
-    mtval_t mtval_reg;
-    mideleg_t mideleg_reg;
-    medeleg_t medeleg_reg;
-    satp_t satp_reg;
-    sepc_t sepc_reg;
-    scause_t scause_reg;
-    stval_t stval_reg;
-    stvec_t stvec_reg;
-    sscratch_t sscratch_reg;
+    // To ID CSR Transfer: stable
+    output logic [1:0] priviledge_mode_reg,
+    output mtvec_t mtvec_reg,
+    output mscratch_t mscratch_reg,
+    output mepc_t mepc_reg,
+    output mcause_t mcause_reg,
+    output mstatus_t mstatus_reg,
+    output mie_t mie_reg,
+    output mip_t mip_reg,
+    output mtval_t mtval_reg,
+    output mideleg_t mideleg_reg,
+    output medeleg_t medeleg_reg,
+    output satp_t satp_reg,
+    output sepc_t sepc_reg,
+    output scause_t scause_reg,
+    output stval_t stval_reg,
+    output stvec_t stvec_reg,
+    output sscratch_t sscratch_reg
+);
 
     always_ff @( posedge clk ) begin
 

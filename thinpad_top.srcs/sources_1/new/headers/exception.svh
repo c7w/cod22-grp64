@@ -7,6 +7,8 @@
 // Ref: https://www.five-embeddev.com/quickref/csrs.html
 
 /* Start: Definition of CSRs */
+typedef logic[1:0] priviledge_mode_t;
+
 `define CSR_MTVEC_ADDR `CSR_ADDR_WIDTH'h305
 typedef struct packed {
     logic [`MXLEN-3:0] base;
@@ -83,3 +85,32 @@ typedef struct packed {
 `define CSR_SSCRATCH_ADDR `CSR_ADDR_WIDTH'h140
 typedef logic[`MXLEN-1:0] sscratch_t;
 /* End: Definition of CSRs */
+
+
+/* Start: Definition for opcodes of CSR management instructions */
+`define CSR_OP_WIDTH 4
+`define CSR_OP_CSRRW CSR_OP_WIDTH'd0
+`define CSR_OP_CSRRS CSR_OP_WIDTH'd1
+`define CSR_OP_CSRRC CSR_OP_WIDTH'd2
+`define CSR_OP_CSRRWI CSR_OP_WIDTH'd3
+`define CSR_OP_CSRRSI CSR_OP_WIDTH'd4
+`define CSR_OP_CSRRCI CSR_OP_WIDTH'd5
+`define CSR_OP_ECALL CSR_OP_WIDTH'd6
+`define CSR_OP_EBREAK CSR_OP_WIDTH'd7
+`define CSR_OP_URET CSR_OP_WIDTH'd8
+`define CSR_OP_SRET CSR_OP_WIDTH'd9
+`define CSR_OP_MRET CSR_OP_WIDTH'd10
+typedef enum logic [`CSR_OP_WIDTH-1:0] {
+    CSR_OP_CSRRW,
+    CSR_OP_CSRRS,
+    CSR_OP_CSRRC,
+    CSR_OP_CSRRWI,
+    CSR_OP_CSRRSI,
+    CSR_OP_CSRRCI,
+    CSR_OP_ECALL,
+    CSR_OP_EBREAK,
+    CSR_OP_URET,
+    CSR_OP_SRET,
+    CSR_OP_MRET
+} csr_op_t;
+/* End: Definition for opcodes of CSR management instructions */

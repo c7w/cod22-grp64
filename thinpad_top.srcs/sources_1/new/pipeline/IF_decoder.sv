@@ -18,19 +18,40 @@ module IF_DECODER #(
     output logic [5:0] rd,
     output logic [5:0] rs1,
     output logic [5:0] rs2,
-    // control singals
+
+    // control signals
     output wire [`PC_MUX_WIDTH-1:0] pc_mux_ctr,
     output wire [`BC_OP_WIDTH-1:0] bc_op,
     output wire [`ALU_OP_WIDTH-1:0] alu_op,
     output wire [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr,
     output wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr,
-    output wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr
+    output wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr,
+
+    // CSR write signals
+    output logic mtvec_wen,
+    output logic mscratch_wen,
+    output logic mepc_wen,
+    output logic mcause_wen,
+    output logic mstatus_wen,
+    output logic mie_wen,
+    output logic mip_wen,
+    output logic mtval_wen,
+    output logic mideleg_wen,
+    output logic medeleg_wen,
+    output logic satp_wen,
+    output logic sepc_wen,
+    output logic scause_wen,
+    output logic stval_wen,
+    output logic stvec_wen,
+    output logic sscratch_wen,
+
+    output logic [11:0] csr_addr_o,  // TODO: add support for this in the top module
+    input wire [DATA_WIDTH-1:0] csr_data_i
 );
 
     // Decode instr
     logic [6:0] opcode;
     logic [2:0] funct3;
-    logic [6:0] funct7;
 
     assign rd = instr[11:7];
     assign rs1 = instr[19:15];
@@ -51,7 +72,7 @@ module IF_DECODER #(
         OP_ADD,
         OP_NOP,
 
-        // Added in lab7
+        // Added in lab7, stage-I
         OP_SLTI,
         OP_SLTIU,
 
@@ -91,6 +112,19 @@ module IF_DECODER #(
         
         OP_JAL,
         OP_JALR,
+
+        // Added in lab7, stage-II
+        OP_CSRRW,
+        OP_CSRRS,
+        OP_CSRRC,
+        OP_CSRRWI,
+        OP_CSRRSI,
+        OP_CSRRCI,
+        OP_ECALL,
+        OP_EBREAK,
+        OP_URET,
+        OP_SRET,
+        OP_MRET,
 
         OP_UNKNOWN
     } OP_Type;
@@ -192,8 +226,38 @@ module IF_DECODER #(
                 op_type = OP_JAL;
             end
 
+            // jalr
             7'b1100111: begin
                 op_type = OP_JALR;
+            end
+
+            // exception
+            7'b1110011: begin
+                case (funct3) 
+                    3'b001: op_type = OP_CSRRW;
+                    3'b010: op_type = OP_CSRRS;
+                    3'b011: op_type = OP_CSRRC;
+                    3'b101: op_type = OP_CSRRWI;
+                    3'b110: op_type = OP_CSRRSI;
+                    3'b111: op_type = OP_CSRRCI;
+                    3'b000: begin
+                        if (instr == 32'b00000_00_00000_00000_000_00000_11100_11) begin
+                            op_type = OP_ECALL;
+                        end
+                        else if (instr == 32'b00000_00_00001_00000_000_00000_11100_11) begin
+                            op_type = OP_EBREAK;
+                        end
+                        else if (instr == 32'b00000_00_00010_00000_000_00000_11100_11) begin
+                            op_type = OP_URET;
+                        end
+                        else if (instr == 32'b00010_00_00010_00000_000_00000_11100_11) begin
+                            op_type = OP_SRET;
+                        end
+                        else if (instr == 32'b00110_00_00010_00000_000_00000_11100_11) begin
+                            op_type = OP_MRET;
+                        end
+                    end
+                endcase
             end
 
             default: begin 
@@ -306,6 +370,21 @@ module IF_DECODER #(
                 imm = {sign_ext20[19:0], instr[31:20]}; imm_en = 1;
                 wb_en = 1; dm_en = 0; dm_wen = 1;  // use this to specify JALR
             end
+
+            OP_CSRRW, OP_CSRRS, OP_CSRRC: begin
+
+            end
+
+            // ,
+            // ,
+            // OP_CSRRWI,
+            // OP_CSRRSI,
+            // OP_CSRRCI,
+            // OP_ECALL,
+            // OP_EBREAK,
+            // OP_URET,
+            // OP_SRET,
+            // OP_MRET,
 
 
             default: begin

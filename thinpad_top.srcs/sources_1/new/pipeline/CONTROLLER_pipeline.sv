@@ -83,8 +83,6 @@ module CONTROLLER_pipeline #(
             bubble_o = 4'b1000;
         end
 
-
-
     end
 
 
