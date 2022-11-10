@@ -6,7 +6,6 @@ module lab5_master #(
     input wire rst_i,
     output logic[15:0] leds_o,
 
-    // TODO: ������Ҫ�Ŀ����źţ����簴�����أ�
     input wire [ADDR_WIDTH-1:0] addr_i,
 
     // wishbone master
@@ -23,7 +22,6 @@ module lab5_master #(
 
     assign wb_cyc_o = wb_stb_o;
 
-  // TODO: ʵ��ʵ�� 5 ���ڴ�+���� Master
     typedef enum logic [2:0] {
         STATE_IDLE = 0,
         STATE_READ_UART = 1,
@@ -94,7 +92,7 @@ module lab5_master #(
                             state_step <= 2;
                         end
                         else begin
-                            state_step <= 0; // TODO: ???
+                            state_step <= 0;
 
                             wb_stb_o <= 1;
                             wb_adr_o <= 32'h10000005;
@@ -171,7 +169,7 @@ module lab5_master #(
                             state_step <= 2;
                         end
                         else begin
-                            state_step <= 0;  // TODO: ???
+                            state_step <= 0;
                            
                             wb_stb_o <= 1;
                             wb_adr_o <= 32'h10000005;

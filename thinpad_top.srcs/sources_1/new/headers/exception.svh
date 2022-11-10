@@ -11,6 +11,9 @@
 
 /* Start: Definition of CSRs */
 typedef logic[1:0] priviledge_mode_t;
+`define PRIVILEDGE_MODE_U 2'b00
+`define PRIVILEDGE_MODE_S 2'b01
+`define PRIVILEDGE_MODE_M 2'b11
 
 `define CSR_MTVEC_ADDR `CSR_ADDR_WIDTH'h305
 typedef struct packed {

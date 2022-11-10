@@ -80,7 +80,9 @@ module CONTROLLER_csrs #(
     output scause_t scause_reg,
     output stval_t stval_reg,
     output stvec_t stvec_reg,
-    output sscratch_t sscratch_reg
+    output sscratch_t sscratch_reg,
+
+    input wire time_interrupt
 );
 
     always_ff @( posedge clk ) begin
@@ -136,7 +138,7 @@ module CONTROLLER_csrs #(
             end
 
             if (mip_wen) begin
-                mip_reg <= mip_i;
+                mip_reg <= {mip_i[31:8], time_interrupt, mip_i[6:0]};
             end
 
             if (mtval_wen) begin

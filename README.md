@@ -49,11 +49,21 @@ When a trap occurs (or delegates to mode X):
 
 
 
-An interrupt i will be taken if bit i is set in both mip and mie, and if interrupts are globally enabled. 
+An interrupt i will be taken if bit i is set in both mip and mie, and **if interrupts are globally enabled**. 
+
+By default, M-mode interrupts are globally enabled if the hart’s current privilege mode is less than M, or if the current privilege mode is M and the MIE bit in the mstatus register is set.  
+
+priviledge_mode < M || (priviledge_mode == M && mstatus.mie)
 
 If bit i in mideleg is set, however, interrupts are considered to be globally enabled if the hart’s current privilege mode equals the delegated privilege mode (S or U) and that mode’s interrupt enable bit (SIE or UIE in mstatus) is set, or if the current privilege mode is less than the delegated privilege mode.  
 
+priviledge_mode_i < S || (priviledge_mode_i == S && mstatus.sie)
 
+if (mideleg[i]) begin
+
+​    priviledge_mode
+
+end
 
 
 

@@ -1,4 +1,3 @@
-// TODO: Review this file
 module MEM_dm #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -186,8 +185,6 @@ module MEM_dm #(
                         state <= STATE_IDLE;
                         dm_ack_cache <= dm_ack_cache || wbm_ack_i;
 
-                        // TODO: buggy code here
-                        // TODO: 提前 dm_data_o 一个周期
                         if (dm_sign_ext) begin
                             if (width_cached == 1) begin
                                 dm_data_o_cached <= {

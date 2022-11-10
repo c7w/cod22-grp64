@@ -118,7 +118,6 @@ module IF_DECODER #(
     OP_Type op_type;
 
     // From instr to op_type
-    // TODO: add more instructions
     always_comb begin
         op_type = OP_UNKNOWN;
         case (opcode)
@@ -596,7 +595,7 @@ module IF_DECODER #(
                 bc_op_comb = `BC_OP_FALSE;
                 alu_op_comb = `ALU_OP_ADD; 
                 alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
-                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM; // zero
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_MEM;
             end
 
