@@ -4,6 +4,10 @@ module ID_csr_transfer #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 )(
+
+    input wire clk,
+    input wire rst,
+
     input wire [`CSR_ADDR_WIDTH-1:0] csr_addr,
     input wire [4:0] rs1_i,
     input wire [DATA_WIDTH-1:0] zimm,
@@ -67,9 +71,29 @@ module ID_csr_transfer #(
     output logic scause_wen,
     output logic stval_wen,
     output logic stvec_wen,
-    output logic sscratch_wen
+    output logic sscratch_wen,
+
+
+    // From IF::IM
+
+    // From IF::Decoder
+
+    // From EXE::ALU
+
+    // From MEM::DM
+
+    // From timer
+    input wire interrupt_timer
+
+    // Output Signals
 
 );
+
+    typedef enum logic [3:0] { 
+        STATE_SEQ,
+        STATE_CATCH,
+        STATE_RESUME
+    } state_t;
 
     assign rs1_o = rs1_i;
 

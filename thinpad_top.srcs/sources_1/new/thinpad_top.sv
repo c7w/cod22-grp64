@@ -291,7 +291,9 @@ module thinpad_top #(
     logic CONTROLLER_stvec_wen;
     logic CONTROLLER_sscratch_wen;
 
-    CONTROLLER_exception_handler controller_exception_handler (
+    logic CONTROLLER_interrupt_timer;
+
+    CONTROLLER_csrs controller_csrs (
         .clk (sys_clk),
         .rst (reset_of_clk10M),
 
@@ -570,6 +572,10 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] RF_CSRT_x_rs1;
 
     ID_csr_transfer id_csr_transfer (
+
+        .clk(sys_clk),
+        .rst(reset_of_clk10M),
+
         .csr_addr(ID_csr_addr),
         .rs1_i(ID_rs1),
         .zimm(ID_imm),
@@ -630,7 +636,10 @@ module thinpad_top #(
         .scause_wen(CONTROLLER_scause_wen),
         .stval_wen(CONTROLLER_stval_wen),
         .stvec_wen(CONTROLLER_stvec_wen),
-        .sscratch_wen(CONTROLLER_sscratch_wen)
+        .sscratch_wen(CONTROLLER_sscratch_wen),
+
+        // From timer
+        .interrupt_timer(CONTROLLER_interrupt_timer)
     );
 
 
@@ -820,6 +829,11 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] MEM_DM_data;
     logic [DATA_WIDTH-1:0] MEM_wb_data;
 
+    logic [63:0] mtimer_mtime;
+    logic [63:0] mtimer_mtimecmp;
+    logic mtimer_mtime_wen, mtimer_mtimecmp_wen, mtimer_upper_wen;
+    logic [31:0] mtimer_wdata;
+
     // wishbone master for DM
     logic wbm_cyc_dm;
     logic wbm_stb_dm;
@@ -829,6 +843,20 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] wbm_dat_s2m_dm;  // slave 2 master
     logic [DATA_WIDTH/8-1:0] wbm_sel_dm; 
     logic wbm_we_dm;
+
+    CONTROLLER_mtimer controller_mtimer (
+        .clk (sys_clk),
+        .rst (reset_of_clk10M),
+
+        .mtime(mtimer_mtime),
+        .mtimecmp(mtimer_mtimecmp),
+        .interrupt_timer(CONTROLLER_interrupt_timer),
+
+        .mtime_wen(mtimer_mtime_wen),
+        .mtimecmp_wen(mtimer_mtimecmp_wen),
+        .upper_wen(mtimer_upper_wen),
+        .mtimer_wdata(mtimer_wdata)
+    );
 
     MEM_dm data_fetcher (
         .clk (sys_clk),
@@ -850,7 +878,14 @@ module thinpad_top #(
         .wbm_dat_o(wbm_dat_m2s_dm),
         .wbm_dat_i(wbm_dat_s2m_dm),
         .wbm_sel_o(wbm_sel_dm),
-        .wbm_we_o(wbm_we_dm)
+        .wbm_we_o(wbm_we_dm),
+
+        .mtimer_mtime(mtimer_mtime),
+        .mtimer_mtimecmp(mtimer_mtimecmp),
+        .mtimer_mtime_wen(mtimer_mtime_wen),
+        .mtimer_mtimecmp_wen(mtimer_mtimecmp_wen),
+        .mtimer_upper_wen(mtimer_upper_wen),
+        .mtimer_wdata(mtimer_wdata)
     );
 
     MEM_dm_mux mem_dm_mux (

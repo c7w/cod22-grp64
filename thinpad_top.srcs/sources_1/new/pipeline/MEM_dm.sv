@@ -24,7 +24,15 @@ module MEM_dm #(
     output reg[ADDR_WIDTH-1:0] wbm_adr_o,
     input wire [DATA_WIDTH-1:0] wbm_dat_i,
     output reg[DATA_WIDTH-1:0] wbm_dat_o,
-    output reg wbm_we_o
+    output reg wbm_we_o,
+
+    // mtimer
+    input wire [63:0] mtimer_mtime,
+    input wire [63:0] mtimer_mtimecmp,
+    output logic mtimer_mtime_wen, 
+    output logic mtimer_mtimecmp_wen, 
+    output logic mtimer_upper_wen,
+    output logic [31:0] mtimer_wdata
 );
 
     assign wbm_cyc_o = wbm_stb_o;
@@ -47,10 +55,14 @@ module MEM_dm #(
 
     logic dm_ack_cache;
 
+    logic mtimer_lock;  // reg
+    logic mtimer_rdata;  // comb
+
     // TODO: May be buggy?
     assign dm_ack = ((wbm_ack_i || dm_ack_cache) && same_request) || ~dm_en;
 
     
+    // Start: Generate dm_data_o
     logic [DATA_WIDTH-1:0] dm_data_o_cached;
     always_comb begin
         if (wbm_ack_i) begin
@@ -73,6 +85,7 @@ module MEM_dm #(
             dm_data_o = 32'h0;  // Check for this carefully
         end
     end
+    // End: Generate dm_data_o
 
     
     wire [5:0] offset;
@@ -99,6 +112,8 @@ module MEM_dm #(
             wbm_sel_o <= 0;
             wbm_we_o <= 0;
             
+            mtimer_lock <= 0;
+            
         end
 
         else begin 
@@ -114,37 +129,53 @@ module MEM_dm #(
                         dat_i_cached <= dm_data_i;
                         width_cached <= dm_width;
 
-                        dm_ack_cache <= 0;
+                        
 
                         // State transfer
-                        if (dm_wen) begin
-                            // Write
-                            state <= STATE_WRITE;
 
-                            wbm_stb_o <= 1;
-                            wbm_adr_o <= dm_addr;
-                            wbm_dat_o <= dm_data_i;
-                            wbm_we_o <= 1;
+                        if (dm_addr == 32'h200bff8 || dm_addr == 32'h200bffc || dm_addr == 32'h2004000 || dm_addr == 32'h2004004) begin
+                            dm_ack_cache <= 1;
 
-                            if (dm_width == 1) begin 
-                                wbm_sel_o <= (4'b0001 << (dm_addr & 2'h3));
-                            end 
-                            else if (dm_width == 2) begin 
-                                wbm_sel_o <= (4'b0011 << (dm_addr & 2'h3));
+                            if (mtimer_lock == 0) begin
+                                mtimer_lock <= 1;
+                                dm_data_o_cached <= mtimer_rdata;
+
+                            end else begin
+                                mtimer_lock <= 0;
                             end
-                            else begin
-                                wbm_sel_o <= 4'b1111;
-                            end
-
+                            
 
                         end else begin
-                            // Read
-                            state <= STATE_READ;
+                            dm_ack_cache <= 0;
+                            if (dm_wen) begin
+                                // Write
+                                state <= STATE_WRITE;
 
-                            wbm_stb_o <= 1;
-                            wbm_adr_o <= dm_addr;
-                            wbm_we_o <= 0;
-                            wbm_sel_o <= 4'b1111;
+                                wbm_stb_o <= 1;
+                                wbm_adr_o <= dm_addr;
+                                wbm_dat_o <= dm_data_i;
+                                wbm_we_o <= 1;
+
+                                if (dm_width == 1) begin 
+                                    wbm_sel_o <= (4'b0001 << (dm_addr & 2'h3));
+                                end 
+                                else if (dm_width == 2) begin 
+                                    wbm_sel_o <= (4'b0011 << (dm_addr & 2'h3));
+                                end
+                                else begin
+                                    wbm_sel_o <= 4'b1111;
+                                end
+
+
+                            end else begin
+                                // Read
+                                state <= STATE_READ;
+
+                                wbm_stb_o <= 1;
+                                wbm_adr_o <= dm_addr;
+                                wbm_we_o <= 0;
+                                wbm_sel_o <= 4'b1111;
+                            end 
                         end
                     end
                 end
@@ -203,6 +234,43 @@ module MEM_dm #(
 
         end
     end
+
+    always_comb begin
+        // mtimer logic
+        mtimer_rdata = 32'h0;
+        mtimer_mtime_wen = 0;
+        mtimer_mtimecmp_wen = 0;
+        mtimer_upper_wen = 0;
+
+        if (dm_wen) begin
+            if (mtimer_lock == 0) begin
+                case (dm_addr) 
+                    32'h200bff8: mtimer_mtime_wen = 1;
+                    32'h200bffc: begin 
+                        mtimer_mtime_wen = 1;
+                        mtimer_upper_wen = 1;
+                    end
+                    32'h2004000: mtimer_mtimecmp_wen = 1;
+                    32'h2004004: begin
+                        mtimer_mtimecmp_wen = 1;
+                        mtimer_upper_wen = 1;
+                    end
+                endcase
+            end
+        end
+
+        else begin
+
+            case (dm_addr) 
+                32'h200bff8: mtimer_rdata = mtimer_mtime[31:0];
+                32'h200bffc: mtimer_rdata = mtimer_mtime[63:32];
+                32'h2004000: mtimer_rdata = mtimer_mtimecmp[31:0];
+                32'h2004004: mtimer_rdata = mtimer_mtimecmp[63:32];
+            endcase
+        end
+    end
+
+    assign mtimer_wdata = dm_data_i;
 
 
 endmodule

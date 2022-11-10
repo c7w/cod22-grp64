@@ -109,6 +109,8 @@ module IF_DECODER #(
         OP_URET,
         OP_SRET,
         OP_MRET,
+        OP_RDTIME,
+        OP_RDTIMEH,
 
         OP_UNKNOWN
     } OP_Type;
@@ -219,7 +221,15 @@ module IF_DECODER #(
             7'b1110011: begin
                 case (funct3) 
                     3'b001: op_type = OP_CSRRW;
-                    3'b010: op_type = OP_CSRRS;
+                    3'b010: begin
+                        if (csr_addr == 12'hc01) begin
+                            op_type = OP_RDTIME;
+                        end else if (csr_addr == 12'hc81) begin
+                            op_type = OP_RDTIMEH;
+                        end else begin
+                            op_type = OP_CSRRS;
+                        end
+                    end
                     3'b011: op_type = OP_CSRRC;
                     3'b101: op_type = OP_CSRRWI;
                     3'b110: op_type = OP_CSRRSI;
@@ -381,6 +391,15 @@ module IF_DECODER #(
             // OP_URET,
             // OP_SRET,
             // OP_MRET,
+
+            OP_RDTIME, OP_RDTIMEH: begin
+                imm_en = 1; wb_en = 1;
+                dm_en = 1; dm_wen = 0;  // Read memory
+                case (op_type) 
+                    OP_RDTIME: imm = 32'h200BFF8;
+                    OP_RDTIMEH: imm = 32'h200BFFC;
+                endcase
+            end
 
 
             default: begin
@@ -570,6 +589,15 @@ module IF_DECODER #(
                 alu_mux_a_ctr_comb = `ALU_MUX_A_CSR;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_ZERO; // zero
                 dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
+
+            OP_RDTIME, OP_RDTIMEH: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                bc_op_comb = `BC_OP_FALSE;
+                alu_op_comb = `ALU_OP_ADD; 
+                alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_IMM; // zero
+                dm_mux_ctr_comb = `DM_MUX_MEM;
             end
 
         endcase

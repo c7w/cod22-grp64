@@ -118,4 +118,17 @@ typedef enum logic [`CSR_OP_WIDTH-1:0] {
     CSR_OP_UNKNOWN=15
 } csr_op_t;
 /* End: Definition for opcodes of CSR management instructions */
+
+
+/* Start: Definition of constants */
+`define INTERRUPT_MACHINE_TIMER 31'd7
+`define INTERRUPT_UNKNOWN {31{1'b1}}
+
+`define EXCEPTION_ILLEGAL_INSTRUCTION 31'd2
+`define EXCEPTION_BREAKPOINT 31'd3
+`define EXCEPTION_ENVIRONMENT_CALL_U 31'd8
+`define EXCEPTION_ENVIRONMENT_CALL_S 31'd9
+`define EXCEPTION_ENVIRONMENT_CALL_M 31'd11
+/* End: Definition of constants */
+
 `endif

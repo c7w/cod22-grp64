@@ -1,7 +1,7 @@
 // csrs = ['priviledge_mode', 'mtvec', 'mscratch', 'mepc', 'mcause', 'mstatus', 'mie', 'mip', 'mtval', 'mideleg', 'medeleg', 'satp', 'sepc', 'scause', 'stval', 'stvec', 'sscratch']
 `include "../headers/exception.svh"
 
-module CONTROLLER_exception_handler #(
+module CONTROLLER_csrs #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
