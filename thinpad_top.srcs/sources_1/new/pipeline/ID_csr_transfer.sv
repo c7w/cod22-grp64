@@ -457,11 +457,18 @@ module ID_csr_transfer #(
         end else begin
 
             if (state == STATE_SEQ || state == STATE_BLOCK) begin
+
+                if (state == STATE_BLOCK) begin
+                    // TODO: add criterion to judge if the pipeline has drained
+                    state <= STATE_CATCH;
+                end
+
                 if ((csr_opcode == `CSR_OP_ECALL || csr_opcode == `CSR_OP_EBREAK) && EXCEPTION_ID < exception_stage_reg) begin
                     exception_stage_reg <= EXCEPTION_ID;
 
                     if (priviledge_mode_i <= `PRIVILEDGE_MODE_S && medeleg_i[exception_operand_for_ecall_ebreak]) begin // delegated to S level
 
+                        /* Start: Raise an exception to S Level */
                         sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
                         scause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; scause_wen_catch <= 1;
@@ -482,9 +489,11 @@ module ID_csr_transfer #(
                         }; mstatus_wen_catch <= 1;
 
                         priviledge_mode_o_catch <= `PRIVILEDGE_MODE_S; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to S Level */
 
                     end else begin  // M level
                         
+                        /* Start: Raise an exception to M Level */
                         mepc_o_catch <= ID_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; mcause_wen_catch <= 1;
@@ -501,6 +510,7 @@ module ID_csr_transfer #(
                         }; mstatus_wen_catch <= 1;
 
                         priviledge_mode_o_catch <= `PRIVILEDGE_MODE_M; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to M Level */
                     end
                 end
 
@@ -561,12 +571,27 @@ module ID_csr_transfer #(
                     // This interrupt cannot be delegated
                     if ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie)) begin
 
-                        cause_comb = {1'b1, `INTERRUPT_MACHINE_TIMER};
+                        /* Start: Raise an exception to M Level */
+                        mepc_o_catch <= ID_pc_addr; mepc_wen_catch <= 1;
+                        pc_nxt_exception <= mtvec_i;
+                        mcause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; mcause_wen_catch <= 1;
+                        mtval_o_catch <= 0; mtval_wen_catch <= 1;
+                        mstatus_o_catch <= {
+                            mstatus_i[31:13],
+                            priviledge_mode_i, // mpp
+                            mstatus_i.trash_1,
+                            mstatus_i.spp,
+                            mstatus_i.mie,  // mpie <= mie
+                            mstatus_i.trash_2,
+                            mstatus_i.spie, mstatus_i.upie, 1'b0, // mie
+                            mstatus_i.trash_3, mstatus_i.sie, mstatus_i.uie
+                        }; mstatus_wen_catch <= 1;
 
+                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_M; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to M Level */
 
                     end
 
-                    
                 end
 
                 else if (mip_i.stip & mie_i.stie) begin
@@ -574,6 +599,28 @@ module ID_csr_transfer #(
                     // Forwarded exception
                     if (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie)) begin
 
+                        /* Start: Raise an exception to S Level */
+                        sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
+                        pc_nxt_exception <= stvec_i;
+                        scause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; scause_wen_catch <= 1;
+                        stval_o_catch <= 0; stval_wen_catch <= 1;
+                        mstatus_o_catch <= {
+                            mstatus_i[31:13],
+                            mstatus_i.mpp,
+                            mstatus_i.trash_1,
+                            priviledge_mode_i[0],  // spp <= priv level
+                            mstatus_i.mpie, 
+                            mstatus_i.trash_2,
+                            mstatus_i.sie, // spie <= sie
+                            mstatus_i.upie, 
+                            mstatus_i.mie,
+                            mstatus_i.trash_3, 
+                            1'b0,  // sie 
+                            mstatus_i.uie
+                        }; mstatus_wen_catch <= 1;
+
+                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_S; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to S Level */
 
                     end
                 end

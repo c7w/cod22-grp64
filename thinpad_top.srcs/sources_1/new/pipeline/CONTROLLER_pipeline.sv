@@ -1,6 +1,8 @@
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
 
+// TODO: add support for draining the whole pipeline
+
 module CONTROLLER_pipeline #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
