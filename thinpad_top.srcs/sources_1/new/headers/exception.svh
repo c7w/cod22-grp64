@@ -1,3 +1,6 @@
+`ifndef EXCEPTION_H
+
+`define EXCEPTION_H
 `define CSR_ADDR_WIDTH 12
 `define MXLEN 32
 `define mstatus_write_mask 32'b10000000011111111111100110111011
@@ -89,17 +92,17 @@ typedef logic[`MXLEN-1:0] sscratch_t;
 
 /* Start: Definition for opcodes of CSR management instructions */
 `define CSR_OP_WIDTH 4
-`define CSR_OP_CSRRW CSR_OP_WIDTH'd0
-`define CSR_OP_CSRRS CSR_OP_WIDTH'd1
-`define CSR_OP_CSRRC CSR_OP_WIDTH'd2
-`define CSR_OP_CSRRWI CSR_OP_WIDTH'd3
-`define CSR_OP_CSRRSI CSR_OP_WIDTH'd4
-`define CSR_OP_CSRRCI CSR_OP_WIDTH'd5
-`define CSR_OP_ECALL CSR_OP_WIDTH'd6
-`define CSR_OP_EBREAK CSR_OP_WIDTH'd7
-`define CSR_OP_URET CSR_OP_WIDTH'd8
-`define CSR_OP_SRET CSR_OP_WIDTH'd9
-`define CSR_OP_MRET CSR_OP_WIDTH'd10
+`define CSR_OP_CSRRW `CSR_OP_WIDTH'd0
+`define CSR_OP_CSRRS `CSR_OP_WIDTH'd1
+`define CSR_OP_CSRRC `CSR_OP_WIDTH'd2
+`define CSR_OP_CSRRWI `CSR_OP_WIDTH'd3
+`define CSR_OP_CSRRSI `CSR_OP_WIDTH'd4
+`define CSR_OP_CSRRCI `CSR_OP_WIDTH'd5
+`define CSR_OP_ECALL `CSR_OP_WIDTH'd6
+`define CSR_OP_EBREAK `CSR_OP_WIDTH'd7
+`define CSR_OP_URET `CSR_OP_WIDTH'd8
+`define CSR_OP_SRET `CSR_OP_WIDTH'd9
+`define CSR_OP_MRET `CSR_OP_WIDTH'd10
 typedef enum logic [`CSR_OP_WIDTH-1:0] {
     CSR_OP_CSRRW,
     CSR_OP_CSRRS,
@@ -111,6 +114,8 @@ typedef enum logic [`CSR_OP_WIDTH-1:0] {
     CSR_OP_EBREAK,
     CSR_OP_URET,
     CSR_OP_SRET,
-    CSR_OP_MRET
+    CSR_OP_MRET,
+    CSR_OP_UNKNOWN=15
 } csr_op_t;
 /* End: Definition for opcodes of CSR management instructions */
+`endif

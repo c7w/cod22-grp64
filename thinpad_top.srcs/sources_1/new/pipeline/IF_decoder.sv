@@ -15,13 +15,13 @@ module IF_DECODER #(
     output logic [2:0] dm_width,
     output logic dm_sign_ext,
     output logic wb_en,  // write back enabled
-    output logic [5:0] rd,
-    output logic [5:0] rs1,
-    output logic [5:0] rs2,
+    output logic [4:0] rd,
+    output logic [4:0] rs1,
+    output logic [4:0] rs2,
 
     // control signals
-    output csr_op_t csr_opcode,
-    output [`CSR_ADDR_WIDTH-1:0] csr_addr,
+    output logic [`CSR_OP_WIDTH-1:0] csr_opcode,
+    output logic [`CSR_ADDR_WIDTH-1:0] csr_addr,
 
     output wire [`PC_MUX_WIDTH-1:0] pc_mux_ctr,
     output wire [`BC_OP_WIDTH-1:0] bc_op,
@@ -34,6 +34,7 @@ module IF_DECODER #(
     // Decode instr
     logic [6:0] opcode;
     logic [2:0] funct3;
+    logic [6:0] funct7;
 
     assign rd = instr[11:7];
     assign rs1 = instr[19:15];
@@ -357,9 +358,9 @@ module IF_DECODER #(
 
             OP_CSRRW, OP_CSRRS, OP_CSRRC: begin
                 case (op_type) 
-                    OP_CSRRW: csr_opcode = 1;
-                    OP_CSRRS: csr_opcode = 2;
-                    OP_CSRRC: csr_opcode = 3;
+                    OP_CSRRW: csr_opcode = `CSR_OP_CSRRW;
+                    OP_CSRRS: csr_opcode = `CSR_OP_CSRRS;
+                    OP_CSRRC: csr_opcode = `CSR_OP_CSRRC;
                 endcase
                 imm = 0; imm_en = 0;
                 wb_en = 1; dm_en = 0; dm_wen = 0;
@@ -367,9 +368,9 @@ module IF_DECODER #(
 
             OP_CSRRWI, OP_CSRRSI, OP_CSRRCI: begin
                 case (op_type) 
-                    OP_CSRRWI: csr_opcode = 4;
-                    OP_CSRRSI: csr_opcode = 5;
-                    OP_CSRRCI: csr_opcode = 6;
+                    OP_CSRRWI: csr_opcode = `CSR_OP_CSRRWI;
+                    OP_CSRRSI: csr_opcode = `CSR_OP_CSRRSI;
+                    OP_CSRRCI: csr_opcode = `CSR_OP_CSRRCI;
                 endcase
                 imm = {27'b0, instr[19:15]}; imm_en = 1;
                 wb_en = 1; dm_en = 0; dm_wen = 0;

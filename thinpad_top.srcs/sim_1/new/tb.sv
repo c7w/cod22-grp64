@@ -52,8 +52,8 @@ module tb;
   wire uart_tsre;  // 数据发送完毕标志
 
   // Windows 需要注意路径分隔符的转义，例如 "D:\\foo\\bar.bin"
-  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\lab6.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
-  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\supervisor-rv\\kernel\\kernel.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
+  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\csrrw.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
+  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\supervisor-rv\\kernel\\kernel.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
   // D:\Project\rv-2022\supervisor-rv\kernel
   parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM 初始化文件，请修改为实际的绝对路径
   parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash 初始化文件，请修改为实际的绝对路径
@@ -69,6 +69,12 @@ module tb;
     reset_btn = 1;
     #100;
     reset_btn = 0;
+    
+    
+     #1000;
+     uart.pc_send_byte(8'h52); // R
+     #1000;
+     uart.pc_send_byte(8'h52); // R
 //    for (integer i = 0; i < 20; i = i + 1) begin
 //      #100;  // 等待 100ns
 //      push_btn = 1;  // 按下 push_btn 按钮

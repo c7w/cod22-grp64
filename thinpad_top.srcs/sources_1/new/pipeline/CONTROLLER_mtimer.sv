@@ -44,14 +44,14 @@ module mtimer (
             end else if (mtimecmp_wen) begin
             
                 if (upper_wen) begin
-                    mtimecmp <= {mtimer_wdata, mtimecmp[31:0]}
+                    mtimecmp <= {mtimer_wdata, mtimecmp[31:0]};
                 end else begin
-                    mtimecmp <= {mtimecmp[63:32], mtimer_wdata}
+                    mtimecmp <= {mtimecmp[63:32], mtimer_wdata};
                 end
 
             end else begin
 
-                if (internel_counter >= INC_INTERVAL) begin
+                if (internel_counter >= `INC_INTERVAL) begin
                     internel_counter <= 1;
                     mtime <= mtime + 1;
                 end

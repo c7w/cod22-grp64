@@ -1,11 +1,12 @@
 // csrs = ['priviledge_mode', 'mtvec', 'mscratch', 'mepc', 'mcause', 'mstatus', 'mie', 'mip', 'mtval', 'mideleg', 'medeleg', 'satp', 'sepc', 'scause', 'stval', 'stvec', 'sscratch']
+`include "../headers/exception.svh"
 
 module CONTROLLER_exception_handler #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-    input clk,
-    input rst,
+    input wire clk,
+    input wire rst,
 
     input wire priviledge_mode_wen,
     input wire mtvec_wen,

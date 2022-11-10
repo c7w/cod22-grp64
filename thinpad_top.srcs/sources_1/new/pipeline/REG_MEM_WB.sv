@@ -9,11 +9,11 @@ module REG_MEM_WB #(
 
     // MEM -> WB
     input wire wb_en_i, // write back enabled
-    input wire[ADDR_WIDTH-1:0] wb_addr_i,
+    input wire[4:0] wb_addr_i,
     input wire[DATA_WIDTH-1:0] wb_data_i,
 
     output reg wb_en_o,
-    output reg[ADDR_WIDTH-1:0] wb_addr_o,
+    output reg[4:0] wb_addr_o,
     output reg[DATA_WIDTH-1:0] wb_data_o
 );
 

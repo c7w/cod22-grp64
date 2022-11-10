@@ -1,6 +1,6 @@
-`include "../headers/ops.vh"
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
+`include "../headers/exception.svh"
 
 module REG_IF_ID #(
     parameter ADDR_WIDTH = 32,

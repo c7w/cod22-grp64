@@ -1,4 +1,3 @@
-`include "../headers/ops.vh"
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
 

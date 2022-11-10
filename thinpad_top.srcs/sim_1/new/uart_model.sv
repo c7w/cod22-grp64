@@ -58,10 +58,6 @@ module uart_model #(
       .RxD_clear     (rxd_clear),
       .RxD_data      (rxd_data)
   );
-  
-  initial begin
-    pc_send_byte(8'h52);  // R
-  end
 
   always begin
     wait (rxd_data_ready == 1);

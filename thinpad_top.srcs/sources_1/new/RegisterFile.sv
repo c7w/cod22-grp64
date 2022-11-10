@@ -24,11 +24,13 @@ module RegisterFile(
         end else begin
             rdata_a = data[raddr_a];
         end
+        
         if (raddr_b == waddr && wen) begin
             rdata_b = wdata;
         end else begin
             rdata_b = data[raddr_b];
         end
+
         if (raddr_csr == waddr && wen) begin
             rdata_csr = wdata;
         end else begin
