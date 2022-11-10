@@ -10,7 +10,7 @@ module RegisterFile(
     output logic[31:0] rdata_a,
     input wire[4:0] raddr_b,
     output logic[31:0] rdata_b,
-    input wire [4:0] raddr_csr,  // TODO: implement this in top module
+    input wire [4:0] raddr_csr,
     output logic[31:0] rdata_csr
 );
 

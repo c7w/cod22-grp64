@@ -20,33 +20,15 @@ module IF_DECODER #(
     output logic [5:0] rs2,
 
     // control signals
+    output csr_op_t csr_opcode,
+    output [`CSR_ADDR_WIDTH-1:0] csr_addr,
+
     output wire [`PC_MUX_WIDTH-1:0] pc_mux_ctr,
     output wire [`BC_OP_WIDTH-1:0] bc_op,
     output wire [`ALU_OP_WIDTH-1:0] alu_op,
     output wire [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr,
     output wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr,
-    output wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr,
-
-    // CSR write signals
-    output logic mtvec_wen,
-    output logic mscratch_wen,
-    output logic mepc_wen,
-    output logic mcause_wen,
-    output logic mstatus_wen,
-    output logic mie_wen,
-    output logic mip_wen,
-    output logic mtval_wen,
-    output logic mideleg_wen,
-    output logic medeleg_wen,
-    output logic satp_wen,
-    output logic sepc_wen,
-    output logic scause_wen,
-    output logic stval_wen,
-    output logic stvec_wen,
-    output logic sscratch_wen,
-
-    output logic [11:0] csr_addr_o,  // TODO: add support for this in the top module
-    input wire [DATA_WIDTH-1:0] csr_data_i
+    output wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr
 );
 
     // Decode instr
@@ -59,6 +41,7 @@ module IF_DECODER #(
     assign opcode[6:0] = instr[6:0];
     assign funct3[2:0] = instr[14:12];
     assign funct7[6:0] = instr[31:25];
+    assign csr_addr[`CSR_ADDR_WIDTH-1:0] = instr[31:20];
 
     typedef enum logic[7:0] { 
         // Added in lab6
@@ -277,6 +260,7 @@ module IF_DECODER #(
         imm = 32'h0; imm_en = 0; wb_en = 0;
         dm_en = 0; dm_wen = 0; 
         dm_width = 4; dm_sign_ext = 1;
+        csr_opcode = 15;
 
         case (op_type)
             OP_LUI: begin
@@ -372,14 +356,25 @@ module IF_DECODER #(
             end
 
             OP_CSRRW, OP_CSRRS, OP_CSRRC: begin
-
+                case (op_type) 
+                    OP_CSRRW: csr_opcode = 1;
+                    OP_CSRRS: csr_opcode = 2;
+                    OP_CSRRC: csr_opcode = 3;
+                endcase
+                imm = 0; imm_en = 0;
+                wb_en = 1; dm_en = 0; dm_wen = 0;
             end
 
-            // ,
-            // ,
-            // OP_CSRRWI,
-            // OP_CSRRSI,
-            // OP_CSRRCI,
+            OP_CSRRWI, OP_CSRRSI, OP_CSRRCI: begin
+                case (op_type) 
+                    OP_CSRRWI: csr_opcode = 4;
+                    OP_CSRRSI: csr_opcode = 5;
+                    OP_CSRRCI: csr_opcode = 6;
+                endcase
+                imm = {27'b0, instr[19:15]}; imm_en = 1;
+                wb_en = 1; dm_en = 0; dm_wen = 0;
+            end
+
             // OP_ECALL,
             // OP_EBREAK,
             // OP_URET,
@@ -565,6 +560,15 @@ module IF_DECODER #(
                 dm_mux_ctr_comb = `DM_MUX_PC_INC;
                 alu_op_comb = `ALU_OP_ADD;
                 bc_op_comb = `BC_OP_TRUE;
+            end
+            
+            OP_CSRRW, OP_CSRRS, OP_CSRRC, OP_CSRRWI, OP_CSRRSI, OP_CSRRCI: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                bc_op_comb = `BC_OP_FALSE;
+                alu_op_comb = `ALU_OP_ADD; 
+                alu_mux_a_ctr_comb = `ALU_MUX_A_CSR;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_ZERO; // zero
+                dm_mux_ctr_comb = `DM_MUX_ALU;
             end
 
         endcase

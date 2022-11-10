@@ -14,7 +14,7 @@ module REG_IF_ID #(
     input wire bubble, // bubble status
 
     // IF -> ID
-    input wire [`CSR_ADDR_WIDTH-1:0] csr_addr_i,  // todo: add support for this in top module
+    input wire [`CSR_ADDR_WIDTH-1:0] csr_addr_i,
     input wire [`CSR_OP_WIDTH-1:0] csr_opcode_i,
     input wire[4:0] rs1_i,
     input wire[4:0] rs2_i,

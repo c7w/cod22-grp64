@@ -1,4 +1,4 @@
-module EXE_csr_transfer #(
+module ID_csr_transfer #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 )(

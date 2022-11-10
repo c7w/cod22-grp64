@@ -16,7 +16,7 @@ module REG_ID_EXE #(
     output reg [4:0] rd_o, 
 
     // ID -> EXE
-    input wire [DATA_WIDTH-1:0] csr_data_i,  // todo: implement this in top module
+    input wire [DATA_WIDTH-1:0] csr_data_i,
     input wire[DATA_WIDTH-1:0] rf_data_a_i,
     input wire [`BC_OP_WIDTH-1:0] bc_op_i,
     input wire [`ALU_OP_WIDTH-1:0] alu_op_i,

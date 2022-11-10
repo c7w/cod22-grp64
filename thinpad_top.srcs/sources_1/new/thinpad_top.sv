@@ -10,51 +10,51 @@ module thinpad_top #(
     input wire clk_50M,     // 50MHz 时钟输入
     input wire clk_11M0592, // 11.0592MHz 时钟输入（备用，可不用）
 
-    input wire push_btn,  // BTN5 按钮�????关，带消抖电路，按下时为 1
-    input wire reset_btn, // BTN6 复位按钮，带消抖电路，按下时�???? 1
+    input wire push_btn,  // BTN5 按钮�????关，带消抖电路，按下时为 1
+    input wire reset_btn, // BTN6 复位按钮，带消抖电路，按下时�???? 1
 
     input  wire [ 3:0] touch_btn,  // BTN1~BTN4，按钮开关，按下时为 1
-    input  wire [31:0] dip_sw,     // 32 位拨码开关，拨到“ON”时�???? 1
-    output wire [15:0] leds,       // 16 �???? LED，输出时 1 点亮
+    input  wire [31:0] dip_sw,     // 32 位拨码开关，拨到“ON”时�???? 1
+    output wire [15:0] leds,       // 16 �???? LED，输出时 1 点亮
     output wire [ 7:0] dpy0,       // 数码管低位信号，包括小数点，输出 1 点亮
     output wire [ 7:0] dpy1,       // 数码管高位信号，包括小数点，输出 1 点亮
 
-    // CPLD 串口控制器信�????
-    output wire uart_rdn,        // 读串口信号，低有�????
-    output wire uart_wrn,        // 写串口信号，低有�????
-    input  wire uart_dataready,  // 串口数据准备�????
-    input  wire uart_tbre,       // 发�?�数据标�????
-    input  wire uart_tsre,       // 数据发�?�完毕标�????
+    // CPLD 串口控制器信�????
+    output wire uart_rdn,        // 读串口信号，低有�????
+    output wire uart_wrn,        // 写串口信号，低有�????
+    input  wire uart_dataready,  // 串口数据准备�????
+    input  wire uart_tbre,       // 发�?�数据标�????
+    input  wire uart_tsre,       // 数据发�?�完毕标�????
 
     // BaseRAM 信号
-    inout wire [31:0] base_ram_data,  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共�????
+    inout wire [31:0] base_ram_data,  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共�????
     output wire [19:0] base_ram_addr,  // BaseRAM 地址
-    output wire [3:0] base_ram_be_n,  // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持�???? 0
-    output wire base_ram_ce_n,  // BaseRAM 片�?�，低有�????
-    output wire base_ram_oe_n,  // BaseRAM 读使能，低有�????
-    output wire base_ram_we_n,  // BaseRAM 写使能，低有�????
+    output wire [3:0] base_ram_be_n,  // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持�???? 0
+    output wire base_ram_ce_n,  // BaseRAM 片�?�，低有�????
+    output wire base_ram_oe_n,  // BaseRAM 读使能，低有�????
+    output wire base_ram_we_n,  // BaseRAM 写使能，低有�????
 
     // ExtRAM 信号
     inout wire [31:0] ext_ram_data,  // ExtRAM 数据
     output wire [19:0] ext_ram_addr,  // ExtRAM 地址
-    output wire [3:0] ext_ram_be_n,  // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持�???? 0
-    output wire ext_ram_ce_n,  // ExtRAM 片�?�，低有�????
-    output wire ext_ram_oe_n,  // ExtRAM 读使能，低有�????
-    output wire ext_ram_we_n,  // ExtRAM 写使能，低有�????
+    output wire [3:0] ext_ram_be_n,  // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持�???? 0
+    output wire ext_ram_ce_n,  // ExtRAM 片�?�，低有�????
+    output wire ext_ram_oe_n,  // ExtRAM 读使能，低有�????
+    output wire ext_ram_we_n,  // ExtRAM 写使能，低有�????
 
     // 直连串口信号
     output wire txd,  // 直连串口发�?�端
-    input  wire rxd,  // 直连串口接收�????
+    input  wire rxd,  // 直连串口接收�????
 
     // Flash 存储器信号，参�?? JS28F640 芯片手册
-    output wire [22:0] flash_a,  // Flash 地址，a0 仅在 8bit 模式有效�????16bit 模式无意�????
+    output wire [22:0] flash_a,  // Flash 地址，a0 仅在 8bit 模式有效�????16bit 模式无意�????
     inout wire [15:0] flash_d,  // Flash 数据
     output wire flash_rp_n,  // Flash 复位信号，低有效
-    output wire flash_vpen,  // Flash 写保护信号，低电平时不能擦除、烧�????
-    output wire flash_ce_n,  // Flash 片�?�信号，低有�????
-    output wire flash_oe_n,  // Flash 读使能信号，低有�????
-    output wire flash_we_n,  // Flash 写使能信号，低有�????
-    output wire flash_byte_n, // Flash 8bit 模式选择，低有效。在使用 flash �???? 16 位模式时请设�???? 1
+    output wire flash_vpen,  // Flash 写保护信号，低电平时不能擦除、烧�????
+    output wire flash_ce_n,  // Flash 片�?�信号，低有�????
+    output wire flash_oe_n,  // Flash 读使能信号，低有�????
+    output wire flash_we_n,  // Flash 写使能信号，低有�????
+    output wire flash_byte_n, // Flash 8bit 模式选择，低有效。在使用 flash �???? 16 位模式时请设�???? 1
 
     // USB 控制器信号，参�?? SL811 芯片手册
     output wire sl811_a0,
@@ -77,13 +77,13 @@ module thinpad_top #(
     input wire dm9k_int,
 
     // 图像输出信号
-    output wire [2:0] video_red,    // 红色像素�????3 �????
-    output wire [2:0] video_green,  // 绿色像素�????3 �????
-    output wire [1:0] video_blue,   // 蓝色像素�????2 �????
-    output wire       video_hsync,  // 行同步（水平同步）信�????
-    output wire       video_vsync,  // 场同步（垂直同步）信�????
+    output wire [2:0] video_red,    // 红色像素�????3 �????
+    output wire [2:0] video_green,  // 绿色像素�????3 �????
+    output wire [1:0] video_blue,   // 蓝色像素�????2 �????
+    output wire       video_hsync,  // 行同步（水平同步）信�????
+    output wire       video_vsync,  // 场同步（垂直同步）信�????
     output wire       video_clk,    // 像素时钟输出
-    output wire       video_de      // 行数据有效信号，用于区分消隐�????
+    output wire       video_de      // 行数据有效信号，用于区分消隐�????
 );
 
   /* =========== Demo code begin =========== */
@@ -94,18 +94,18 @@ module thinpad_top #(
         // Clock in ports
         .clk_in1(clk_50M),  // 外部时钟输入
         // Clock out ports
-        .clk_out1(clk_10M),  // 时钟输出 1，频率在 IP 配置界面中设�????
-        .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设�????
+        .clk_out1(clk_10M),  // 时钟输出 1，频率在 IP 配置界面中设�????
+        .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设�????
         .clk_out3(clk_30M),
         .clk_out4(clk_40M),
         // Status and control signals
         .reset(reset_btn),  // PLL 复位输入
-        .locked(locked)  // PLL 锁定指示输出�????"1"表示时钟稳定�????
+        .locked(locked)  // PLL 锁定指示输出�????"1"表示时钟稳定�????
                         // 后级电路复位信号应当由它生成（见下）
     );
 
     logic reset_of_clk10M;
-    // 异步复位，同步释放，�???? locked 信号转为后级电路的复�???? reset_of_clk10M
+    // 异步复位，同步释放，�???? locked 信号转为后级电路的复�???? reset_of_clk10M
     always_ff @(posedge clk_10M or negedge locked) begin
         if (~locked) reset_of_clk10M <= 1'b1;
         else reset_of_clk10M <= 1'b0;
@@ -129,7 +129,7 @@ module thinpad_top #(
   // // g=dpy0[7] // |     |
   // //           // ---d---  p
 
-  // // 7 段数码管译码器演示，�???? number �???? 16 进制显示在数码管上面
+  // // 7 段数码管译码器演示，�???? number �???? 16 进制显示在数码管上面
   // logic [7:0] number;
   // SEG7_LUT segL (
   //     .oSEG1(dpy0),
@@ -144,14 +144,14 @@ module thinpad_top #(
   // assign leds = led_bits;
 
   // always_ff @(posedge push_btn or posedge reset_btn) begin
-  //   if (reset_btn) begin  // 复位按下，设�???? LED 为初始�??
+  //   if (reset_btn) begin  // 复位按下，设�???? LED 为初始�??
   //     led_bits <= 16'h1;
-  //   end else begin  // 每次按下按钮�????关，LED 循环左移
+  //   end else begin  // 每次按下按钮�????关，LED 循环左移
   //     led_bits <= {led_bits[14:0], led_bits[15]};
   //   end
   // end
 
-  // // 直连串口接收发�?�演示，从直连串口收到的数据再发送出�????
+  // // 直连串口接收发�?�演示，从直连串口收到的数据再发送出�????
   // logic [7:0] ext_uart_rx;
   // logic [7:0] ext_uart_buffer, ext_uart_tx;
   // logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
@@ -159,19 +159,19 @@ module thinpad_top #(
 
   // assign number = ext_uart_buffer;
 
-  // // 接收模块�????9600 无检验位
+  // // 接收模块�????9600 无检验位
   // async_receiver #(
   //     .ClkFrequency(50000000),
   //     .Baud(9600)
   // ) ext_uart_r (
   //     .clk           (clk_50M),         // 外部时钟信号
   //     .RxD           (rxd),             // 外部串行信号输入
-  //     .RxD_data_ready(ext_uart_ready),  // 数据接收到标�????
+  //     .RxD_data_ready(ext_uart_ready),  // 数据接收到标�????
   //     .RxD_clear     (ext_uart_clear),  // 清除接收标志
-  //     .RxD_data      (ext_uart_rx)      // 接收到的�????字节数据
+  //     .RxD_data      (ext_uart_rx)      // 接收到的�????字节数据
   // );
 
-  // assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer �????
+  // assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer �????
   // always_ff @(posedge clk_50M) begin  // 接收到缓冲区 ext_uart_buffer
   //   if (ext_uart_ready) begin
   //     ext_uart_buffer <= ext_uart_rx;
@@ -180,7 +180,7 @@ module thinpad_top #(
   //     ext_uart_avai <= 0;
   //   end
   // end
-  // always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发�?�出�????
+  // always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发�?�出�????
   //   if (!ext_uart_busy && ext_uart_avai) begin
   //     ext_uart_tx <= ext_uart_buffer;
   //     ext_uart_start <= 1;
@@ -196,8 +196,8 @@ module thinpad_top #(
   // ) ext_uart_t (
   //     .clk      (clk_50M),         // 外部时钟信号
   //     .TxD      (txd),             // 串行信号输出
-  //     .TxD_busy (ext_uart_busy),   // 发�?�器忙状态指�????
-  //     .TxD_start(ext_uart_start),  // �????始发送信�????
+  //     .TxD_busy (ext_uart_busy),   // 发�?�器忙状态指�????
+  //     .TxD_start(ext_uart_start),  // �????始发送信�????
   //     .TxD_data (ext_uart_tx)      // 待发送的数据
   // );
 
@@ -209,14 +209,164 @@ module thinpad_top #(
   // assign video_clk   = clk_50M;
   // vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
   //     .clk        (clk_50M),
-  //     .hdata      (hdata),        // 横坐�????
-  //     .vdata      (),             // 纵坐�????
+  //     .hdata      (hdata),        // 横坐�????
+  //     .vdata      (),             // 纵坐�????
   //     .hsync      (video_hsync),
   //     .vsync      (video_vsync),
   //     .data_enable(video_de)
   // );
   // /* =========== Demo code end =========== */
 
+
+    // Exception
+    priviledge_mode_t CONTROLLER_priviledge_mode_reg;
+    mtvec_t CONTROLLER_mtvec_reg;
+    mscratch_t CONTROLLER_mscratch_reg;
+    mepc_t CONTROLLER_mepc_reg;
+    mcause_t CONTROLLER_mcause_reg;
+    mstatus_t CONTROLLER_mstatus_reg;
+    mie_t CONTROLLER_mie_reg;
+    mip_t CONTROLLER_mip_reg;
+    mtval_t CONTROLLER_mtval_reg;
+    mideleg_t CONTROLLER_mideleg_reg;
+    medeleg_t CONTROLLER_medeleg_reg;
+    satp_t CONTROLLER_satp_reg;
+    sepc_t CONTROLLER_sepc_reg;
+    scause_t CONTROLLER_scause_reg;
+    stval_t CONTROLLER_stval_reg;
+    stvec_t CONTROLLER_stvec_reg;
+    sscratch_t CONTROLLER_sscratch_reg;
+
+    priviledge_mode_t CONTROLLER_priviledge_mode_bypassing;
+    mtvec_t CONTROLLER_mtvec_bypassing;
+    mscratch_t CONTROLLER_mscratch_bypassing;
+    mepc_t CONTROLLER_mepc_bypassing;
+    mcause_t CONTROLLER_mcause_bypassing;
+    mstatus_t CONTROLLER_mstatus_bypassing;
+    mie_t CONTROLLER_mie_bypassing;
+    mip_t CONTROLLER_mip_bypassing;
+    mtval_t CONTROLLER_mtval_bypassing;
+    mideleg_t CONTROLLER_mideleg_bypassing;
+    medeleg_t CONTROLLER_medeleg_bypassing;
+    satp_t CONTROLLER_satp_bypassing;
+    sepc_t CONTROLLER_sepc_bypassing;
+    scause_t CONTROLLER_scause_bypassing;
+    stval_t CONTROLLER_stval_bypassing;
+    stvec_t CONTROLLER_stvec_bypassing;
+    sscratch_t CONTROLLER_sscratch_bypassing;
+
+    priviledge_mode_t CONTROLLER_priviledge_mode_data_write;
+    mtvec_t CONTROLLER_mtvec_data_write;
+    mscratch_t CONTROLLER_mscratch_data_write;
+    mepc_t CONTROLLER_mepc_data_write;
+    mcause_t CONTROLLER_mcause_data_write;
+    mstatus_t CONTROLLER_mstatus_data_write;
+    mie_t CONTROLLER_mie_data_write;
+    mip_t CONTROLLER_mip_data_write;
+    mtval_t CONTROLLER_mtval_data_write;
+    mideleg_t CONTROLLER_mideleg_data_write;
+    medeleg_t CONTROLLER_medeleg_data_write;
+    satp_t CONTROLLER_satp_data_write;
+    sepc_t CONTROLLER_sepc_data_write;
+    scause_t CONTROLLER_scause_data_write;
+    stval_t CONTROLLER_stval_data_write;
+    stvec_t CONTROLLER_stvec_data_write;
+    sscratch_t CONTROLLER_sscratch_data_write;
+
+    logic CONTROLLER_priviledge_mode_wen;
+    logic CONTROLLER_mtvec_wen;
+    logic CONTROLLER_mscratch_wen;
+    logic CONTROLLER_mepc_wen;
+    logic CONTROLLER_mcause_wen;
+    logic CONTROLLER_mstatus_wen;
+    logic CONTROLLER_mie_wen;
+    logic CONTROLLER_mip_wen;
+    logic CONTROLLER_mtval_wen;
+    logic CONTROLLER_mideleg_wen;
+    logic CONTROLLER_medeleg_wen;
+    logic CONTROLLER_satp_wen;
+    logic CONTROLLER_sepc_wen;
+    logic CONTROLLER_scause_wen;
+    logic CONTROLLER_stval_wen;
+    logic CONTROLLER_stvec_wen;
+    logic CONTROLLER_sscratch_wen;
+
+    CONTROLLER_exception_handler (
+        .clk (sys_clk),
+        .rst (reset_of_clk10M),
+
+        .priviledge_mode_wen(CONTROLLER_priviledge_mode_wen),
+        .mtvec_wen(CONTROLLER_mtvec_wen),
+        .mscratch_wen(CONTROLLER_mscratch_wen),
+        .mepc_wen(CONTROLLER_mepc_wen),
+        .mcause_wen(CONTROLLER_mcause_wen),
+        .mstatus_wen(CONTROLLER_mstatus_wen),
+        .mie_wen(CONTROLLER_mie_wen),
+        .mip_wen(CONTROLLER_mip_wen),
+        .mtval_wen(CONTROLLER_mtval_wen),
+        .mideleg_wen(CONTROLLER_mideleg_wen),
+        .medeleg_wen(CONTROLLER_medeleg_wen),
+        .satp_wen(CONTROLLER_satp_wen),
+        .sepc_wen(CONTROLLER_sepc_wen),
+        .scause_wen(CONTROLLER_scause_wen),
+        .stval_wen(CONTROLLER_stval_wen),
+        .stvec_wen(CONTROLLER_stvec_wen),
+        .sscratch_wen(CONTROLLER_sscratch_wen),
+
+        .priviledge_mode_i(CONTROLLER_priviledge_mode_data_write),
+        .mtvec_i(CONTROLLER_mtvec_data_write),
+        .mscratch_i(CONTROLLER_mscratch_data_write),
+        .mepc_i(CONTROLLER_mepc_data_write),
+        .mcause_i(CONTROLLER_mcause_data_write),
+        .mstatus_i(CONTROLLER_mstatus_data_write),
+        .mie_i(CONTROLLER_mie_data_write),
+        .mip_i(CONTROLLER_mip_data_write),
+        .mtval_i(CONTROLLER_mtval_data_write),
+        .mideleg_i(CONTROLLER_mideleg_data_write),
+        .medeleg_i(CONTROLLER_medeleg_data_write),
+        .satp_i(CONTROLLER_satp_data_write),
+        .sepc_i(CONTROLLER_sepc_data_write),
+        .scause_i(CONTROLLER_scause_data_write),
+        .stval_i(CONTROLLER_stval_data_write),
+        .stvec_i(CONTROLLER_stvec_data_write),
+        .sscratch_i(CONTROLLER_sscratch_data_write),
+
+        .priviledge_mode_o(CONTROLLER_priviledge_mode_bypassing),
+        .mtvec_o(CONTROLLER_mtvec_bypassing),
+        .mscratch_o(CONTROLLER_mscratch_bypassing),
+        .mepc_o(CONTROLLER_mepc_bypassing),
+        .mcause_o(CONTROLLER_mcause_bypassing),
+        .mstatus_o(CONTROLLER_mstatus_bypassing),
+        .mie_o(CONTROLLER_mie_bypassing),
+        .mip_o(CONTROLLER_mip_bypassing),
+        .mtval_o(CONTROLLER_mtval_bypassing),
+        .mideleg_o(CONTROLLER_mideleg_bypassing),
+        .medeleg_o(CONTROLLER_medeleg_bypassing),
+        .satp_o(CONTROLLER_satp_bypassing),
+        .sepc_o(CONTROLLER_sepc_bypassing),
+        .scause_o(CONTROLLER_scause_bypassing),
+        .stval_o(CONTROLLER_stval_bypassing),
+        .stvec_o(CONTROLLER_stvec_bypassing),
+        .sscratch_o(CONTROLLER_sscratch_bypassing),
+
+        .priviledge_mode_reg(CONTROLLER_priviledge_mode_reg),
+        .mtvec_reg(CONTROLLER_mtvec_reg),
+        .mscratch_reg(CONTROLLER_mscratch_reg),
+        .mepc_reg(CONTROLLER_mepc_reg),
+        .mcause_reg(CONTROLLER_mcause_reg),
+        .mstatus_reg(CONTROLLER_mstatus_reg),
+        .mie_reg(CONTROLLER_mie_reg),
+        .mip_reg(CONTROLLER_mip_reg),
+        .mtval_reg(CONTROLLER_mtval_reg),
+        .mideleg_reg(CONTROLLER_mideleg_reg),
+        .medeleg_reg(CONTROLLER_medeleg_reg),
+        .satp_reg(CONTROLLER_satp_reg),
+        .sepc_reg(CONTROLLER_sepc_reg),
+        .scause_reg(CONTROLLER_scause_reg),
+        .stval_reg(CONTROLLER_stval_reg),
+        .stvec_reg(CONTROLLER_stvec_reg),
+        .sscratch_reg(CONTROLLER_sscratch_reg)
+    );
 
     // Controller
     logic [3:0] CONTROLLER_stall;
@@ -258,6 +408,10 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] IF_imm;
     logic IF_imm_en;
     logic [4:0] IF_rs1, IF_rs2, IF_rd;
+    
+    csr_op_t IF_csr_opcode;
+    logic [`CSR_ADDR_WIDTH-1:0] IF_csr_addr;
+
     logic [`PC_MUX_WIDTH-1:0] IF_pc_mux_ctr;
     logic [`BC_OP_WIDTH-1:0] IF_BC_op;
     logic [`ALU_OP_WIDTH-1:0] IF_ALU_op;
@@ -318,6 +472,9 @@ module thinpad_top #(
     logic [DATA_WIDTH-1:0] ID_imm;
     logic ID_imm_en;
     logic [4:0] ID_rs1, ID_rs2, ID_rd;
+    csr_op_t ID_csr_opcode;
+    logic [`CSR_ADDR_WIDTH-1:0] ID_csr_addr;
+    logic [DATA_WIDTH-1:0] ID_csr_data;
     logic [`PC_MUX_WIDTH-1:0] ID_pc_mux_ctr;
     logic [`BC_OP_WIDTH-1:0] ID_BC_op;
     logic [`ALU_OP_WIDTH-1:0] ID_ALU_op;
@@ -330,6 +487,7 @@ module thinpad_top #(
 
     IF_DECODER instr_decoder(
         .instr(IF_instr),
+
         .imm(IF_imm),
         .imm_en(IF_imm_en),
         .dm_en(IF_dm_en),
@@ -340,6 +498,10 @@ module thinpad_top #(
         .rd(IF_rd),
         .rs1(IF_rs1),
         .rs2(IF_rs2),
+        
+        .csr_opcode(IF_csr_opcode),
+        .csr_addr(IF_csr_addr),
+        
         .pc_mux_ctr(IF_pc_mux_ctr),
         .bc_op(IF_BC_op),
         .alu_op(IF_ALU_op),
@@ -355,12 +517,16 @@ module thinpad_top #(
         .bubble(CONTROLLER_bubble[3]),
 
         // IF -> ID
+        .csr_addr_i(IF_csr_addr),
+        .csr_opcode_i(IF_csr_opcode),
         .rs1_i(IF_rs1),
         .rs2_i(IF_rs2),
         .rd_i(IF_rd),
         .imm_i(IF_imm),
         .imm_en_i(IF_imm_en),
         
+        .csr_addr_o(ID_csr_addr),
+        .csr_opcode_o(ID_csr_opcode),
         .rs1_o(ID_rs1),
         .rs2_o(ID_rs2),
         .rd_o(ID_rd),
@@ -400,6 +566,74 @@ module thinpad_top #(
         .wb_en_o(ID_wb_en)
     );
 
+    logic [4:0] CSRT_RF_rs1;
+    logic [DATA_WIDTH-1:0] RF_CSRT_x_rs1;
+
+    ID_csr_transfer id_csr_transfer (
+        .csr_addr(ID_csr_addr),
+        .rs1_i(ID_rs1),
+        .zimm(ID_imm),
+        .csr_opcode(ID_csr_opcode),
+        .x_rs1(CSRT_RF_rs1),
+        .rs1_o(RF_CSRT_x_rs1),
+        .csr_data(ID_csr_data),
+        
+        .priviledge_mode_i(CONTROLLER_priviledge_mode_reg),
+        .mtvec_i(CONTROLLER_mtvec_reg),
+        .mscratch_i(CONTROLLER_mscratch_reg),
+        .mepc_i(CONTROLLER_mepc_reg),
+        .mcause_i(CONTROLLER_mcause_reg),
+        .mstatus_i(CONTROLLER_mstatus_reg),
+        .mie_i(CONTROLLER_mie_reg),
+        .mip_i(CONTROLLER_mip_reg),
+        .mtval_i(CONTROLLER_mtval_reg),
+        .mideleg_i(CONTROLLER_mideleg_reg),
+        .medeleg_i(CONTROLLER_medeleg_reg),
+        .satp_i(CONTROLLER_satp_reg),
+        .sepc_i(CONTROLLER_sepc_reg),
+        .scause_i(CONTROLLER_scause_reg),
+        .stval_i(CONTROLLER_stval_reg),
+        .stvec_i(CONTROLLER_stvec_reg),
+        .sscratch_i(CONTROLLER_sscratch_reg),
+
+        .priviledge_mode_o(CONTROLLER_priviledge_mode_data_write),
+        .mtvec_o(CONTROLLER_mtvec_data_write),
+        .mscratch_o(CONTROLLER_mscratch_data_write),
+        .mepc_o(CONTROLLER_mepc_data_write),
+        .mcause_o(CONTROLLER_mcause_data_write),
+        .mstatus_o(CONTROLLER_mstatus_data_write),
+        .mie_o(CONTROLLER_mie_data_write),
+        .mip_o(CONTROLLER_mip_data_write),
+        .mtval_o(CONTROLLER_mtval_data_write),
+        .mideleg_o(CONTROLLER_mideleg_data_write),
+        .medeleg_o(CONTROLLER_medeleg_data_write),
+        .satp_o(CONTROLLER_satp_data_write),
+        .sepc_o(CONTROLLER_sepc_data_write),
+        .scause_o(CONTROLLER_scause_data_write),
+        .stval_o(CONTROLLER_stval_data_write),
+        .stvec_o(CONTROLLER_stvec_data_write),
+        .sscratch_o(CONTROLLER_sscratch_data_write),
+
+        .priviledge_mode_wen(CONTROLLER_priviledge_mode_wen),
+        .mtvec_wen(CONTROLLER_mtvec_wen),
+        .mscratch_wen(CONTROLLER_mscratch_wen),
+        .mepc_wen(CONTROLLER_mepc_wen),
+        .mcause_wen(CONTROLLER_mcause_wen),
+        .mstatus_wen(CONTROLLER_mstatus_wen),
+        .mie_wen(CONTROLLER_mie_wen),
+        .mip_wen(CONTROLLER_mip_wen),
+        .mtval_wen(CONTROLLER_mtval_wen),
+        .mideleg_wen(CONTROLLER_mideleg_wen),
+        .medeleg_wen(CONTROLLER_medeleg_wen),
+        .satp_wen(CONTROLLER_satp_wen),
+        .sepc_wen(CONTROLLER_sepc_wen),
+        .scause_wen(CONTROLLER_scause_wen),
+        .stval_wen(CONTROLLER_stval_wen),
+        .stvec_wen(CONTROLLER_stvec_wen),
+        .sscratch_wen(CONTROLLER_sscratch_wen)
+    );
+
+
     logic [4:0] RF_waddr;
     logic [DATA_WIDTH-1:0] RF_wdata;
     logic RF_wen;
@@ -418,10 +652,14 @@ module thinpad_top #(
         .raddr_b(ID_rs2),
 
         .rdata_a(RF_data_a),
-        .rdata_b(RF_data_b)
+        .rdata_b(RF_data_b),
+
+        .raddr_csr(CSRT_RF_rs1),
+        .rdata_csr(RF_CSRT_x_rs1)
     );
 
     logic [DATA_WIDTH-1:0] EXE_data_a, EXE_data_b, EXE_imm;
+    logic [DATA_WIDTH-1:0] EXE_csr_data;
     logic EXE_imm_en;
     logic [`BC_OP_WIDTH-1:0] EXE_bc_op;
     logic [`ALU_OP_WIDTH-1:0] EXE_ALU_op;
@@ -450,6 +688,7 @@ module thinpad_top #(
         .imm_en_o(EXE_imm_en),
         .rd_o(EXE_rd),
 
+        .csr_data_i(ID_csr_data),
         .rf_data_a_i(RF_data_a),
         .bc_op_i(ID_BC_op),
         .alu_op_i(ID_ALU_op),
@@ -457,6 +696,7 @@ module thinpad_top #(
         .alu_mux_b_ctr_i(ID_ALU_mux_b_ctr),
         .pc_mux_ctr_i(ID_pc_mux_ctr),
 
+        .csr_data_o(EXE_csr_data),
         .rf_data_a_o(EXE_data_a),
         .bc_op_o(EXE_bc_op),
         .alu_op_o(EXE_ALU_op),
@@ -501,6 +741,7 @@ module thinpad_top #(
         .alu_mux_a_ctr_i(EXE_ALU_mux_a_ctr),
         .alu_mux_a_data(EXE_data_a),
         .alu_mux_a_pc(EXE_pc_addr),
+        .alu_mux_a_csr(EXE_csr_data),
         .alu_mux_a_o(alu_a)
     );
 
