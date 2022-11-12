@@ -385,11 +385,18 @@ module IF_DECODER #(
                 wb_en = 1; dm_en = 0; dm_wen = 0;
             end
 
-            // OP_ECALL,
-            // OP_EBREAK,
-            // OP_URET,
-            // OP_SRET,
-            // OP_MRET,
+            OP_ECALL, OP_EBREAK, OP_SRET, OP_MRET: begin
+                case (op_type) 
+                    OP_ECALL: csr_opcode = `CSR_OP_ECALL;
+                    OP_EBREAK: csr_opcode = `CSR_OP_EBREAK;
+                    OP_SRET: csr_opcode = `CSR_OP_SRET;
+                    OP_MRET: csr_opcode = `CSR_OP_MRET;
+                endcase
+                imm = 0; imm_en = 0;
+                wb_en = 0; dm_en = 0; dm_wen = 0;
+            end
+
+            // OP_URET
 
             OP_RDTIME, OP_RDTIMEH: begin
                 imm_en = 1; wb_en = 1;
@@ -597,6 +604,15 @@ module IF_DECODER #(
                 alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
                 alu_mux_b_ctr_comb = `ALU_MUX_B_IMM;
                 dm_mux_ctr_comb = `DM_MUX_MEM;
+            end
+
+            OP_ECALL, OP_EBREAK, OP_SRET, OP_MRET: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                bc_op_comb = `BC_OP_FALSE;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_ZERO;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
             end
 
         endcase

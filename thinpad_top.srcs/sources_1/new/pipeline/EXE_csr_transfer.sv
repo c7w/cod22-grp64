@@ -1,7 +1,7 @@
 // TODO: buggy if u dont introduce data bypassing
 `include "../headers/exception.svh"
 
-module ID_csr_transfer #(
+module EXE_csr_transfer #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 )(
@@ -10,14 +10,10 @@ module ID_csr_transfer #(
     input wire rst,
 
     input wire [`CSR_ADDR_WIDTH-1:0] csr_addr,
-    input wire [4:0] rs1_i,
     input wire [DATA_WIDTH-1:0] zimm,
     input wire [`CSR_OP_WIDTH-1:0] csr_opcode,
-
-    input wire [DATA_WIDTH-1:0] x_rs1,  // from RF
-    output logic [4:0] rs1_o,  // to RF
-
-    output logic [DATA_WIDTH-1:0] csr_data,  // to EXE
+    input wire [DATA_WIDTH-1:0] x_rs1,  // from ID-EXE
+    output logic [DATA_WIDTH-1:0] csr_data,  // to 
     
     // From CSR transfer
     input wire priviledge_mode_t priviledge_mode_i,
@@ -75,10 +71,10 @@ module ID_csr_transfer #(
     output logic sscratch_wen,
 
 
-    input [ADDR_WIDTH-1:0] IF_pc_addr,
-    input [ADDR_WIDTH-1:0] ID_pc_addr,
-    input [ADDR_WIDTH-1:0] EXE_pc_addr,
-    input [ADDR_WIDTH-1:0] MEM_pc_addr,
+    input wire [ADDR_WIDTH-1:0] IF_pc_addr,
+    input wire [ADDR_WIDTH-1:0] ID_pc_addr,
+    input wire [ADDR_WIDTH-1:0] EXE_pc_addr,
+    input wire [ADDR_WIDTH-1:0] MEM_pc_addr,
 
     // From IF::IM
 
@@ -94,11 +90,9 @@ module ID_csr_transfer #(
 
 
     // Output Signals
-    logic [3:0] state_o,
-    logic [ADDR_WIDTH-1:0] pc_nxt_exception
+    output logic [3:0] state_o,
+    output logic [ADDR_WIDTH-1:0] pc_nxt_exception
 );
-
-    assign rs1_o = rs1_i;
 
     // If state == STATE_SEQ, signal_o = signal_o_normal (comb)
     // Elif state == STATE_BLOCK, write disabled
@@ -345,11 +339,12 @@ module ID_csr_transfer #(
         if (0 <= csr_opcode && csr_opcode < 6) begin
             case (csr_opcode) 
                 CSR_OP_CSRRW: calc_result = x_rs1;
-                CSR_OP_CSRRS: calc_result = csr_addr | x_rs1;
-                CSR_OP_CSRRC: calc_result = csr_addr & ~x_rs1;
+                CSR_OP_CSRRS: calc_result = csr_data | x_rs1;
+                CSR_OP_CSRRC: calc_result = csr_data & ~x_rs1;
                 CSR_OP_CSRRWI: calc_result = zimm;
-                CSR_OP_CSRRSI: calc_result = csr_addr | zimm;
-                CSR_OP_CSRRCI: calc_result = csr_addr & ~zimm;
+                CSR_OP_CSRRSI: calc_result = csr_data | zimm;
+                CSR_OP_CSRRCI: calc_result = csr_data & ~zimm;
+                default: calc_result = 0;
             endcase
 
             case (csr_addr) 
@@ -375,6 +370,7 @@ module ID_csr_transfer #(
     end
 
     always_comb begin
+        csr_data = 0;
         case (csr_addr) 
             // CSR_PRIVILEDGE_MODE_ADDR: csr_data = priviledge_mode_i;
             `CSR_MTVEC_ADDR: csr_data = mtvec_i;
@@ -410,6 +406,8 @@ module ID_csr_transfer #(
 
     // intermediate variables
     logic [30:0] exception_operand_for_ecall_ebreak;
+    logic drained;
+    assign drained = (EXE_pc_addr == 0 && MEM_pc_addr == 0);
 
     always_ff @(posedge clk) begin
 
@@ -458,18 +456,15 @@ module ID_csr_transfer #(
 
             if (state == STATE_SEQ || state == STATE_BLOCK) begin
 
-                if (state == STATE_BLOCK) begin
-                    // TODO: add criterion to judge if the pipeline has drained
-                    state <= STATE_CATCH;
-                end
 
-                if ((csr_opcode == `CSR_OP_ECALL || csr_opcode == `CSR_OP_EBREAK) && EXCEPTION_ID < exception_stage_reg) begin
-                    exception_stage_reg <= EXCEPTION_ID;
+                if ((csr_opcode == `CSR_OP_ECALL || csr_opcode == `CSR_OP_EBREAK) && EXCEPTION_EXE < exception_stage_reg) begin
+                    exception_stage_reg <= EXCEPTION_EXE;
+                    state <= STATE_BLOCK;
 
                     if (priviledge_mode_i <= `PRIVILEDGE_MODE_S && medeleg_i[exception_operand_for_ecall_ebreak]) begin // delegated to S level
 
                         /* Start: Raise an exception to S Level */
-                        sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
+                        sepc_o_catch <= EXE_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
                         scause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; scause_wen_catch <= 1;
                         stval_o_catch <= 0; stval_wen_catch <= 1;
@@ -494,7 +489,7 @@ module ID_csr_transfer #(
                     end else begin  // M level
                         
                         /* Start: Raise an exception to M Level */
-                        mepc_o_catch <= ID_pc_addr; mepc_wen_catch <= 1;
+                        mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; mcause_wen_catch <= 1;
                         mtval_o_catch <= 0; mtval_wen_catch <= 1;
@@ -514,8 +509,9 @@ module ID_csr_transfer #(
                     end
                 end
 
-                else if ((csr_opcode == `CSR_OP_URET || csr_opcode == `CSR_OP_SRET || csr_opcode == `CSR_OP_MRET) && EXCEPTION_ID < exception_stage_reg) begin
-                    exception_stage_reg <= EXCEPTION_ID;
+                else if ((csr_opcode == `CSR_OP_URET || csr_opcode == `CSR_OP_SRET || csr_opcode == `CSR_OP_MRET) && EXCEPTION_EXE < exception_stage_reg) begin
+                    exception_stage_reg <= EXCEPTION_EXE;
+                    state <= STATE_BLOCK;
 
                     if (csr_opcode == `CSR_OP_MRET) begin
 
@@ -544,10 +540,10 @@ module ID_csr_transfer #(
                         pc_nxt_exception <= sepc_i;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
-                            mstatus_i.mpp
+                            mstatus_i.mpp,
                             mstatus_i.trash_1,
                             1'b0,  // spp <= U
-                            mstatus_i.mpie
+                            mstatus_i.mpie,
                             mstatus_i.trash_2,
                             1'b1,  // spie <= 1 
                             mstatus_i.upie, 
@@ -560,19 +556,23 @@ module ID_csr_transfer #(
 
                     end else if (csr_opcode == `CSR_OP_URET) begin
                         // No one cares you.
+                        // TODO: In fact, we could map all instructions unknown to such a loser in Permission Check Module in ID stage.
                         // Todo: raise IllegalInstructionException
                     end
 
                 end
 
 
-                else if (mip_i.mtip & mie_i.mtie) begin
+                else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0) begin
 
                     // This interrupt cannot be delegated
                     if ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie)) begin
 
+                        exception_stage_reg <= INTERRUPT_TIMER;
+                        state <= STATE_BLOCK;
+
                         /* Start: Raise an exception to M Level */
-                        mepc_o_catch <= ID_pc_addr; mepc_wen_catch <= 1;
+                        mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; mcause_wen_catch <= 1;
                         mtval_o_catch <= 0; mtval_wen_catch <= 1;
@@ -599,6 +599,9 @@ module ID_csr_transfer #(
                     // Forwarded exception
                     if (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie)) begin
 
+                        exception_stage_reg <= INTERRUPT_TIMER;
+                        state <= STATE_BLOCK;
+
                         /* Start: Raise an exception to S Level */
                         sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
@@ -624,6 +627,12 @@ module ID_csr_transfer #(
 
                     end
                 end
+
+                // criterion to judge if the pipeline has drained
+                else if (state == STATE_BLOCK && drained) begin
+                    state <= STATE_CATCH;
+                end
+
             end else begin
                 // reset
                 state <= STATE_SEQ;

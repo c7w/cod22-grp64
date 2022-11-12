@@ -1,8 +1,6 @@
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
 
-// TODO: add support for draining the whole pipeline
-
 module CONTROLLER_pipeline #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
@@ -19,6 +17,8 @@ module CONTROLLER_pipeline #(
     input wire [4:0] WB_rd,
     input wire WB_wb_en,
 
+    input wire [ADDR_WIDTH-1:0] pc_nxt_exception,
+    input wire [3:0] CONTROLLER_csr_transfer_state,
     input wire bc_comp_result,
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr,
     input wire [`PC_MUX_WIDTH-1:0] EXE_pc_mux_ctr,
@@ -50,7 +50,12 @@ module CONTROLLER_pipeline #(
     logic [ADDR_WIDTH-1:0] pc_addr_right;
 
     always_comb begin
-        if ((EXE_pc_mux_ctr == `PC_MUX_BRANCH) && bc_comp_result) begin
+
+        if (CONTROLLER_csr_transfer_state == 2) begin
+            pc_addr_right = pc_nxt_exception;
+        end
+
+        else if ((EXE_pc_mux_ctr == `PC_MUX_BRANCH) && bc_comp_result) begin
             pc_addr_right = EXE_pc_addr_calculated;
         end
 
@@ -59,11 +64,17 @@ module CONTROLLER_pipeline #(
         end
     end
 
-    assign branching = (EXE_pc_addr != 0) && ~( ID_pc_addr == pc_addr_right || (ID_pc_addr == 0 && IF_pc_addr == pc_addr_right) );
+    assign branching = ((EXE_pc_addr != 0) && ~( ID_pc_addr == pc_addr_right || (ID_pc_addr == 0 && IF_pc_addr == pc_addr_right) )) || (CONTROLLER_csr_transfer_state == 2);
 
     always_comb begin
         stall_o = 4'b0000;
         bubble_o = 4'b0000;
+
+        if (CONTROLLER_csr_transfer_state == 1) begin
+            // Drain the whole pipeline
+            stall_o = 4'b1000;
+            bubble_o = 4'b1100;
+        end
 
         if (stall_DM) begin
             stall_o = 4'b1111;

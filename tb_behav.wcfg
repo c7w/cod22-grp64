@@ -5,21 +5,23 @@
    <db_ref_list>
       <db_ref path="tb_behav.wdb" id="1">
          <top_modules>
+            <top_module name="\$unit_CONTROLLER_csrs_sv " />
+            <top_module name="\$unit_thinpad_top_sv " />
             <top_module name="glbl" />
             <top_module name="tb" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="265538797fs"></ZoomStartTime>
-      <ZoomEndTime time="265865798fs"></ZoomEndTime>
-      <Cursor1Time time="561065000fs"></Cursor1Time>
+      <ZoomStartTime time="80645416fs"></ZoomStartTime>
+      <ZoomEndTime time="81070917fs"></ZoomEndTime>
+      <Cursor1Time time="81000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="194"></NameColumnWidth>
-      <ValueColumnWidth column_width="126"></ValueColumnWidth>
+      <NameColumnWidth column_width="246"></NameColumnWidth>
+      <ValueColumnWidth column_width="122"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="176" />
+   <WVObjectSize size="252" />
    <wvobject fp_name="/tb/dut/clk_50M" type="logic">
       <obj_property name="ElementShortName">clk_50M</obj_property>
       <obj_property name="ObjectShortName">clk_50M</obj_property>
@@ -132,6 +134,10 @@
       <obj_property name="ElementShortName">rxd</obj_property>
       <obj_property name="ObjectShortName">rxd</obj_property>
    </wvobject>
+   <wvobject fp_name="/tb/dut/locked" type="logic">
+      <obj_property name="ElementShortName">locked</obj_property>
+      <obj_property name="ObjectShortName">locked</obj_property>
+   </wvobject>
    <wvobject fp_name="/tb/dut/clk_10M" type="logic">
       <obj_property name="ElementShortName">clk_10M</obj_property>
       <obj_property name="ObjectShortName">clk_10M</obj_property>
@@ -140,6 +146,14 @@
       <obj_property name="ElementShortName">clk_20M</obj_property>
       <obj_property name="ObjectShortName">clk_20M</obj_property>
    </wvobject>
+   <wvobject fp_name="/tb/dut/clk_30M" type="logic">
+      <obj_property name="ElementShortName">clk_30M</obj_property>
+      <obj_property name="ObjectShortName">clk_30M</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/clk_40M" type="logic">
+      <obj_property name="ElementShortName">clk_40M</obj_property>
+      <obj_property name="ObjectShortName">clk_40M</obj_property>
+   </wvobject>
    <wvobject fp_name="/tb/dut/reset_of_clk10M" type="logic">
       <obj_property name="ElementShortName">reset_of_clk10M</obj_property>
       <obj_property name="ObjectShortName">reset_of_clk10M</obj_property>
@@ -147,6 +161,282 @@
    <wvobject fp_name="/tb/dut/sys_clk" type="logic">
       <obj_property name="ElementShortName">sys_clk</obj_property>
       <obj_property name="ObjectShortName">sys_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_priviledge_mode_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_priviledge_mode_reg[1:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_priviledge_mode_reg[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtvec_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtvec_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtvec_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mscratch_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mscratch_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mscratch_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mepc_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mepc_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mepc_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mcause_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mcause_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mcause_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mstatus_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mstatus_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mstatus_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mie_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mie_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mie_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mip_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mip_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mip_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtval_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtval_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtval_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mideleg_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mideleg_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mideleg_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_medeleg_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_medeleg_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_medeleg_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_satp_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_satp_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_satp_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sepc_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sepc_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sepc_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_scause_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_scause_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_scause_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stval_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stval_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stval_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stvec_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stvec_reg</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stvec_reg</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sscratch_reg" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sscratch_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sscratch_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_priviledge_mode_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_priviledge_mode_bypassing[1:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_priviledge_mode_bypassing[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtvec_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtvec_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtvec_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mscratch_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mscratch_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mscratch_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mepc_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mepc_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mepc_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mcause_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mcause_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mcause_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mstatus_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mstatus_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mstatus_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mie_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mie_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mie_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mip_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mip_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mip_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtval_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtval_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtval_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mideleg_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mideleg_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mideleg_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_medeleg_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_medeleg_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_medeleg_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_satp_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_satp_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_satp_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sepc_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sepc_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sepc_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_scause_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_scause_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_scause_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stval_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stval_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stval_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stvec_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stvec_bypassing</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stvec_bypassing</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sscratch_bypassing" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sscratch_bypassing[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sscratch_bypassing[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_priviledge_mode_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_priviledge_mode_data_write[1:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_priviledge_mode_data_write[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtvec_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtvec_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtvec_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mscratch_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mscratch_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mscratch_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mepc_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mepc_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mepc_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mcause_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mcause_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mcause_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mstatus_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mstatus_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mstatus_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mie_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mie_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mie_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mip_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mip_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mip_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtval_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mtval_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtval_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mideleg_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_mideleg_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mideleg_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_medeleg_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_medeleg_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_medeleg_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_satp_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_satp_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_satp_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sepc_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sepc_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sepc_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_scause_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_scause_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_scause_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stval_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stval_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stval_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stvec_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_stvec_data_write</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stvec_data_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sscratch_data_write" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_sscratch_data_write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sscratch_data_write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_priviledge_mode_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_priviledge_mode_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_priviledge_mode_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtvec_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mtvec_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtvec_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mscratch_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mscratch_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mscratch_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mepc_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mepc_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mepc_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mcause_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mcause_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mcause_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mstatus_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mstatus_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mstatus_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mie_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mie_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mie_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mip_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mip_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mip_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mtval_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mtval_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mtval_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_mideleg_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_mideleg_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_mideleg_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_medeleg_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_medeleg_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_medeleg_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_satp_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_satp_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_satp_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sepc_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_sepc_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sepc_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_scause_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_scause_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_scause_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stval_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_stval_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stval_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_stvec_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_stvec_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_stvec_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_sscratch_wen" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_sscratch_wen</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_sscratch_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_interrupt_timer" type="logic">
+      <obj_property name="ElementShortName">CONTROLLER_interrupt_timer</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_interrupt_timer</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/CONTROLLER_stall" type="array">
       <obj_property name="ElementShortName">CONTROLLER_stall[3:0]</obj_property>
@@ -171,6 +461,14 @@
    <wvobject fp_name="/tb/dut/CONTROLLER_dm_ack" type="logic">
       <obj_property name="ElementShortName">CONTROLLER_dm_ack</obj_property>
       <obj_property name="ObjectShortName">CONTROLLER_dm_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/CONTROLLER_csr_transfer_state" type="array">
+      <obj_property name="ElementShortName">CONTROLLER_csr_transfer_state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">CONTROLLER_csr_transfer_state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/pc_nxt_exception" type="array">
+      <obj_property name="ElementShortName">pc_nxt_exception[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_nxt_exception[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/IF_pc_addr" type="array">
       <obj_property name="ElementShortName">IF_pc_addr[31:0]</obj_property>
@@ -207,6 +505,14 @@
    <wvobject fp_name="/tb/dut/IF_rd" type="array">
       <obj_property name="ElementShortName">IF_rd[4:0]</obj_property>
       <obj_property name="ObjectShortName">IF_rd[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/IF_csr_opcode" type="array">
+      <obj_property name="ElementShortName">IF_csr_opcode[3:0]</obj_property>
+      <obj_property name="ObjectShortName">IF_csr_opcode[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/IF_csr_addr" type="array">
+      <obj_property name="ElementShortName">IF_csr_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">IF_csr_addr[11:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/IF_pc_mux_ctr" type="array">
       <obj_property name="ElementShortName">IF_pc_mux_ctr[1:0]</obj_property>
@@ -308,6 +614,18 @@
       <obj_property name="ElementShortName">ID_rd[4:0]</obj_property>
       <obj_property name="ObjectShortName">ID_rd[4:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/tb/dut/ID_csr_opcode" type="array">
+      <obj_property name="ElementShortName">ID_csr_opcode[3:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_csr_opcode[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/ID_csr_addr" type="array">
+      <obj_property name="ElementShortName">ID_csr_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_csr_addr[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/ID_csr_data" type="array">
+      <obj_property name="ElementShortName">ID_csr_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_csr_data[31:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/tb/dut/ID_pc_mux_ctr" type="array">
       <obj_property name="ElementShortName">ID_pc_mux_ctr[1:0]</obj_property>
       <obj_property name="ObjectShortName">ID_pc_mux_ctr[1:0]</obj_property>
@@ -383,6 +701,18 @@
    <wvobject fp_name="/tb/dut/EXE_imm" type="array">
       <obj_property name="ElementShortName">EXE_imm[31:0]</obj_property>
       <obj_property name="ObjectShortName">EXE_imm[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/EXE_csr_opcode" type="array">
+      <obj_property name="ElementShortName">EXE_csr_opcode[3:0]</obj_property>
+      <obj_property name="ObjectShortName">EXE_csr_opcode[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/EXE_csr_addr" type="array">
+      <obj_property name="ElementShortName">EXE_csr_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">EXE_csr_addr[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/csr_transfer_data" type="array">
+      <obj_property name="ElementShortName">csr_transfer_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">csr_transfer_data[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/EXE_imm_en" type="logic">
       <obj_property name="ElementShortName">EXE_imm_en</obj_property>
@@ -507,6 +837,30 @@
    <wvobject fp_name="/tb/dut/MEM_wb_data" type="array">
       <obj_property name="ElementShortName">MEM_wb_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">MEM_wb_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_mtime" type="array">
+      <obj_property name="ElementShortName">mtimer_mtime[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mtimer_mtime[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_mtimecmp" type="array">
+      <obj_property name="ElementShortName">mtimer_mtimecmp[63:0]</obj_property>
+      <obj_property name="ObjectShortName">mtimer_mtimecmp[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_mtime_wen" type="logic">
+      <obj_property name="ElementShortName">mtimer_mtime_wen</obj_property>
+      <obj_property name="ObjectShortName">mtimer_mtime_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_mtimecmp_wen" type="logic">
+      <obj_property name="ElementShortName">mtimer_mtimecmp_wen</obj_property>
+      <obj_property name="ObjectShortName">mtimer_mtimecmp_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_upper_wen" type="logic">
+      <obj_property name="ElementShortName">mtimer_upper_wen</obj_property>
+      <obj_property name="ObjectShortName">mtimer_upper_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/mtimer_wdata" type="array">
+      <obj_property name="ElementShortName">mtimer_wdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mtimer_wdata[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/wbm_cyc_dm" type="logic">
       <obj_property name="ElementShortName">wbm_cyc_dm</obj_property>
@@ -675,54 +1029,5 @@
    <wvobject fp_name="/tb/dut/wbs2_we_o" type="logic">
       <obj_property name="ElementShortName">wbs2_we_o</obj_property>
       <obj_property name="ObjectShortName">wbs2_we_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/ADDR_WIDTH" type="array">
-      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
-      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/DATA_WIDTH" type="array">
-      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
-      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/waddr" type="array">
-      <obj_property name="ElementShortName">waddr[4:0]</obj_property>
-      <obj_property name="ObjectShortName">waddr[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/wdata" type="array">
-      <obj_property name="ElementShortName">wdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">wdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/wen" type="logic">
-      <obj_property name="ElementShortName">wen</obj_property>
-      <obj_property name="ObjectShortName">wen</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/raddr_a" type="array">
-      <obj_property name="ElementShortName">raddr_a[4:0]</obj_property>
-      <obj_property name="ObjectShortName">raddr_a[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/rdata_a" type="array">
-      <obj_property name="ElementShortName">rdata_a[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rdata_a[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/raddr_b" type="array">
-      <obj_property name="ElementShortName">raddr_b[4:0]</obj_property>
-      <obj_property name="ObjectShortName">raddr_b[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/rdata_b" type="array">
-      <obj_property name="ElementShortName">rdata_b[31:0]</obj_property>
-      <obj_property name="ObjectShortName">rdata_b[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb/dut/rf/data" type="array">
-      <obj_property name="ElementShortName">data[0:31][31:0]</obj_property>
-      <obj_property name="ObjectShortName">data[0:31][31:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

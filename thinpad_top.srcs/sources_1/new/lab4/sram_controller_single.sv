@@ -15,7 +15,7 @@ module sram_controller_single #(
     // wishbone slave interface
     input wire wb_cyc_i,
     input wire wb_stb_i,
-    output reg wb_ack_o,
+    output logic wb_ack_o,
     input wire [ADDR_WIDTH-1:0] wb_adr_i,
     input wire [DATA_WIDTH-1:0] wb_dat_i,
     output reg [DATA_WIDTH-1:0] wb_dat_o,
@@ -59,11 +59,17 @@ module sram_controller_single #(
     logic [DATA_WIDTH/8-1:0] wb_sel_i_cache;
     logic wb_we_i_cache;
 
+    always_comb begin
+        if (state == STATE_READ_2 || state == STATE_WRITE_3) begin
+            wb_ack_o = 1;
+        end else begin
+            wb_ack_o = 0;
+        end
+    end
+
     always @(posedge clk_i, posedge rst_i) begin
         if (rst_i) begin
             state <= STATE_IDLE;
-        
-            wb_ack_o <= 0;
             wb_dat_o <= 0; 
             sram_addr <= 0;
             sram_ce_n <= 1;
@@ -106,22 +112,18 @@ module sram_controller_single #(
                             wb_we_i_cache <= wb_we_i;
                             
                             // Start to request!
-                            wb_ack_o <= 0;
                         end
 
-                    end else begin
-                        wb_ack_o <= 0;
-                    end
+                    end 
                 
                 end
                 
                 STATE_READ: begin
                     state <= STATE_READ_2; // Wait
+                    wb_dat_o <= sram_data_i; 
                 end
                 
                 STATE_READ_2: begin
-                    wb_dat_o <= sram_data_i; 
-                    wb_ack_o <= 1;
                     sram_ce_n <= 1;
                     sram_oe_n <= 1;
                     state <= STATE_IDLE;
@@ -139,7 +141,6 @@ module sram_controller_single #(
                 
                 STATE_WRITE_3: begin
                     sram_ce_n <= 1;
-                    wb_ack_o <= 1;
                     state <= STATE_IDLE;
                 end
             

@@ -14,7 +14,7 @@ module IF_im #(
     output wire wb_cyc_o, 
     output logic wb_stb_o, 
     input wire wb_ack_i, 
-    output wire [ADDR_WIDTH-1:0] wb_adr_o, 
+    output logic [ADDR_WIDTH-1:0] wb_adr_o, 
     output wire [DATA_WIDTH-1:0] wb_dat_o, 
     input wire [DATA_WIDTH-1:0] wb_dat_i, 
     output wire [DATA_WIDTH/8-1:0] wb_sel_o, 
@@ -27,6 +27,7 @@ module IF_im #(
 
     logic im_ack_cache;
     logic wait_for_branching;
+    logic init;
 
 
     always_ff @(posedge clk) begin
@@ -34,37 +35,46 @@ module IF_im #(
             pc_addr_last <= 0;
             im_ack_cache <= 0;
             wait_for_branching <= 0;
+            init <= 1;
         end
 
         else begin
 
 
-            if (branching) begin
-                if (im_ack_no_branching) begin
-                    // Do nothing
-                end else begin
-                    wait_for_branching <= 1;
-                end
-            end
+            // if (branching) begin
+            //     if (im_ack_no_branching) begin
+            //         // Do nothing
+            //     end else begin
+            //         wait_for_branching <= 1;
+            //     end
+            // end
 
-            else begin
+            // else begin
 
-                if (wb_ack_i) begin
-                    if (wait_for_branching) begin
-                        wait_for_branching <= 0;
-                    end else begin
-                        im_ack_cache <= im_ack_cache || wb_ack_i;
-                        instr_cached <= wb_dat_i;
-                    end
-                end
-
-                else if (pc_addr != pc_addr_last) begin
-                    // This indicates a new SEQ request
+            if (wb_ack_i) begin
+                // if (wait_for_branching) begin
+                //     wait_for_branching <= 0;
+                // end else begin
+                //     im_ack_cache <= im_ack_cache || wb_ack_i;
+                //     instr_cached <= wb_dat_i;
+                // end
+                if (pc_addr != pc_addr_last) begin
                     pc_addr_last <= pc_addr;
                     im_ack_cache <= 0;
+                end else begin
+                    im_ack_cache <= im_ack_cache || wb_ack_i;
+                    instr_cached <= wb_dat_i;
                 end
-
             end
+
+            else if (pc_addr != pc_addr_last && (wb_ack_i || im_ack_cache || init)) begin
+                // This indicates a new SEQ request
+                pc_addr_last <= pc_addr;
+                im_ack_cache <= 0;
+                init <= 0;
+            end
+
+            // end
 
 
             
@@ -95,8 +105,13 @@ module IF_im #(
     assign wb_we_o = 1'b0;
     assign wb_dat_o = {DATA_WIDTH{1'b0}};
     assign wb_sel_o = 4'b1111;
-    assign wb_adr_o = pc_addr;
-
+    
+    always_comb begin
+        wb_adr_o = pc_addr_last;
+        if (pc_addr != pc_addr_last && (wb_ack_i || im_ack_cache)) begin
+            wb_adr_o = pc_addr;
+        end
+    end
     // always_comb begin
     //     wb_stb_o = (state == STATE_READ);
     //     im_ack = (state == STATE_IDLE);

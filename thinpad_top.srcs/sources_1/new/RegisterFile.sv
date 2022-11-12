@@ -9,9 +9,7 @@ module RegisterFile(
     input wire[4:0] raddr_a,
     output logic[31:0] rdata_a,
     input wire[4:0] raddr_b,
-    output logic[31:0] rdata_b,
-    input wire [4:0] raddr_csr,
-    output logic[31:0] rdata_csr
+    output logic[31:0] rdata_b
 );
 
     reg [31:0] data [0:31];
@@ -29,12 +27,6 @@ module RegisterFile(
             rdata_b = wdata;
         end else begin
             rdata_b = data[raddr_b];
-        end
-
-        if (raddr_csr == waddr && wen) begin
-            rdata_csr = wdata;
-        end else begin
-            rdata_csr = data[raddr_csr];
         end
 
     end

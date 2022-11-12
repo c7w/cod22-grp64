@@ -55,7 +55,7 @@ module MEM_dm #(
     logic dm_ack_cache;
 
     logic mtimer_lock;  // reg
-    logic mtimer_rdata;  // comb
+    logic [DATA_WIDTH-1:0] mtimer_rdata;  // comb
 
     // TODO: May be buggy?
     assign dm_ack = ((wbm_ack_i || dm_ack_cache) && same_request) || ~dm_en;

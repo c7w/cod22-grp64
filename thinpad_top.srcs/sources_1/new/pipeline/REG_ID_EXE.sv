@@ -16,7 +16,8 @@ module REG_ID_EXE #(
     output reg [4:0] rd_o, 
 
     // ID -> EXE
-    input wire [DATA_WIDTH-1:0] csr_data_i,
+    input wire [`CSR_ADDR_WIDTH-1:0] csr_addr_i,
+    input wire [`CSR_OP_WIDTH-1:0] csr_opcode_i,  // deleted csr_data_i
     input wire[DATA_WIDTH-1:0] rf_data_a_i,
     input wire [`BC_OP_WIDTH-1:0] bc_op_i,
     input wire [`ALU_OP_WIDTH-1:0] alu_op_i,
@@ -24,7 +25,8 @@ module REG_ID_EXE #(
     input wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_i,
     input wire[`PC_MUX_WIDTH-1:0] pc_mux_ctr_i,
 
-    output reg [DATA_WIDTH-1:0] csr_data_o,
+    output reg [`CSR_ADDR_WIDTH-1:0] csr_addr_o,
+    output reg [`CSR_OP_WIDTH-1:0] csr_opcode_o,
     output reg [DATA_WIDTH-1:0] rf_data_a_o,
     output reg [`BC_OP_WIDTH-1:0] bc_op_o,
     output reg [`ALU_OP_WIDTH-1:0] alu_op_o,
@@ -72,7 +74,8 @@ module REG_ID_EXE #(
             imm_en_o <= 0;
 
             // bubble : exe
-            csr_data_o <= 0;
+            csr_addr_o <= 0;
+            csr_opcode_o <= 15;
             rf_data_a_o <= 0;
             bc_op_o <= `BC_OP_FALSE;
             alu_op_o <= `ALU_OP_UNKNOWN;
@@ -106,7 +109,8 @@ module REG_ID_EXE #(
                     rd_o <= 0;
 
                     // bubble : exe
-                    csr_data_o <= 0;
+                    csr_addr_o <= 0;
+                    csr_opcode_o <= 15;
                     rf_data_a_o <= 0;
                     bc_op_o <= `BC_OP_FALSE;
                     alu_op_o <= `ALU_OP_UNKNOWN;
@@ -129,7 +133,8 @@ module REG_ID_EXE #(
                     rd_o <= rd_i;
 
                     // normal : exe
-                    csr_data_o <= csr_data_i;
+                    csr_addr_o <= csr_addr_i;
+                    csr_opcode_o <= csr_opcode_i;
                     rf_data_a_o <= rf_data_a_i;
                     bc_op_o <= bc_op_i;
                     alu_op_o <= alu_op_i;

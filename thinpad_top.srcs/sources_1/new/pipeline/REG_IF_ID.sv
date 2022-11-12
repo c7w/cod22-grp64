@@ -14,16 +14,12 @@ module REG_IF_ID #(
     input wire bubble, // bubble status
 
     // IF -> ID
-    input wire [`CSR_ADDR_WIDTH-1:0] csr_addr_i,
-    input wire [`CSR_OP_WIDTH-1:0] csr_opcode_i,
     input wire[4:0] rs1_i,
     input wire[4:0] rs2_i,
     input wire[4:0] rd_i,
     input wire[DATA_WIDTH-1:0] imm_i,
     input wire imm_en_i,
 
-    output reg [`CSR_ADDR_WIDTH-1:0] csr_addr_o,
-    output reg [`CSR_OP_WIDTH-1:0] csr_opcode_o,
     output reg[4:0] rs1_o,
     output reg[4:0] rs2_o,
     output reg[4:0] rd_o,
@@ -33,6 +29,8 @@ module REG_IF_ID #(
 
     // ID -> EXE
     // input wire[DATA_WIDTH-1:0] rf_data_a_i,
+    input wire [`CSR_ADDR_WIDTH-1:0] csr_addr_i,
+    input wire [`CSR_OP_WIDTH-1:0] csr_opcode_i,
     input wire [`BC_OP_WIDTH-1:0] bc_op_i,
     input wire [`ALU_OP_WIDTH-1:0] alu_op_i,
     input wire [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_i,
@@ -40,6 +38,8 @@ module REG_IF_ID #(
     input wire[`PC_MUX_WIDTH-1:0] pc_mux_ctr_i,
 
     // output reg [DATA_WIDTH-1:0] rf_data_a_o,
+    output reg [`CSR_ADDR_WIDTH-1:0] csr_addr_o,
+    output reg [`CSR_OP_WIDTH-1:0] csr_opcode_o,
     output reg [`BC_OP_WIDTH-1:0] bc_op_o,
     output reg [`ALU_OP_WIDTH-1:0] alu_op_o,
     output reg [`ALU_MUX_A_WIDTH-1:0] alu_mux_a_ctr_o,
@@ -81,7 +81,7 @@ module REG_IF_ID #(
 
         if (rst) begin
             // bubble : id
-            csr_addr_o <= 0; csr_opcode_o <= 0;
+            csr_addr_o <= 0; csr_opcode_o <= 15;
             rs1_o <= 0; rs2_o <= 0; rd_o <= 0; imm_o <= 0;
             imm_en_o <= 0;
 
@@ -115,7 +115,7 @@ module REG_IF_ID #(
                 if (bubble) begin
 
                     // bubble : id
-                    csr_addr_o <= 0; csr_opcode_o <= 0;
+                    csr_addr_o <= 0; csr_opcode_o <= 15;
                     rs1_o <= 0; rs2_o <= 0; rd_o <= 0; imm_o <= 0;
                     imm_en_o <= 0;
 
