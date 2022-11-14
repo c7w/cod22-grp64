@@ -16,7 +16,7 @@
 
 
 
-## TODO
+## 异常中断
 
 实现 csr 相关指令。使用 trivial 的实现方法：当decode到 7'b1110011 时，流水线暂时退化成多周期（PC stall，IF-ID 插 bubble），跑完这条指令再恢复，以支持“原子操作”
 
@@ -67,7 +67,15 @@ end
 
 
 
-给 decode 阶段加线：
+给 decode 阶段加线
+
+## 页表
 
 
+实现三种 page fault 异常：
 
+Attempting to fetch an instruction from a page that does not have execute permissions raises a fetch page-fault exception. 
+
+Attempting to execute a load or load-reserved instruction whose effective address lies within a page without read permissions raises a load page-fault exception. 
+
+Attempting to execute a store, store-conditional (regardless of success), or AMO instruction whose effective address lies within a page without write permissions raises a store page-fault exception.
