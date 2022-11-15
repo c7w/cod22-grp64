@@ -38,14 +38,15 @@ typedef struct packed {
 // Cache
 `define CACHE_TAG_WIDTH 12
 typedef struct packed {
-    logic [32-`CACHE_TAG_WIDTH-1:0] phys_index;
+    logic [32-2-`CACHE_TAG_WIDTH-1:0] phys_index;
     logic [31:0] data;
     logic dirty;
     logic valid;
 } cache_entry_t;
 
 typedef struct packed {
-    logic [32-`CACHE_TAG_WIDTH-1:0] phys_index;
+    logic [32-2-`CACHE_TAG_WIDTH-1:0] phys_index;
     logic [`CACHE_TAG_WIDTH-1:0] phys_tag;
+    logic [1:0] phys_offset;
 } cache_query_t;
 `endif

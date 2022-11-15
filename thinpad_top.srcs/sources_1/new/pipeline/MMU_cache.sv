@@ -7,13 +7,14 @@ module MMU_cache #(
 
     // Cache -> TLB
     output logic cache_ack,
-    output logic [DATA_WIDTH-1:0] data_i,
+    output logic [DATA_WIDTH-1:0] data_o,
 
     // TLB -> Cache
     input wire cache_en,
     input wire cache_wen,
-    output logic [ADDR_WIDTH-1:0] cache_addr,
-    output logic [DATA_WIDTH-1:0] data_o,
+    input wire [ADDR_WIDTH-1:0] cache_addr,
+    input wire [DATA_WIDTH-1:0] data_i,
+    // TODO: add more control signal :)
 
     // Cache -> Wishbone Master
     output wire wb_cyc_o, 
@@ -46,6 +47,14 @@ module MMU_cache #(
         if (rst) begin
             for (integer i = 0; i < 4096; i = i + 1) begin
                 cache_table[i] <= 0;
+            end
+        end
+
+        else begin
+            if (cache_hit) begin
+                
+            end else begin
+
             end
         end
     end
