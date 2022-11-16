@@ -1,13 +1,14 @@
+`include "../headers/mem.svh"
 module MMU_translation_unit #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-    input clk,
-    input rst,
+    input wire clk,
+    input wire rst,
 
     // Translation Unit -> TLB
     output logic translation_ack,
-    output logic pte_t translation_result,
+    output pte_t translation_result,
 
     // TLB -> Translation Unit
     input satp_t satp,
@@ -21,7 +22,7 @@ module MMU_translation_unit #(
     output logic [ADDR_WIDTH-1:0] wb_adr_o,
     output wire [DATA_WIDTH-1:0] wb_dat_o,
     output wire [DATA_WIDTH/8-1:0] wb_sel_o,
-    output wire wb_we_o
+    output wire wb_we_o,
 
     // Wishbone master -> Translation Unit
     input wire wb_ack_i,
@@ -32,13 +33,13 @@ module MMU_translation_unit #(
 
 
     // PTE Addr calculation
-    reg pte_t pte1, pte2;
-    wire [ADDR_WIDTH-1:0] pte1_addr, pte2_addr, pte3_addr;
+    pte_t pte1, pte2;
+    logic [ADDR_WIDTH-1:0] pte1_addr, pte2_addr, pte3_addr;
 
     always_comb begin
-        pte1_addr = {satp.ppn[19:0], virt_addr.vpn1[9:0], 2'b00};
-        pte2_addr = {pte1.ppn1[9:0], pte1.ppn0[9:0], virt_addr.vpn0[9:0], 2'b00};
-        pte3_addr = {pte2.ppn1[9:0], pte2.ppn0[9:0], virt_addr.offset[11:0]};
+        pte1_addr = {satp.ppn[19:0], translation_addr.vpn1[9:0], 2'b00};
+        pte2_addr = {pte1.ppn1[9:0], pte1.ppn0[9:0], translation_addr.vpn0[9:0], 2'b00};
+        pte3_addr = {pte2.ppn1[9:0], pte2.ppn0[9:0], translation_addr.offset[11:0]};
     end
 
 
@@ -52,7 +53,7 @@ module MMU_translation_unit #(
     } state_t;
     state_t state, state_nxt;
 
-    reg virt_addr translation_addr_cache;
+    virt_addr_t translation_addr_cache;
 
     // Translation Unit -> TLB
 

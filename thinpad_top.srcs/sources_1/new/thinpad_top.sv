@@ -458,10 +458,32 @@ module thinpad_top #(
     logic [DATA_WIDTH/8-1:0] wbm_sel_im;
     logic wbm_we_im;
 
-    IF_im instr_fetcher (
+    // IF_im instr_fetcher (
+    //     .clk(sys_clk),
+    //     .rst(reset_of_clk10M),
+
+    //     .pc_addr(IF_pc_addr),
+    //     .branching(CONTROLLER_branching),
+    //     .instr(IF_instr),
+    //     .im_ack(CONTROLLER_im_ack),
+
+    //     .wb_cyc_o(wbm_cyc_im),
+    //     .wb_stb_o(wbm_stb_im),
+    //     .wb_ack_i(wbm_ack_im),
+    //     .wb_adr_o(wbm_adr_im),
+    //     .wb_dat_o(wbm_dat_m2s_im),
+    //     .wb_dat_i(wbm_dat_s2m_im),
+    //     .wb_sel_o(wbm_sel_im),
+    //     .wb_we_o(wbm_we_im)
+    // );
+
+    IF_MMU instr_fetcher (
         .clk(sys_clk),
         .rst(reset_of_clk10M),
 
+        .satp_i(CONTROLLER_satp_bypassing),
+        .tlb_flush(1'b0),
+        
         .pc_addr(IF_pc_addr),
         .branching(CONTROLLER_branching),
         .instr(IF_instr),

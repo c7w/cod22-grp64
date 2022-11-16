@@ -2,8 +2,8 @@ module MMU_cache #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
-    input clk,
-    input rst,
+    input wire clk,
+    input wire rst,
 
     // Cache -> TLB
     output logic cache_ack,
@@ -22,9 +22,9 @@ module MMU_cache #(
     output wire wb_cyc_o, 
     output logic wb_stb_o, 
     output logic [ADDR_WIDTH-1:0] wb_adr_o,
-    output wire [DATA_WIDTH-1:0] wb_dat_o,
-    output wire [DATA_WIDTH/8-1:0] wb_sel_o,
-    output wire wb_we_o
+    output logic [DATA_WIDTH-1:0] wb_dat_o,
+    output logic [DATA_WIDTH/8-1:0] wb_sel_o,
+    output logic wb_we_o,
 
     // Wishbone Master -> Cache
     input wire wb_ack_i,
@@ -35,7 +35,7 @@ module MMU_cache #(
     cache_entry_t cache_table [0:4095];
 
     // cast cache_addr (logic [31:0]) to cache_query(cache_query_t)
-    wire cache_query_t cache_query;
+    cache_query_t cache_query;
     assign cache_query = cache_addr;
 
     cache_entry_t cache_entry;
@@ -72,23 +72,23 @@ module MMU_cache #(
         case (cache_width)
             1: begin
                 if (cache_sign_ext) begin
-                    wb_dat_i_assembled = {{24{hit_dat_i_shifted[7]}}, hit_dat_i_shifted[7:0]};
+                    hit_dat_i_assembled = {{24{hit_dat_i_shifted[7]}}, hit_dat_i_shifted[7:0]};
                 end else begin
-                    wb_dat_i_assembled = {{24{1'b0}}, hit_dat_i_shifted[7:0]};
+                    hit_dat_i_assembled = {{24{1'b0}}, hit_dat_i_shifted[7:0]};
                 end
             end
             2: begin
                 if (cache_sign_ext) begin
-                    wb_dat_i_assembled = {{24{hit_dat_i_shifted[15]}}, hit_dat_i_shifted[15:0]};
+                    hit_dat_i_assembled = {{24{hit_dat_i_shifted[15]}}, hit_dat_i_shifted[15:0]};
                 end else begin
-                    wb_dat_i_assembled = {{16{1'b0}}, hit_dat_i_shifted[15:0]};
+                    hit_dat_i_assembled = {{16{1'b0}}, hit_dat_i_shifted[15:0]};
                 end
             end
             4: begin
-                wb_dat_i_assembled = {hit_dat_i_shifted[31:0]};
+                hit_dat_i_assembled = {hit_dat_i_shifted[31:0]};
             end
             default: begin
-                wb_dat_i_assembled = 0;
+                hit_dat_i_assembled = 32'hbcbcbcbc;
             end
         endcase
     end
@@ -101,31 +101,31 @@ module MMU_cache #(
                 1: begin
                     case (offset) 
                         0: begin
-                            dat_to_save = {cache_entry.data[31:8], cache_data_i[7:0]};
+                            dat_to_save = {cache_entry.data[31:8], data_i[7:0]};
                         end
                         1: begin
-                            dat_to_save = {cache_entry.data[31:16], cache_data_i[7:0], cache_entry.data[7:0]};
+                            dat_to_save = {cache_entry.data[31:16], data_i[7:0], cache_entry.data[7:0]};
                         end
                         2: begin
-                            dat_to_save = {cache_entry.data[31:24], cache_data_i[7:0], cache_entry.data[15:0]};
+                            dat_to_save = {cache_entry.data[31:24], data_i[7:0], cache_entry.data[15:0]};
                         end
                         3: begin
-                            dat_to_save = {cache_data_i[7:0], cache_entry.data[23:0]};
+                            dat_to_save = {data_i[7:0], cache_entry.data[23:0]};
                         end
                     endcase
                 end
                 2: begin
                     if (offset == 0) begin
-                        dat_to_save = {cache_entry.data[31:16], cache_data_i[15:0]};
+                        dat_to_save = {cache_entry.data[31:16], data_i[15:0]};
                     end else if (offset == 2) begin
-                        dat_to_save = {cache_data_i[15:0], cache_entry.data[15:0]};
+                        dat_to_save = {data_i[15:0], cache_entry.data[15:0]};
                     end else begin
                         // Raise exception: alignment
                         // Well, may do this check in ID stage :)
                     end
                 end
                 4: begin
-                    dat_to_save = cache_data_i;
+                    dat_to_save = data_i;
                 end
                 default: begin
                     dat_to_save = 32'hffffffff;
@@ -154,8 +154,9 @@ module MMU_cache #(
         STATE_WRITE_BACK,
         STATE_WRITE_BACK_NXT,
         STATE_LOAD,
-        STATE_LOAD_NXT,
+        STATE_LOAD_NXT
     } state_t;
+    state_t state;
 
     assign wb_cyc_o = wb_stb_o;  
     // output logic wb_stb_o, // reg 

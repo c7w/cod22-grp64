@@ -11,6 +11,7 @@ CPU ---> [T   L   B]  <---> [Cache] <---> [MMU]
     UART / VGA / Flash    
 */
 
+`include "../headers/mem.svh"
 module MMU #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32,
@@ -20,7 +21,6 @@ module MMU #(
     input wire rst,
 
     // CPU -> MMU
-    // CPU -> TLB
     input wire satp_t satp_i,
     input wire query_en,
     input wire query_wen,
@@ -145,11 +145,11 @@ module MMU #(
 
     // inner wires
     logic translation_ack;
-    logic pte_t translation_result;
+    pte_t translation_result;
 
     logic [DATA_WIDTH-1:0] satp_o;
     logic translation_en;
-    logic virt_addr_t translation_addr;
+    virt_addr_t translation_addr;
 
     logic cache_ack;
     logic [DATA_WIDTH-1:0] cache_data_i;
@@ -463,6 +463,6 @@ module MMU #(
         end
     end
 
-    assign mtimer_wdata = dm_data_i;
+    assign mtimer_wdata = query_data_i;
 
 endmodule

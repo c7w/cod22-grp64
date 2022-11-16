@@ -24,7 +24,7 @@ typedef struct packed {
 typedef struct packed {
     logic [`TLBI_WIDTH-1:0] tlbi;
     logic [8:0] asid;
-    logic pte_t pte;
+    pte_t pte;
     logic valid;
 } tlbe_t;
 

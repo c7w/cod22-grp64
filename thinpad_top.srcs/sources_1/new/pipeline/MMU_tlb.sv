@@ -32,7 +32,7 @@ module MMU_tlb #(
     // TLB -> Translation Unit
     output logic [DATA_WIDTH-1:0] satp_o,
     output logic translation_en,
-    output logic virt_addr_t translation_addr,
+    output virt_addr_t translation_addr,
 
     // Cache -> TLB
     input wire cache_ack,
@@ -57,11 +57,25 @@ module MMU_tlb #(
     wire tlb_query_t tlb_query;
     assign tlb_query = virt_addr;
 
-    wire tlbe_t tlb_entry;
-    assign tlb_entry = tlb_table[tlb_query.tlbt];
+    tlbe_t tlb_entry;
+    always_comb begin
+        if (satp_i.mode) begin
+            // Sv32
+            tlb_entry = tlb_table[tlb_query.tlbt];
+        end else begin
+            // Must TLB Hit
+            tlb_entry = {
+                tlb_query.tlbi,
+                satp_i.asid,
+                2'b00, tlb_query.tlbi, tlb_query.tlbt, 2'b00,
+                8'b00001111,
+                1'b1
+            };
+        end
+    end
 
     wire tlb_hit;
-    assign tlb_hit = (tlb_entry.tlbi == tlb_query.tlbi) & (tlb_entry.asid == satp.asid) & tlb_entry.valid;
+    assign tlb_hit = (tlb_entry.tlbi == tlb_query.tlbi) & (tlb_entry.asid == satp_i.asid || tlb_entry.pte.G) & tlb_entry.valid;
 
     logic [ADDR_WIDTH-1:0] tlb_phys_addr;
     always_comb begin
@@ -100,7 +114,7 @@ module MMU_tlb #(
     // TLB -> Translation unit
     assign satp_o = satp_i;
     always_comb begin
-        if (~tlb_hit & ~translation_ack) begin
+        if (satp_i.mode & ~tlb_hit & ~translation_ack) begin
             translation_en = 1;
             translation_addr = virt_addr;
         end else begin
@@ -225,7 +239,7 @@ module MMU_tlb #(
 
                     tlb_table[tlb_query.tlbt] <= {
                         tlb_query.tlbi,
-                        satp.asid,
+                        satp_i.asid,
                         translation_result,
                         1'b1
                     };
