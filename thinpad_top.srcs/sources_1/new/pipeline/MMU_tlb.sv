@@ -27,7 +27,7 @@ module MMU_tlb #(
 
     // Translation Unit -> TLB
     input wire translation_ack,
-    input wire pte_t translation_result
+    input wire pte_t translation_result,
 
     // TLB -> Translation Unit
     output logic [DATA_WIDTH-1:0] satp_o,
@@ -44,7 +44,7 @@ module MMU_tlb #(
     output logic [2:0] cache_width,
     output logic cache_sign_ext,
     output logic [ADDR_WIDTH-1:0] cache_addr,  // phys addr
-    output logic [DATA_WIDTH-1:0] cache_data_o
+    output logic [DATA_WIDTH-1:0] cache_data_o,
 
     // TLB -> Wishbone master
     output logic master_owner
