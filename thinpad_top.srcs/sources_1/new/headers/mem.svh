@@ -34,7 +34,6 @@ typedef struct packed {
     logic [`OFFSET_WIDTH-1:0] offset;
 } tlb_query_t; 
 
-
 // Cache
 `define CACHE_TAG_WIDTH 12
 typedef struct packed {

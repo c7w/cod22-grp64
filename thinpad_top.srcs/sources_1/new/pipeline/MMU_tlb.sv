@@ -15,6 +15,8 @@ module MMU_tlb #(
     input wire query_wen,
     input wire virt_addr_t virt_addr,
     input wire [DATA_WIDTH-1:0] query_data_i,
+    input wire [2:0] query_width,
+    input wire query_sign_ext,
     input wire tlb_flush,  // must ensure query_en = 1
 
     // TLB -> CPU
@@ -39,6 +41,8 @@ module MMU_tlb #(
     // TLB -> Cache
     output logic cache_en,
     output logic cache_wen,
+    output logic [2:0] cache_width,
+    output logic cache_sign_ext,
     output logic [ADDR_WIDTH-1:0] cache_addr,  // phys addr
     output logic [DATA_WIDTH-1:0] cache_data_o
 
@@ -81,7 +85,7 @@ module MMU_tlb #(
 
 
     // TLB -> CPU
-    assign query_ack = cache_ack;
+    assign query_ack = (~query_en) || (tlb_hit && cache_ack);
     reg [DATA_WIDTH-1:0] query_data_o_reg;
     always_comb begin
         if (cache_ack) begin
@@ -110,6 +114,7 @@ module MMU_tlb #(
     always_comb begin
         cache_en = 0; cache_wen = 0;
         cache_addr = 0; cache_data_o = query_data_i;
+        cache_width = query_width; cache_sign_ext = query_sign_ext;
 
         if (~query_en) begin
             // Do nothing
