@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 10ps
 
 `default_nettype none
 //`include "../../sources_1/new/headers/ops.vh"
@@ -71,11 +71,19 @@ module tb;
     reset_btn = 0;
     
     
-     #1000;
+     #4000000;
+     uart.pc_send_byte(8'h47); // G
+     #10000;
+     uart.pc_send_byte(8'h00);
+     #10000;
+     uart.pc_send_byte(8'h10);
+     #10000;
+     uart.pc_send_byte(8'h00);
+     #10000;
+     uart.pc_send_byte(8'h80);
+     #100000;
      uart.pc_send_byte(8'h52); // R
-     #1000;
-     uart.pc_send_byte(8'h52); // R
-//    for (integer i = 0; i < 20; i = i + 1) begin
+     //    for (integer i = 0;uart.pc_send_byte(8'h80); i < 20; i = i + 1) begin
 //      #100;  // 等待 100ns
 //      push_btn = 1;  // 按下 push_btn 按钮
 //      #100;  // 等待 100ns

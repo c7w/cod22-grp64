@@ -17,13 +17,13 @@ module RegisterFile(
     // Bypassing when reading
     // TODO: add bypassing wires from ALU stage and DM stage
     always_comb begin
-        if (raddr_a == waddr && wen) begin
+        if (raddr_a == waddr && waddr != 0 && wen) begin
             rdata_a = wdata;
         end else begin
             rdata_a = data[raddr_a];
         end
         
-        if (raddr_b == waddr && wen) begin
+        if (raddr_b == waddr && waddr != 0 && wen) begin
             rdata_b = wdata;
         end else begin
             rdata_b = data[raddr_b];
