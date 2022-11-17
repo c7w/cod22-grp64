@@ -234,7 +234,7 @@ module MMU_tlb #(
                     tlb_table[29] <= 0;
                     tlb_table[30] <= 0;
                     tlb_table[31] <= 0;
-
+ 
                 end else if (translation_ack) begin
 
                     tlb_table[tlb_query.tlbt] <= {

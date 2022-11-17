@@ -428,6 +428,7 @@ module thinpad_top #(
     logic [`ALU_MUX_B_WIDTH-1:0] IF_ALU_mux_b_ctr;
     logic [`DM_MUX_WIDTH-1:0] IF_dm_mux_ctr;
     logic IF_dm_en, IF_dm_wen, IF_wb_en;
+    logic IF_tlb_flush, IF_drain_pipeline, IF_fence_i;
     logic [2:0] IF_dm_width; 
     logic IF_dm_sign_ext;
 
@@ -482,7 +483,7 @@ module thinpad_top #(
         .rst(reset_of_clk10M),
 
         .satp_i(CONTROLLER_satp_bypassing),
-        .tlb_flush(1'b0),
+        .tlb_flush(IF_tlb_flush),
         
         .pc_addr(IF_pc_addr),
         .branching(CONTROLLER_branching),
@@ -513,6 +514,7 @@ module thinpad_top #(
     logic [`ALU_MUX_B_WIDTH-1:0] ID_ALU_mux_b_ctr;
     logic [`DM_MUX_WIDTH-1:0] ID_dm_mux_ctr;
     logic ID_dm_en, ID_dm_wen, ID_wb_en;
+    logic ID_tlb_flush, ID_drain_pipeline, ID_fence_i;
     logic [2:0] ID_dm_width; 
     logic ID_dm_sign_ext;
 
@@ -521,6 +523,12 @@ module thinpad_top #(
 
         .imm(IF_imm),
         .imm_en(IF_imm_en),
+
+
+        .tlb_flush(IF_tlb_flush),
+        .drain_pipeline(IF_drain_pipeline),
+        .fence_i(IF_fence_i),
+
         .dm_en(IF_dm_en),
         .dm_wen(IF_dm_wen),
         .dm_width(IF_dm_width),
@@ -585,6 +593,9 @@ module thinpad_top #(
         .dm_width_i(IF_dm_width),
         .dm_sign_ext_i(IF_dm_sign_ext),
         .dm_mux_ctr_i(IF_dm_mux_ctr),
+        .tlb_flush_i(IF_tlb_flush),
+        .drain_pipeline_i(IF_drain_pipeline),
+        .fence_i_i(IF_fence_i),
         
         .pc_addr_o(ID_pc_addr),
         .dm_en_o(ID_dm_en),
@@ -592,6 +603,9 @@ module thinpad_top #(
         .dm_width_o(ID_dm_width),
         .dm_sign_ext_o(ID_dm_sign_ext),
         .dm_mux_ctr_o(ID_dm_mux_ctr),
+        .tlb_flush_o(ID_tlb_flush),
+        .drain_pipeline_o(ID_drain_pipeline),
+        .fence_i_o(ID_fence_i),
 
         // MEM -> WB
         .wb_en_i(IF_wb_en),
@@ -631,6 +645,7 @@ module thinpad_top #(
     logic [`PC_MUX_WIDTH-1:0] EXE_pc_mux_ctr;
     logic [ADDR_WIDTH-1:0] EXE_pc_addr;
     logic EXE_dm_en, EXE_dm_wen, EXE_wb_en;
+    logic EXE_tlb_flush, EXE_drain_pipeline, EXE_fence_i;
     logic [2:0] EXE_dm_width; 
     logic EXE_dm_sign_ext;
     logic [4:0] EXE_rd;
@@ -676,6 +691,9 @@ module thinpad_top #(
         .dm_sign_ext_i(ID_dm_sign_ext),
         .dm_mux_ctr_i(ID_dm_mux_ctr),
         .rf_data_b_i(RF_data_b),
+        .tlb_flush_i(ID_tlb_flush),
+        .drain_pipeline_i(ID_drain_pipeline),
+        .fence_i_i(ID_fence_i),
 
         .pc_addr_o(EXE_pc_addr),
         .dm_en_o(EXE_dm_en),
@@ -684,6 +702,9 @@ module thinpad_top #(
         .dm_sign_ext_o(EXE_dm_sign_ext),
         .dm_mux_ctr_o(EXE_dm_mux_ctr),
         .rf_data_b_o(EXE_data_b),
+        .tlb_flush_o(EXE_tlb_flush),
+        .drain_pipeline_o(EXE_drain_pipeline),
+        .fence_i_o(EXE_fence_i),
 
 
         .wb_en_i(ID_wb_en),
@@ -818,6 +839,7 @@ module thinpad_top #(
     logic [`DM_MUX_WIDTH-1:0] MEM_dm_mux_ctr;
     logic [ADDR_WIDTH-1:0] MEM_pc_addr;
     logic MEM_dm_en, MEM_dm_wen, MEM_wb_en;
+    logic MEM_tlb_flush, MEM_drain_pipeline, MEM_fence_i;
     logic [2:0] MEM_dm_width; 
     logic MEM_dm_sign_ext;
     logic [4:0] MEM_rd;
@@ -842,6 +864,9 @@ module thinpad_top #(
         .dm_sign_ext_i(EXE_dm_sign_ext),
         .dm_mux_ctr_i(EXE_dm_mux_ctr),
         .rf_data_b_i(EXE_data_b),
+        .tlb_flush_i(EXE_tlb_flush),
+        .drain_pipeline_i(EXE_drain_pipeline),
+        .fence_i_i(EXE_fence_i),
 
         .pc_addr_o(MEM_pc_addr),
         .alu_out_o(MEM_alu),
@@ -851,6 +876,9 @@ module thinpad_top #(
         .dm_sign_ext_o(MEM_dm_sign_ext),
         .dm_mux_ctr_o(MEM_dm_mux_ctr),
         .rf_data_b_o(MEM_data_b),
+        .tlb_flush_o(MEM_tlb_flush),
+        .drain_pipeline_o(MEM_drain_pipeline),
+        .fence_i_o(MEM_fence_i),
 
 
         .wb_en_i(EXE_wb_en),
@@ -889,9 +917,42 @@ module thinpad_top #(
         .mtimer_wdata(mtimer_wdata)
     );
 
-    MEM_dm data_fetcher (
+    // MEM_dm data_fetcher (
+    //     .clk (sys_clk),
+    //     .rst (reset_of_clk10M),
+
+    //     .dm_en(MEM_dm_en),
+    //     .dm_wen(MEM_dm_wen),
+    //     .dm_addr(MEM_alu),
+    //     .dm_data_i(MEM_data_b),
+    //     .dm_width(MEM_dm_width),
+    //     .dm_sign_ext(MEM_dm_sign_ext),
+    //     .dm_ack(CONTROLLER_dm_ack),
+    //     .dm_data_o(MEM_DM_data),
+
+    //     .wbm_cyc_o(wbm_cyc_dm),
+    //     .wbm_stb_o(wbm_stb_dm),
+    //     .wbm_ack_i(wbm_ack_dm),
+    //     .wbm_adr_o(wbm_adr_dm),
+    //     .wbm_dat_o(wbm_dat_m2s_dm),
+    //     .wbm_dat_i(wbm_dat_s2m_dm),
+    //     .wbm_sel_o(wbm_sel_dm),
+    //     .wbm_we_o(wbm_we_dm),
+
+    //     .mtimer_mtime(mtimer_mtime),
+    //     .mtimer_mtimecmp(mtimer_mtimecmp),
+    //     .mtimer_mtime_wen(mtimer_mtime_wen),
+    //     .mtimer_mtimecmp_wen(mtimer_mtimecmp_wen),
+    //     .mtimer_upper_wen(mtimer_upper_wen),
+    //     .mtimer_wdata(mtimer_wdata)
+    // );
+
+    MEM_MMU data_fetcher (
         .clk (sys_clk),
         .rst (reset_of_clk10M),
+
+        .satp_i(CONTROLLER_satp_reg),
+        .tlb_flush(MEM_tlb_flush),
 
         .dm_en(MEM_dm_en),
         .dm_wen(MEM_dm_wen),

@@ -53,7 +53,7 @@ module tb;
 
   // Windows 需要注意路径分隔符的转义，例如 "D:\\foo\\bar.bin"
   // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
-  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\kernel_paging.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
+  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\kernel.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
   // D:\Project\rv-2022\supervisor-rv\kernel
   parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM 初始化文件，请修改为实际的绝对路径
   parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash 初始化文件，请修改为实际的绝对路径
@@ -74,7 +74,7 @@ module tb;
      #4000000;
      uart.pc_send_byte(8'h47); // G
      #10000;
-     uart.pc_send_byte(8'h00);
+     uart.pc_send_byte(8'h80);
      #10000;
      uart.pc_send_byte(8'h10);
      #10000;
@@ -229,7 +229,7 @@ module tb;
       $display("Failed to open BaseRAM init file");
     end else begin
       n_Init_Size = $fread(tmp_array, n_File_ID);
-      n_Init_Size /= 4;
+      n_Init_Size = (n_Init_Size + 3) / 4;
       $fclose(n_File_ID);
     end
     $display("BaseRAM Init Size(words): %d", n_Init_Size);
@@ -251,7 +251,7 @@ module tb;
       $display("Failed to open ExtRAM init file");
     end else begin
       n_Init_Size = $fread(tmp_array, n_File_ID);
-      n_Init_Size /= 4;
+      n_Init_Size = n_Init_Size / 4;
       $fclose(n_File_ID);
     end
     $display("ExtRAM Init Size(words): %d", n_Init_Size);

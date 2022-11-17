@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="212539920fs"></ZoomStartTime>
-      <ZoomEndTime time="213001921fs"></ZoomEndTime>
-      <Cursor1Time time="212692420fs"></Cursor1Time>
+      <ZoomStartTime time="4550681430fs"></ZoomStartTime>
+      <ZoomEndTime time="4551012931fs"></ZoomEndTime>
+      <Cursor1Time time="4492465000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="246"></NameColumnWidth>
       <ValueColumnWidth column_width="118"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="339" />
+   <WVObjectSize size="364" />
    <wvobject fp_name="/tb/dut/clk_50M" type="logic">
       <obj_property name="ElementShortName">clk_50M</obj_property>
       <obj_property name="ObjectShortName">clk_50M</obj_property>
@@ -1375,6 +1375,106 @@
       <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/DATA_WIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/translation_ack" type="logic">
+      <obj_property name="ElementShortName">translation_ack</obj_property>
+      <obj_property name="ObjectShortName">translation_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/translation_result" type="array">
+      <obj_property name="ElementShortName">translation_result</obj_property>
+      <obj_property name="ObjectShortName">translation_result</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/satp" type="array">
+      <obj_property name="ElementShortName">satp</obj_property>
+      <obj_property name="ObjectShortName">satp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/translation_en" type="logic">
+      <obj_property name="ElementShortName">translation_en</obj_property>
+      <obj_property name="ObjectShortName">translation_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/translation_addr" type="array">
+      <obj_property name="ElementShortName">translation_addr</obj_property>
+      <obj_property name="ObjectShortName">translation_addr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_cyc_o" type="logic">
+      <obj_property name="ElementShortName">wb_cyc_o</obj_property>
+      <obj_property name="ObjectShortName">wb_cyc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_stb_o" type="logic">
+      <obj_property name="ElementShortName">wb_stb_o</obj_property>
+      <obj_property name="ObjectShortName">wb_stb_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_adr_o" type="array">
+      <obj_property name="ElementShortName">wb_adr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_adr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_dat_o" type="array">
+      <obj_property name="ElementShortName">wb_dat_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_sel_o" type="array">
+      <obj_property name="ElementShortName">wb_sel_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_sel_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_we_o" type="logic">
+      <obj_property name="ElementShortName">wb_we_o</obj_property>
+      <obj_property name="ObjectShortName">wb_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_ack_i" type="logic">
+      <obj_property name="ElementShortName">wb_ack_i</obj_property>
+      <obj_property name="ObjectShortName">wb_ack_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/wb_dat_i" type="array">
+      <obj_property name="ElementShortName">wb_dat_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/pte1" type="array">
+      <obj_property name="ElementShortName">pte1</obj_property>
+      <obj_property name="ObjectShortName">pte1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/pte2" type="array">
+      <obj_property name="ElementShortName">pte2</obj_property>
+      <obj_property name="ObjectShortName">pte2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/pte1_addr" type="array">
+      <obj_property name="ElementShortName">pte1_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pte1_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/pte2_addr" type="array">
+      <obj_property name="ElementShortName">pte2_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pte2_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/pte3_addr" type="array">
+      <obj_property name="ElementShortName">pte3_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pte3_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/state_nxt" type="array">
+      <obj_property name="ElementShortName">state_nxt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state_nxt[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/translation_addr_cache" type="array">
+      <obj_property name="ElementShortName">translation_addr_cache</obj_property>
+      <obj_property name="ObjectShortName">translation_addr_cache</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_translation_unit/DATA_WIDTH" type="array">
       <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
       <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
    </wvobject>

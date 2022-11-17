@@ -55,6 +55,10 @@ module REG_IF_ID #(
     input wire [2:0] dm_width_i,
     input wire dm_sign_ext_i,
     input wire [`DM_MUX_WIDTH-1:0] dm_mux_ctr_i,
+    input wire tlb_flush_i,
+    input wire drain_pipeline_i,
+    input wire fence_i_i,
+
     // input wire [DATA_WIDTH-1:0] rf_data_b_i,
     
     output reg [ADDR_WIDTH-1:0] pc_addr_o,
@@ -64,6 +68,9 @@ module REG_IF_ID #(
     output reg [2:0] dm_width_o,
     output reg dm_sign_ext_o,
     output reg [`DM_MUX_WIDTH-1:0] dm_mux_ctr_o,
+    output reg tlb_flush_o,
+    output reg drain_pipeline_o,
+    output reg fence_i_o,
     // output wire [DATA_WIDTH-1:0] rf_data_b_o,
 
 
@@ -97,6 +104,7 @@ module REG_IF_ID #(
             pc_addr_o <= 0; // alu_out_o <= 0;
             dm_width_o <= 4; dm_sign_ext_o <= 1;
             dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU;
+            tlb_flush_o <= 0; drain_pipeline_o <= 0; fence_i_o <= 0;
             // rf_data_b_o <= 0;
             
             // bubble : wb
@@ -131,6 +139,7 @@ module REG_IF_ID #(
                     pc_addr_o <= 0; // alu_out_o <= 0;
                     dm_width_o <= 4; dm_sign_ext_o <= 1;
                     dm_en_o <= 0; dm_wen_o <= 0; dm_mux_ctr_o <= `DM_MUX_ALU;
+                    tlb_flush_o <= 0; drain_pipeline_o <= 0; fence_i_o <= 0;
                     // rf_data_b_o <= 0;
                     
                     // bubble : wb
@@ -159,6 +168,11 @@ module REG_IF_ID #(
                     dm_width_o <= dm_width_i; 
                     dm_sign_ext_o <= dm_sign_ext_i;
                     dm_mux_ctr_o <= dm_mux_ctr_i;
+
+                    tlb_flush_o <= tlb_flush_i; 
+                    drain_pipeline_o <= drain_pipeline_i; 
+                    fence_i_o <= fence_i_i;
+
                     // rf_data_b_o <= rf_data_b_i;
 
                     // normal : wb

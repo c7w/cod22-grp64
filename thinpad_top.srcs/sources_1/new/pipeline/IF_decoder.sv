@@ -10,6 +10,11 @@ module IF_DECODER #(
     // Control signals
     output logic[DATA_WIDTH-1:0] imm,
     output logic imm_en,  // immediate enabled
+    
+    output logic tlb_flush, // reset TLB
+    output logic drain_pipeline, // ensure that only this instruction is running on the whole pipeline
+    output logic fence_i,
+    
     output logic dm_en, // data memory enabled
     output logic dm_wen,  // data memory write enabled
     output logic [2:0] dm_width,
@@ -111,6 +116,12 @@ module IF_DECODER #(
         OP_MRET,
         OP_RDTIME,
         OP_RDTIMEH,
+
+        // Added in lab7, stage-III
+        OP_FENCE,
+        OP_FENCE_I,
+        OP_WFI,
+        OP_SFENCE_VMA,
 
         OP_UNKNOWN
     } OP_Type;
@@ -253,6 +264,22 @@ module IF_DECODER #(
                 endcase
             end
 
+            7'b0001111: begin
+                if (instr[31:28] == 4'b0000 & instr[19:0] == 20'b00000000000000001111) begin
+                    op_type = OP_FENCE;
+                end else if (instr == 32'b00000000000000000001000000001111) begin
+                    op_type = OP_FENCE_I;
+                end
+            end
+
+            7'b1110011: begin
+                if (instr == 32'b00010_00_00101_00000_000_00000_11100_11) begin
+                    op_type = OP_WFI;
+                end else if (instr[31:27] == 5'b00010 & instr[26:25] == 2'b01 & instr[14:12] == 3'b000 & instr[6:0] == 7'b1110011) begin
+                    op_type = OP_SFENCE_VMA;
+                end
+            end
+
             default: begin 
                 op_type = OP_UNKNOWN;
             end
@@ -271,6 +298,7 @@ module IF_DECODER #(
         dm_en = 0; dm_wen = 0; 
         dm_width = 4; dm_sign_ext = 1;
         csr_opcode = 15;
+        tlb_flush = 0; drain_pipeline = 0; fence_i = 1;
 
         case (op_type)
             OP_LUI: begin
@@ -407,6 +435,16 @@ module IF_DECODER #(
                 endcase
             end
 
+            OP_SFENCE_VMA, OP_WFI, OP_FENCE, OP_FENCE_I: begin
+                imm = 32'h0; imm_en = 0; 
+                wb_en = 0; dm_en = 0; dm_wen = 0;
+                dm_width = 4; dm_sign_ext = 1;
+                if (op_type == OP_SFENCE_VMA) begin
+                    tlb_flush = 1; drain_pipeline = 1;
+                end else if (op_type == OP_FENCE_I) begin
+                    fence_i = 1; drain_pipeline = 1;     
+                end
+            end
 
             default: begin
                 imm = 32'h0; imm_en = 0; 
@@ -607,6 +645,15 @@ module IF_DECODER #(
             end
 
             OP_ECALL, OP_EBREAK, OP_SRET, OP_MRET: begin
+                pc_mux_ctr_comb = `PC_MUX_INC;
+                bc_op_comb = `BC_OP_FALSE;
+                alu_op_comb = `ALU_OP_ADD;
+                alu_mux_a_ctr_comb = `ALU_MUX_A_ZERO;
+                alu_mux_b_ctr_comb = `ALU_MUX_B_ZERO;
+                dm_mux_ctr_comb = `DM_MUX_ALU;
+            end
+
+            OP_SFENCE_VMA, OP_WFI, OP_FENCE, OP_FENCE_I: begin
                 pc_mux_ctr_comb = `PC_MUX_INC;
                 bc_op_comb = `BC_OP_FALSE;
                 alu_op_comb = `ALU_OP_ADD;

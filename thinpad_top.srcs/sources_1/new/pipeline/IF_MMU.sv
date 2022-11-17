@@ -83,10 +83,6 @@ module IF_MMU #(
             request_addr = pc_addr_cache;
         end
 
-        // request_addr = pc_addr_last;
-        // if (pc_addr != pc_addr_last & (mmu_ack || im_ack_cache)) begin
-        //     request_addr = pc_addr;
-        // end
     end
 
     always_ff @(posedge clk) begin
@@ -100,41 +96,15 @@ module IF_MMU #(
 
                 request_comb <= 1;
 
-                // if (pc_addr != pc_addr_last) begin
-                //     pc_addr_last <= pc_addr;
-                //     im_ack_cache <= 0;
-                // end else begin
-                //     im_ack_cache <= 1;
-                //     instr_cached <= query_result;
-                // end
             end else begin
                 if (request_comb == 1) begin
                     request_comb <= 0;
                     pc_addr_cache <= pc_addr;
                 end
-
-                
             end
 
-            // else if (pc_addr != pc_addr_last && (mmu_ack || im_ack_cache || init)) begin
-            //     // This indicates a new SEQ request
-            //     pc_addr_last <= pc_addr;
-            //     im_ack_cache <= 0;
-            //     init <= 0;
-            // end
-            
         end
     end
-
-    // always_comb begin
-    //     if (mmu_ack) begin
-    //         instr = query_result;
-    //     end else if (im_ack) begin
-    //         instr = instr_cached;
-    //     end else begin
-    //         instr = 32'hfcfcfcfc;  // Check for this carefully
-    //     end
-    // end
 
     assign im_ack = (mmu_ack) & (pc_addr == request_addr);
 
