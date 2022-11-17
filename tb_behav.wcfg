@@ -5,7 +5,7 @@
    <db_ref_list>
       <db_ref path="tb_behav.wdb" id="1">
          <top_modules>
-            <top_module name="\$unit_CONTROLLER_csrs_sv " />
+            <top_module name="\$unit_CONTROLLER_mtimer_sv " />
             <top_module name="\$unit_thinpad_top_sv " />
             <top_module name="glbl" />
             <top_module name="tb" />
@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="80645416fs"></ZoomStartTime>
-      <ZoomEndTime time="81070917fs"></ZoomEndTime>
-      <Cursor1Time time="81000000fs"></Cursor1Time>
+      <ZoomStartTime time="212539920fs"></ZoomStartTime>
+      <ZoomEndTime time="213001921fs"></ZoomEndTime>
+      <Cursor1Time time="212692420fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="246"></NameColumnWidth>
-      <ValueColumnWidth column_width="122"></ValueColumnWidth>
+      <ValueColumnWidth column_width="118"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="252" />
+   <WVObjectSize size="339" />
    <wvobject fp_name="/tb/dut/clk_50M" type="logic">
       <obj_property name="ElementShortName">clk_50M</obj_property>
       <obj_property name="ObjectShortName">clk_50M</obj_property>
@@ -1029,5 +1029,353 @@
    <wvobject fp_name="/tb/dut/wbs2_we_o" type="logic">
       <obj_property name="ElementShortName">wbs2_we_o</obj_property>
       <obj_property name="ObjectShortName">wbs2_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/satp_i" type="array">
+      <obj_property name="ElementShortName">satp_i</obj_property>
+      <obj_property name="ObjectShortName">satp_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/tlb_flush" type="logic">
+      <obj_property name="ElementShortName">tlb_flush</obj_property>
+      <obj_property name="ObjectShortName">tlb_flush</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/pc_addr" type="array">
+      <obj_property name="ElementShortName">pc_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/branching" type="logic">
+      <obj_property name="ElementShortName">branching</obj_property>
+      <obj_property name="ObjectShortName">branching</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/instr" type="array">
+      <obj_property name="ElementShortName">instr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/im_ack" type="logic">
+      <obj_property name="ElementShortName">im_ack</obj_property>
+      <obj_property name="ObjectShortName">im_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_cyc_o" type="logic">
+      <obj_property name="ElementShortName">wb_cyc_o</obj_property>
+      <obj_property name="ObjectShortName">wb_cyc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_stb_o" type="logic">
+      <obj_property name="ElementShortName">wb_stb_o</obj_property>
+      <obj_property name="ObjectShortName">wb_stb_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_ack_i" type="logic">
+      <obj_property name="ElementShortName">wb_ack_i</obj_property>
+      <obj_property name="ObjectShortName">wb_ack_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_adr_o" type="array">
+      <obj_property name="ElementShortName">wb_adr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_adr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_dat_o" type="array">
+      <obj_property name="ElementShortName">wb_dat_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_dat_i" type="array">
+      <obj_property name="ElementShortName">wb_dat_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_sel_o" type="array">
+      <obj_property name="ElementShortName">wb_sel_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_sel_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/wb_we_o" type="logic">
+      <obj_property name="ElementShortName">wb_we_o</obj_property>
+      <obj_property name="ObjectShortName">wb_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/request_addr" type="array">
+      <obj_property name="ElementShortName">request_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">request_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu_ack" type="logic">
+      <obj_property name="ElementShortName">mmu_ack</obj_property>
+      <obj_property name="ObjectShortName">mmu_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/DATA_WIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/satp_i" type="array">
+      <obj_property name="ElementShortName">satp_i</obj_property>
+      <obj_property name="ObjectShortName">satp_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_en" type="logic">
+      <obj_property name="ElementShortName">query_en</obj_property>
+      <obj_property name="ObjectShortName">query_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_wen" type="logic">
+      <obj_property name="ElementShortName">query_wen</obj_property>
+      <obj_property name="ObjectShortName">query_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/virt_addr" type="array">
+      <obj_property name="ElementShortName">virt_addr</obj_property>
+      <obj_property name="ObjectShortName">virt_addr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_data_i" type="array">
+      <obj_property name="ElementShortName">query_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">query_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_width" type="array">
+      <obj_property name="ElementShortName">query_width[2:0]</obj_property>
+      <obj_property name="ObjectShortName">query_width[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_sign_ext" type="logic">
+      <obj_property name="ElementShortName">query_sign_ext</obj_property>
+      <obj_property name="ObjectShortName">query_sign_ext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_flush" type="logic">
+      <obj_property name="ElementShortName">tlb_flush</obj_property>
+      <obj_property name="ObjectShortName">tlb_flush</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_ack" type="logic">
+      <obj_property name="ElementShortName">query_ack</obj_property>
+      <obj_property name="ObjectShortName">query_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_data_o" type="array">
+      <obj_property name="ElementShortName">query_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">query_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_exception" type="logic">
+      <obj_property name="ElementShortName">query_exception</obj_property>
+      <obj_property name="ObjectShortName">query_exception</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_exception_code" type="array">
+      <obj_property name="ElementShortName">query_exception_code[30:0]</obj_property>
+      <obj_property name="ObjectShortName">query_exception_code[30:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/translation_ack" type="logic">
+      <obj_property name="ElementShortName">translation_ack</obj_property>
+      <obj_property name="ObjectShortName">translation_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/translation_result" type="array">
+      <obj_property name="ElementShortName">translation_result</obj_property>
+      <obj_property name="ObjectShortName">translation_result</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/satp_o" type="array">
+      <obj_property name="ElementShortName">satp_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">satp_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/translation_en" type="logic">
+      <obj_property name="ElementShortName">translation_en</obj_property>
+      <obj_property name="ObjectShortName">translation_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/translation_addr" type="array">
+      <obj_property name="ElementShortName">translation_addr</obj_property>
+      <obj_property name="ObjectShortName">translation_addr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_ack" type="logic">
+      <obj_property name="ElementShortName">cache_ack</obj_property>
+      <obj_property name="ObjectShortName">cache_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_data_i" type="array">
+      <obj_property name="ElementShortName">cache_data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_en" type="logic">
+      <obj_property name="ElementShortName">cache_en</obj_property>
+      <obj_property name="ObjectShortName">cache_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_wen" type="logic">
+      <obj_property name="ElementShortName">cache_wen</obj_property>
+      <obj_property name="ObjectShortName">cache_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_width" type="array">
+      <obj_property name="ElementShortName">cache_width[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_width[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_sign_ext" type="logic">
+      <obj_property name="ElementShortName">cache_sign_ext</obj_property>
+      <obj_property name="ObjectShortName">cache_sign_ext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_addr" type="array">
+      <obj_property name="ElementShortName">cache_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/cache_data_o" type="array">
+      <obj_property name="ElementShortName">cache_data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/master_owner" type="logic">
+      <obj_property name="ElementShortName">master_owner</obj_property>
+      <obj_property name="ObjectShortName">master_owner</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_table" type="array">
+      <obj_property name="ElementShortName">tlb_table[0:31]</obj_property>
+      <obj_property name="ObjectShortName">tlb_table[0:31]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_query" type="array">
+      <obj_property name="ElementShortName">tlb_query</obj_property>
+      <obj_property name="ObjectShortName">tlb_query</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_entry" type="array">
+      <obj_property name="ElementShortName">tlb_entry</obj_property>
+      <obj_property name="ObjectShortName">tlb_entry</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_hit" type="logic">
+      <obj_property name="ElementShortName">tlb_hit</obj_property>
+      <obj_property name="ObjectShortName">tlb_hit</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/tlb_phys_addr" type="array">
+      <obj_property name="ElementShortName">tlb_phys_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">tlb_phys_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/trans_unit_phys_addr" type="array">
+      <obj_property name="ElementShortName">trans_unit_phys_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">trans_unit_phys_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/query_data_o_reg" type="array">
+      <obj_property name="ElementShortName">query_data_o_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">query_data_o_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_tlb/DATA_WIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_ack" type="logic">
+      <obj_property name="ElementShortName">cache_ack</obj_property>
+      <obj_property name="ObjectShortName">cache_ack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/data_o" type="array">
+      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_en" type="logic">
+      <obj_property name="ElementShortName">cache_en</obj_property>
+      <obj_property name="ObjectShortName">cache_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_wen" type="logic">
+      <obj_property name="ElementShortName">cache_wen</obj_property>
+      <obj_property name="ObjectShortName">cache_wen</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_width" type="array">
+      <obj_property name="ElementShortName">cache_width[2:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_width[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_sign_ext" type="logic">
+      <obj_property name="ElementShortName">cache_sign_ext</obj_property>
+      <obj_property name="ObjectShortName">cache_sign_ext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_addr" type="array">
+      <obj_property name="ElementShortName">cache_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/data_i" type="array">
+      <obj_property name="ElementShortName">data_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_cyc_o" type="logic">
+      <obj_property name="ElementShortName">wb_cyc_o</obj_property>
+      <obj_property name="ObjectShortName">wb_cyc_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_stb_o" type="logic">
+      <obj_property name="ElementShortName">wb_stb_o</obj_property>
+      <obj_property name="ObjectShortName">wb_stb_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_adr_o" type="array">
+      <obj_property name="ElementShortName">wb_adr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_adr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_dat_o" type="array">
+      <obj_property name="ElementShortName">wb_dat_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_sel_o" type="array">
+      <obj_property name="ElementShortName">wb_sel_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_sel_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_we_o" type="logic">
+      <obj_property name="ElementShortName">wb_we_o</obj_property>
+      <obj_property name="ObjectShortName">wb_we_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_ack_i" type="logic">
+      <obj_property name="ElementShortName">wb_ack_i</obj_property>
+      <obj_property name="ObjectShortName">wb_ack_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/wb_dat_i" type="array">
+      <obj_property name="ElementShortName">wb_dat_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">wb_dat_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_table" type="array">
+      <obj_property name="ElementShortName">cache_table[0:63]</obj_property>
+      <obj_property name="ObjectShortName">cache_table[0:63]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_query" type="array">
+      <obj_property name="ElementShortName">cache_query</obj_property>
+      <obj_property name="ObjectShortName">cache_query</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_entry" type="array">
+      <obj_property name="ElementShortName">cache_entry</obj_property>
+      <obj_property name="ObjectShortName">cache_entry</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_hit" type="logic">
+      <obj_property name="ElementShortName">cache_hit</obj_property>
+      <obj_property name="ObjectShortName">cache_hit</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/cache_entry_phys_addr" type="array">
+      <obj_property name="ElementShortName">cache_entry_phys_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">cache_entry_phys_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/offset" type="array">
+      <obj_property name="ElementShortName">offset[5:0]</obj_property>
+      <obj_property name="ObjectShortName">offset[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/hit_dat_i_shifted" type="array">
+      <obj_property name="ElementShortName">hit_dat_i_shifted[31:0]</obj_property>
+      <obj_property name="ObjectShortName">hit_dat_i_shifted[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/hit_dat_i_assembled" type="array">
+      <obj_property name="ElementShortName">hit_dat_i_assembled[31:0]</obj_property>
+      <obj_property name="ObjectShortName">hit_dat_i_assembled[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/dat_to_save" type="array">
+      <obj_property name="ElementShortName">dat_to_save[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dat_to_save[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/state" type="array">
+      <obj_property name="ElementShortName">state[3:0]</obj_property>
+      <obj_property name="ObjectShortName">state[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/ADDR_WIDTH" type="array">
+      <obj_property name="ElementShortName">ADDR_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ADDR_WIDTH[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb/dut/instr_fetcher/mmu/mmu_cache/DATA_WIDTH" type="array">
+      <obj_property name="ElementShortName">DATA_WIDTH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_WIDTH[31:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -35,7 +35,7 @@ typedef struct packed {
 } tlb_query_t; 
 
 // Cache
-`define CACHE_TAG_WIDTH 12
+`define CACHE_TAG_WIDTH 6
 typedef struct packed {
     logic [32-2-`CACHE_TAG_WIDTH-1:0] phys_index;
     logic [31:0] data;

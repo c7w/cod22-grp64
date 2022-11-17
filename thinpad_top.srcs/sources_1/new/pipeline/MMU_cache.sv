@@ -32,7 +32,7 @@ module MMU_cache #(
 );
 
     // Buffer
-    cache_entry_t cache_table [0:4095];
+    cache_entry_t cache_table [0:63];
 
     // cast cache_addr (logic [31:0]) to cache_query(cache_query_t)
     cache_query_t cache_query;
@@ -186,7 +186,8 @@ module MMU_cache #(
                     if (cache_hit && cache_wen) begin
                         cache_table[cache_query.phys_tag].data <= data_i;
                         cache_table[cache_query.phys_tag].dirty <= 1'b1;
-                    end else begin
+                    
+                    end else if (~cache_hit) begin
 
                         // Replace cache
                         if (cache_entry.valid && cache_entry.dirty) begin
@@ -204,7 +205,6 @@ module MMU_cache #(
                             wb_adr_o <= cache_addr & ~32'h3;
                             wb_dat_o <= 32'hacacacac;
                             wb_we_o <= 0;
-                            state <= STATE_LOAD;
                         end
 
                     end

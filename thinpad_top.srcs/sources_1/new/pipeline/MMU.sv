@@ -10,7 +10,7 @@ CPU ---> [T   L   B]  <---> [Cache] <---> [MMU]
      |
     UART / VGA / Flash    
 */
-
+`include "../headers/exception.svh"
 `include "../headers/mem.svh"
 module MMU #(
     parameter ADDR_WIDTH = 32,
@@ -317,11 +317,9 @@ module MMU #(
         // MMU -> Wishbone master
         .wbm3_adr_o(wbm3_adr_o),
         .wbm3_dat_o(wbm3_dat_o),
-        .wbm3_dat_i(),
         .wbm3_we_o(wbm3_we_o),
         .wbm3_sel_o(wbm3_sel_o),
         .wbm3_stb_o(wbm3_stb_o),
-        .wbm3_ack_i(),
         .wbm3_cyc_o(wbm3_cyc_o),
 
         // Wishbone master -> Wishbone arbiter

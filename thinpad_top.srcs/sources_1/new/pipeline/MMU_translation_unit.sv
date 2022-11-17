@@ -36,6 +36,8 @@ module MMU_translation_unit #(
     pte_t pte1, pte2;
     logic [ADDR_WIDTH-1:0] pte1_addr, pte2_addr, pte3_addr;
 
+    assign pte2 = wb_dat_i;
+
     always_comb begin
         pte1_addr = {satp.ppn[19:0], translation_addr.vpn1[9:0], 2'b00};
         pte2_addr = {pte1.ppn1[9:0], pte1.ppn0[9:0], translation_addr.vpn0[9:0], 2'b00};
@@ -67,7 +69,7 @@ module MMU_translation_unit #(
     always_ff @(posedge clk) begin
         if (rst) begin
             state <= STATE_IDLE;
-            pte1 <= 0; pte2 <= 0;
+            pte1 <= 0;
         end
 
         else begin
@@ -99,9 +101,11 @@ module MMU_translation_unit #(
 
                 STATE_READ2: begin
                     if (wb_ack_i) begin
-                        pte2 <= wb_dat_i;
+                        translation_result <= wb_dat_i;
+                        translation_ack <= 1;
+
                         wb_stb_o <= 0;
-                        state <= STATE_READ2_NXT;
+                        state <= STATE_IDLE;
                     end
                 end
 

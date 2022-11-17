@@ -75,7 +75,7 @@ module MMU_tlb #(
     end
 
     wire tlb_hit;
-    assign tlb_hit = (tlb_entry.tlbi == tlb_query.tlbi) & (tlb_entry.asid == satp_i.asid || tlb_entry.pte.G) & tlb_entry.valid;
+    assign tlb_hit = query_en & (tlb_entry.tlbi == tlb_query.tlbi) & (tlb_entry.asid == satp_i.asid || tlb_entry.pte.G) & tlb_entry.valid;
 
     logic [ADDR_WIDTH-1:0] tlb_phys_addr;
     always_comb begin

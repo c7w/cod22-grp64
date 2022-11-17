@@ -29,19 +29,20 @@ module IF_MMU #(
 
     // Cache pc_addr
     logic [ADDR_WIDTH-1:0] request_addr;
-    logic [ADDR_WIDTH-1:0] pc_addr_last;
+    logic [ADDR_WIDTH-1:0] pc_addr_cache;
+
     logic mmu_ack;
-    logic init;
-    logic im_ack_cache;
-    logic [DATA_WIDTH-1:0] instr_cached;
-    logic [DATA_WIDTH-1:0] query_result;
+
+    logic request_comb;
+    
+    logic [DATA_WIDTH-1:0] instr;
 
     MMU mmu (
         .clk(clk),
         .rst(rst),
 
         .satp_i(satp_i),
-        .query_en(1'b1),
+        .query_en(~rst),
         .query_wen(1'b0),
         .virt_addr(request_addr),
         .query_data_i(32'hbabababa),
@@ -50,7 +51,7 @@ module IF_MMU #(
         .tlb_flush(tlb_flush),
 
         .query_ack(mmu_ack),
-        .query_data_o(query_result),
+        .query_data_o(instr),
         .query_exception(),   // todo: add exception for IM stage
         .query_exception_code(),
 
@@ -75,52 +76,66 @@ module IF_MMU #(
 
     // request addr
     always_comb begin
-        request_addr = pc_addr_last;
-        if (pc_addr != pc_addr_last & (mmu_ack || im_ack_cache)) begin
+
+        if (request_comb) begin
             request_addr = pc_addr;
+        end else begin
+            request_addr = pc_addr_cache;
         end
+
+        // request_addr = pc_addr_last;
+        // if (pc_addr != pc_addr_last & (mmu_ack || im_ack_cache)) begin
+        //     request_addr = pc_addr;
+        // end
     end
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            pc_addr_last <= 0;
-            im_ack_cache <= 0;
-            init <= 1;
+            request_comb <= 1;
         end
 
         else begin
 
             if (mmu_ack) begin
 
-                if (pc_addr != pc_addr_last) begin
-                    pc_addr_last <= pc_addr;
-                    im_ack_cache <= 0;
-                end else begin
-                    im_ack_cache <= 1;
-                    instr_cached <= query_result;
+                request_comb <= 1;
+
+                // if (pc_addr != pc_addr_last) begin
+                //     pc_addr_last <= pc_addr;
+                //     im_ack_cache <= 0;
+                // end else begin
+                //     im_ack_cache <= 1;
+                //     instr_cached <= query_result;
+                // end
+            end else begin
+                if (request_comb == 1) begin
+                    request_comb <= 0;
+                    pc_addr_cache <= pc_addr;
                 end
+
+                
             end
 
-            else if (pc_addr != request_addr && (mmu_ack || im_ack_cache || init)) begin
-                // This indicates a new SEQ request
-                request_addr <= pc_addr;
-                im_ack_cache <= 0;
-                init <= 0;
-            end
+            // else if (pc_addr != pc_addr_last && (mmu_ack || im_ack_cache || init)) begin
+            //     // This indicates a new SEQ request
+            //     pc_addr_last <= pc_addr;
+            //     im_ack_cache <= 0;
+            //     init <= 0;
+            // end
             
         end
     end
 
-    always_comb begin
-        if (mmu_ack) begin
-            instr = query_result;
-        end else if (im_ack) begin
-            instr = instr_cached;
-        end else begin
-            instr = 32'hfcfcfcfc;  // Check for this carefully
-        end
-    end
+    // always_comb begin
+    //     if (mmu_ack) begin
+    //         instr = query_result;
+    //     end else if (im_ack) begin
+    //         instr = instr_cached;
+    //     end else begin
+    //         instr = 32'hfcfcfcfc;  // Check for this carefully
+    //     end
+    // end
 
-    assign im_ack = (mmu_ack || im_ack_cache) && (pc_addr == pc_addr_last);
+    assign im_ack = (mmu_ack) & (pc_addr == request_addr);
 
 endmodule
