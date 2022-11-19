@@ -21,6 +21,7 @@ module MMU #(
     input wire rst,
 
     // CPU -> MMU
+    input wire mstatus_t mstatus_i,
     input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i,
     input wire query_en,
@@ -73,14 +74,10 @@ module MMU #(
     device_t device;
 
     always_comb begin
-        device = DEVICE_UNKNOWN;
+        device = DEVICE_SRAM;
 
-        if (32'h10000000 <= virt_addr && virt_addr <= 32'h10000005) begin
+        if (32'h10000000 <= virt_addr && virt_addr <= 32'h10000007) begin
             device = DEVICE_UART;
-        end
-
-        else if (virt_addr < 32'h02000000 || virt_addr >= 32'h70000000) begin
-            device = DEVICE_SRAM;  //! TODO: check for correctness?
         end
 
         else if ((virt_addr == 32'h0200bff8 || virt_addr == 32'h0200bffc || virt_addr == 32'h02004000 || virt_addr == 32'h02004004) && mtimer_enabled) begin
@@ -131,7 +128,7 @@ module MMU #(
 
             query_ack = query_ack_tlb;
             query_data_o = query_data_o_tlb;
-            query_exception = query_exception_code_tlb;
+            query_exception = query_exception_tlb;
             query_exception_code = query_exception_code_tlb;
         
         end else if (device == DEVICE_MTIMER) begin
@@ -203,6 +200,7 @@ module MMU #(
         .rst(rst),
 
         // CPU -> TLB
+        .mstatus_i(mstatus_i),
         .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(query_en_tlb),

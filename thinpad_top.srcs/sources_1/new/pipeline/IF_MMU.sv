@@ -1,3 +1,5 @@
+`include "../headers/exception.svh"
+
 // This module is a substitution for instr fetcher
 module IF_MMU #(
     parameter ADDR_WIDTH = 32,
@@ -8,7 +10,7 @@ module IF_MMU #(
 
     // CPU -> MMU
     // CPU -> TLB
-    // todo : priviledge mode i <= if mmu, dm mmu
+    input wire mstatus_t mstatus_i,
     input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i, // (+)
     input wire tlb_flush,  // must ensure query_en = 1 (+)
@@ -18,6 +20,9 @@ module IF_MMU #(
     input wire branching,  // not used ?
     output logic [DATA_WIDTH-1:0] instr,
     output logic im_ack,
+
+    output logic query_exception,
+    output logic [`MXLEN-2:0] query_exception_code,
 
     // wishbone master
     output wire wb_cyc_o, 
@@ -44,6 +49,7 @@ module IF_MMU #(
         .clk(clk),
         .rst(rst),
 
+        .mstatus_i(mstatus_i),
         .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(~rst),
@@ -59,8 +65,8 @@ module IF_MMU #(
 
         .query_ack(mmu_ack),
         .query_data_o(instr),
-        .query_exception(),   // todo: add exception for IM stage
-        .query_exception_code(),
+        .query_exception(query_exception),
+        .query_exception_code(query_exception_code),
 
         .wb_cyc_o(wb_cyc_o),
         .wb_stb_o(wb_stb_o),

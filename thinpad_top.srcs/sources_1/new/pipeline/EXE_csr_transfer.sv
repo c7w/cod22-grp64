@@ -76,18 +76,15 @@ module EXE_csr_transfer #(
     input wire [ADDR_WIDTH-1:0] EXE_pc_addr,
     input wire [ADDR_WIDTH-1:0] MEM_pc_addr,
 
-    // From IF::IM
-
-
-    // From IF::Decoder
-
-    // From EXE::ALU
+    // From EXE
+    input wire exe_exception,
+    input wire [`MXLEN-2:0] exe_exception_code,
 
     // From MEM::DM
-
-
-    // From controller
-
+    // todo
+    input wire dm_ack,
+    input wire dm_exception,
+    input wire [`MXLEN-2:0] dm_exception_code,
 
     // Output Signals
     output logic [3:0] state_o,
@@ -456,8 +453,61 @@ module EXE_csr_transfer #(
 
             if (state == STATE_SEQ || state == STATE_BLOCK) begin
 
+                // DM exception
+                if (dm_exception & dm_ack & EXCEPTION_DM < exception_stage_reg) begin
+                    exception_stage_reg <= EXCEPTION_DM;
+                    state <= STATE_BLOCK;
 
-                if ((csr_opcode == `CSR_OP_ECALL || csr_opcode == `CSR_OP_EBREAK) && EXCEPTION_EXE < exception_stage_reg) begin
+                    if (priviledge_mode_i <= `PRIVILEDGE_MODE_S && medeleg_i[dm_exception_code]) begin // delegated to S level
+
+                        /* Start: Raise an exception to S Level */
+                        sepc_o_catch <= MEM_pc_addr; sepc_wen_catch <= 1;
+                        pc_nxt_exception <= stvec_i;
+                        scause_o_catch <= {1'b0, dm_exception_code};scause_wen_catch <= 1;
+                        stval_o_catch <= 0; stval_wen_catch <= 1;
+                        mstatus_o_catch <= {
+                            mstatus_i[31:13],
+                            mstatus_i.mpp,
+                            mstatus_i.trash_1,
+                            priviledge_mode_i[0],  // spp <= priv level
+                            mstatus_i.mpie, 
+                            mstatus_i.trash_2,
+                            mstatus_i.sie, // spie <= sie
+                            mstatus_i.upie, 
+                            mstatus_i.mie,
+                            mstatus_i.trash_3, 
+                            1'b0,  // sie 
+                            mstatus_i.uie
+                        }; mstatus_wen_catch <= 1;
+
+                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_S; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to S Level */
+
+                    end else begin  // M level
+                        
+                        /* Start: Raise an exception to M Level */
+                        mepc_o_catch <= MEM_pc_addr; mepc_wen_catch <= 1;
+                        pc_nxt_exception <= mtvec_i;
+                        mcause_o_catch <= {1'b0, dm_exception_code}; mcause_wen_catch <= 1;
+                        mtval_o_catch <= 0; mtval_wen_catch <= 1;
+                        mstatus_o_catch <= {
+                            mstatus_i[31:13],
+                            priviledge_mode_i, // mpp
+                            mstatus_i.trash_1,
+                            mstatus_i.spp,
+                            mstatus_i.mie,  // mpie <= mie
+                            mstatus_i.trash_2,
+                            mstatus_i.spie, mstatus_i.upie, 1'b0, // mie
+                            mstatus_i.trash_3, mstatus_i.sie, mstatus_i.uie
+                        }; mstatus_wen_catch <= 1;
+
+                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_M; priviledge_mode_wen_catch <= 1;
+                        /* End: Raise an exception to M Level */
+                    end
+                end
+
+                // EXE exception
+                else if ((csr_opcode == `CSR_OP_ECALL | csr_opcode == `CSR_OP_EBREAK | exe_exception) && EXCEPTION_EXE < exception_stage_reg) begin
                     exception_stage_reg <= EXCEPTION_EXE;
                     state <= STATE_BLOCK;
 
@@ -466,7 +516,7 @@ module EXE_csr_transfer #(
                         /* Start: Raise an exception to S Level */
                         sepc_o_catch <= EXE_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
-                        scause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; scause_wen_catch <= 1;
+                        scause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak};scause_wen_catch <= 1;
                         stval_o_catch <= 0; stval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
@@ -556,8 +606,6 @@ module EXE_csr_transfer #(
 
                     end else if (csr_opcode == `CSR_OP_URET) begin
                         // No one cares you.
-                        // TODO: In fact, we could map all instructions unknown to such a loser in Permission Check Module in ID stage.
-                        // Todo: raise IllegalInstructionException
                     end
 
                 end
@@ -693,9 +741,15 @@ module EXE_csr_transfer #(
             else if (priviledge_mode_i == `PRIVILEDGE_MODE_M) begin
                 exception_operand_for_ecall_ebreak = `EXCEPTION_ENVIRONMENT_CALL_M;
             end
-        end else if (csr_opcode == `CSR_OP_EBREAK) begin
+        end 
+        
+        else if (csr_opcode == `CSR_OP_EBREAK) begin
             exception_operand_for_ecall_ebreak = `EXCEPTION_BREAKPOINT;
-        end
+        end 
+        
+        else if (exe_exception) begin
+            exception_operand_for_ecall_ebreak = exe_exception_code;
+        end 
     end
 
 

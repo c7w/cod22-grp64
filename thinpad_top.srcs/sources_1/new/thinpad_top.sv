@@ -469,6 +469,10 @@ module thinpad_top #(
     logic [DATA_WIDTH/8-1:0] wbm_sel_im;
     logic wbm_we_im;
 
+    logic IF_query_exception;
+    logic [`MXLEN-2:0] IF_query_exception_code;
+    logic IF_illegal_instruction;
+
     // IF_im instr_fetcher (
     //     .clk(sys_clk),
     //     .rst(reset_of_clk10M),
@@ -492,6 +496,7 @@ module thinpad_top #(
         .clk(sys_clk),
         .rst(reset_of_clk10M),
 
+        .mstatus_i(CONTROLLER_mstatus_bypassing),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
         .satp_i(CONTROLLER_satp_bypassing),
         .tlb_flush(IF_tlb_flush),
@@ -501,6 +506,9 @@ module thinpad_top #(
         .branching(CONTROLLER_branching),
         .instr(IF_instr),
         .im_ack(CONTROLLER_im_ack),
+
+        .query_exception(IF_query_exception),
+        .query_exception_code(IF_query_exception_code),
 
         .wb_cyc_o(wbm_cyc_im),
         .wb_stb_o(wbm_stb_im),
@@ -530,6 +538,10 @@ module thinpad_top #(
     logic [2:0] ID_dm_width; 
     logic ID_dm_sign_ext;
 
+    logic ID_query_exception;
+    logic [`MXLEN-2:0] ID_query_exception_code;
+    logic ID_illegal_instruction;
+
     IF_DECODER instr_decoder(
         .instr(IF_instr),
 
@@ -540,6 +552,7 @@ module thinpad_top #(
         .tlb_flush(IF_tlb_flush),
         .drain_pipeline(IF_drain_pipeline),
         .fence_i(IF_fence_i),
+        .illegal_instruction(IF_illegal_instruction),
 
         .dm_en(IF_dm_en),
         .dm_wen(IF_dm_wen),
@@ -590,6 +603,10 @@ module thinpad_top #(
         .alu_mux_b_ctr_i(IF_ALU_mux_b_ctr),
         .pc_mux_ctr_i(IF_pc_mux_ctr),
 
+        .query_exception_i(IF_query_exception),
+        .query_exception_code_i(IF_query_exception_code),
+        .illegal_instruction_i(IF_illegal_instruction),
+
         .csr_addr_o(ID_csr_addr),
         .csr_opcode_o(ID_csr_opcode),
         .bc_op_o(ID_BC_op),
@@ -597,6 +614,11 @@ module thinpad_top #(
         .alu_mux_a_ctr_o(ID_ALU_mux_a_ctr),
         .alu_mux_b_ctr_o(ID_ALU_mux_b_ctr),
         .pc_mux_ctr_o(ID_pc_mux_ctr),
+
+        .query_exception_o(ID_query_exception),
+        .query_exception_code_o(ID_query_exception_code),
+        .illegal_instruction_o(ID_illegal_instruction),
+
 
         // EXE -> MEM
         .pc_addr_i(IF_pc_addr),
@@ -706,7 +728,12 @@ module thinpad_top #(
     logic [2:0] EXE_dm_width; 
     logic EXE_dm_sign_ext;
     logic [4:0] EXE_rd;
-    
+
+    logic EXE_query_exception;
+    logic [`MXLEN-2:0] EXE_query_exception_code;
+
+    logic MEM_query_exception;
+    logic [`MXLEN-2:0] MEM_query_exception_code;
 
     REG_ID_EXE reg_id_exe (
         .clk(sys_clk),
@@ -731,6 +758,10 @@ module thinpad_top #(
         .alu_mux_b_ctr_i(ID_ALU_mux_b_ctr),
         .pc_mux_ctr_i(ID_pc_mux_ctr),
 
+        .query_exception_i(ID_query_exception),
+        .query_exception_code_i(ID_query_exception_code),
+        .illegal_instruction_i(ID_illegal_instruction),
+
         .csr_addr_o(EXE_csr_addr),
         .csr_opcode_o(EXE_csr_opcode),
         .rf_data_a_o(EXE_data_a),
@@ -740,6 +771,8 @@ module thinpad_top #(
         .alu_mux_b_ctr_o(EXE_ALU_mux_b_ctr),
         .pc_mux_ctr_o(EXE_pc_mux_ctr),
 
+        .query_exception_o(EXE_query_exception),
+        .query_exception_code_o(EXE_query_exception_code),
 
         .pc_addr_i(ID_pc_addr),
         .dm_en_i(ID_dm_en),
@@ -838,6 +871,13 @@ module thinpad_top #(
         .ID_pc_addr(ID_pc_addr),
         .EXE_pc_addr(EXE_pc_addr),
         .MEM_pc_addr(MEM_pc_addr),
+
+        .exe_exception(EXE_query_exception),
+        .exe_exception_code(EXE_query_exception_code),
+
+        .dm_ack(CONTROLLER_dm_ack),
+        .dm_exception(MEM_query_exception),
+        .dm_exception_code(MEM_query_exception_code),
 
         .state_o(CONTROLLER_csr_transfer_state),
         .pc_nxt_exception(pc_nxt_exception)
@@ -1008,6 +1048,7 @@ module thinpad_top #(
         .clk (sys_clk),
         .rst (reset_of_clk10M),
 
+        .mstatus_i(CONTROLLER_mstatus_reg),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_reg),
         .satp_i(CONTROLLER_satp_reg),
         .tlb_flush(MEM_tlb_flush),
@@ -1021,6 +1062,11 @@ module thinpad_top #(
         .dm_sign_ext(MEM_dm_sign_ext),
         .dm_ack(CONTROLLER_dm_ack),
         .dm_data_o(MEM_DM_data),
+
+
+        // todo add exception output
+        .query_exception(MEM_query_exception),
+        .query_exception_code(MEM_query_exception_code),
 
         .wbm_cyc_o(wbm_cyc_dm),
         .wbm_stb_o(wbm_stb_dm),

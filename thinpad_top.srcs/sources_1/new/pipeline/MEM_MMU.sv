@@ -8,6 +8,7 @@ module MEM_MMU #(
     input wire clk,  // clk with 50M frequency
     input wire rst,
 
+    input wire mstatus_t mstatus_i,
     input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i, // (+)
     input wire tlb_flush,  // must ensure query_en = 1 (+)
@@ -22,6 +23,9 @@ module MEM_MMU #(
     input wire dm_sign_ext,
     output wire dm_ack,
     output logic [DATA_WIDTH-1:0] dm_data_o,
+
+    output logic query_exception,
+    output logic [`MXLEN-2:0] query_exception_code,
 
     // Wishbone master
     output wire wbm_cyc_o,
@@ -56,6 +60,7 @@ module MEM_MMU #(
         .clk(clk),
         .rst(rst),
 
+        .mstatus_i(mstatus_i),
         .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(dm_en),
@@ -71,8 +76,8 @@ module MEM_MMU #(
 
         .query_ack(mmu_ack),
         .query_data_o(dm_data_o),
-        .query_exception(),   // todo: add exception for MEM stage
-        .query_exception_code(),
+        .query_exception(query_exception),
+        .query_exception_code(query_exception_code),
 
         .wb_cyc_o(wbm_cyc_o),
         .wb_stb_o(wbm_stb_o),

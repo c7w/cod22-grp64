@@ -14,6 +14,7 @@ module IF_DECODER #(
     output logic tlb_flush, // reset TLB
     output logic drain_pipeline, // ensure that only this instruction is running on the whole pipeline
     output logic fence_i,
+    output logic illegal_instruction,
     
     output logic dm_en, // data memory enabled
     output logic dm_wen,  // data memory write enabled
@@ -127,6 +128,7 @@ module IF_DECODER #(
     } OP_Type;
     
     OP_Type op_type;
+    assign illegal_instruction = op_type == OP_UNKNOWN | op_type == OP_URET | op_type == OP_WFI;
 
     // From instr to op_type
     always_comb begin
@@ -259,8 +261,13 @@ module IF_DECODER #(
                         end
                         else if (instr == 32'b00110_00_00010_00000_000_00000_11100_11) begin
                             op_type = OP_MRET;
+                        end else if (instr == 32'b00010_00_00101_00000_000_00000_11100_11) begin
+                            op_type = OP_WFI;
+                        end else if (instr[31:27] == 5'b00010 & instr[26:25] == 2'b01 & instr[14:12] == 3'b000 & instr[6:0] == 7'b1110011) begin
+                            op_type = OP_SFENCE_VMA;
                         end
                     end
+
                 endcase
             end
 
@@ -269,14 +276,6 @@ module IF_DECODER #(
                     op_type = OP_FENCE;
                 end else if (instr == 32'b00000000000000000001000000001111) begin
                     op_type = OP_FENCE_I;
-                end
-            end
-
-            7'b1110011: begin
-                if (instr == 32'b00010_00_00101_00000_000_00000_11100_11) begin
-                    op_type = OP_WFI;
-                end else if (instr[31:27] == 5'b00010 & instr[26:25] == 2'b01 & instr[14:12] == 3'b000 & instr[6:0] == 7'b1110011) begin
-                    op_type = OP_SFENCE_VMA;
                 end
             end
 

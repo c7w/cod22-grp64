@@ -10,6 +10,7 @@ module MMU_tlb #(
     input wire rst,
 
     // CPU -> TLB
+    input wire mstatus_t mstatus_i,
     input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i,
     input wire query_en,
@@ -20,12 +21,13 @@ module MMU_tlb #(
     input wire query_sign_ext,
     input wire tlb_flush,  // must ensure query_en = 1
     input wire fence_i,
-    input wire fence_i_wb,
+    input wire fence_i_wb,  // can be used to identify IM or DM
+                            // where IM needs execution permission
 
     // TLB -> CPU
     output logic query_ack,
     output logic [DATA_WIDTH-1:0] query_data_o,
-    output logic query_exception,  // todo: add support for exception
+    output logic query_exception,
     output logic [`MXLEN-2:0] query_exception_code,
 
     // Translation Unit -> TLB
@@ -105,7 +107,7 @@ module MMU_tlb #(
 
 
     // TLB -> CPU
-    assign query_ack = (~query_en) || (tlb_hit && cache_ack);
+    assign query_ack = (~query_en) | query_exception | (tlb_hit && cache_ack);
     reg [DATA_WIDTH-1:0] query_data_o_reg;
     always_comb begin
         if (cache_ack) begin
@@ -136,8 +138,8 @@ module MMU_tlb #(
         cache_addr = 0; cache_data_o = query_data_i;
         cache_width = query_width; cache_sign_ext = query_sign_ext;
 
-        if (~query_en) begin
-            // Do nothing
+        if (~query_en | query_exception) begin
+            // Do nothing when not querying or raising exception
         end
 
         else if (tlb_hit) begin
@@ -159,6 +161,47 @@ module MMU_tlb #(
         end
         else begin
             master_owner = 1'b1;  // translation unit
+        end
+    end
+
+
+    // Whether it's exception? Pure combinational logic.
+    always_comb begin
+        query_exception = 0; query_exception_code = 0;
+        // We consider the following situations.
+        // 1. Attempting to fetch an instruction from a page that does not have execute permissions raises a fetch page-fault exception. 
+        // 2. Attempting to execute a load or load-reserved instruction whose effective address lies within a page without read permissions raises a load page-fault exception.
+        // 3. Attempting to execute a store, store-conditional (regardless of success), or AMO instruction whose effective address lies within a page without write permissions raises a store page-fault exception.
+        // 4. The U bit indicates whether the page is accessible to user mode. If the SUM bit in the sstatus register is 0, S mode software may fault on accesses to user-mode pages. If the privilege mode is U but access page with no U enabled, a page fault is also given.
+        // 5. Irrespective of SUM, the supervisor may not execute code on pages with U=1.
+
+        if (~query_en) begin
+            // Do nothing
+        end
+
+        else if ( ~fence_i_wb & tlb_hit & (~tlb_entry.pte.V | ~tlb_entry.pte.X )) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_INSTRUCTION_PAGE_FAULT;
+        end
+
+        else if (fence_i_wb & tlb_hit & ~query_wen & (~tlb_entry.pte.V | ~tlb_entry.pte.R )) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_LOAD_PAGE_FAULT;
+        end
+
+        else if (fence_i_wb & tlb_hit & query_wen & (~tlb_entry.pte.V | ~tlb_entry.pte.W) ) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_STORE_PAGE_FAULT;
+        
+        end else if (
+            // Read / Write U page in S mode with SUM clear | Execute U page in S mode
+            (priviledge_mode_i == `PRIVILEDGE_MODE_S & tlb_hit & tlb_entry.pte.U & (~mstatus_i.sum | ~fence_i_wb)) |
+            (priviledge_mode_i == `PRIVILEDGE_MODE_U & tlb_hit & ~tlb_entry.pte.U)
+        ) begin
+            if (query_wen) begin
+                query_exception = 1; query_exception_code = `EXCEPTION_STORE_PAGE_FAULT;
+            end else if (~query_wen & fence_i_wb) begin
+                query_exception = 1; query_exception_code = `EXCEPTION_LOAD_PAGE_FAULT;
+            end else if (~query_wen & ~fence_i_wb) begin
+                query_exception = 1; query_exception_code = `EXCEPTION_INSTRUCTION_PAGE_FAULT;
+            end
         end
     end
 
@@ -205,9 +248,7 @@ module MMU_tlb #(
 
         else begin
 
-            if (query_en) begin
-                
-                if (tlb_flush) begin
+            if (tlb_flush) begin
                     tlb_table[0] <= 0;
                     tlb_table[1] <= 0;
                     tlb_table[2] <= 0;
@@ -241,7 +282,9 @@ module MMU_tlb #(
                     tlb_table[30] <= 0;
                     tlb_table[31] <= 0;
  
-                end else if (translation_ack) begin
+            end else if (query_en) begin
+                
+                if (translation_ack) begin
 
                     tlb_table[tlb_query.tlbt] <= {
                         tlb_query.tlbi,
