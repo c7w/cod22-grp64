@@ -8,6 +8,7 @@ module CONTROLLER_pipeline #(
     input wire im_ack,
     input wire dm_ack,
 
+    input wire data_hazard,
     input wire [4:0] ID_rs1,
     input wire [4:0] ID_rs2,
     input wire [4:0] EXE_rd,
@@ -36,14 +37,15 @@ module CONTROLLER_pipeline #(
     output logic[3:0] bubble_o
 );
 
-    wire is_write_EXE;
-    assign is_write_EXE = EXE_wb_en && (EXE_rd != 0) && (EXE_rd == ID_rs1 || EXE_rd == ID_rs2);
-    wire is_write_DM;
-    assign is_write_DM = DM_wb_en && (DM_rd != 0) && (DM_rd == ID_rs1 || DM_rd == ID_rs2);
-    wire is_write_WB;
-    assign is_write_WB = WB_wb_en && (WB_rd != 0) && (WB_rd == ID_rs1 || WB_rd == ID_rs2);
+    // wire is_write_EXE;
+    // assign is_write_EXE = EXE_wb_en && (EXE_rd != 0) && (EXE_rd == ID_rs1 || EXE_rd == ID_rs2);
+    // wire is_write_DM;
+    // assign is_write_DM = DM_wb_en && (DM_rd != 0) && (DM_rd == ID_rs1 || DM_rd == ID_rs2);
+    // wire is_write_WB;
+    // assign is_write_WB = WB_wb_en && (WB_rd != 0) && (WB_rd == ID_rs1 || WB_rd == ID_rs2);
 
-    wire stall_ID = is_write_EXE || is_write_DM || is_write_WB;
+    // wire stall_ID = is_write_EXE || is_write_DM || is_write_WB;
+    wire stall_ID = data_hazard;
     
     // Stall the whole pipeline if DM is not responding
     wire stall_DM;

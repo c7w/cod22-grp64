@@ -1,7 +1,7 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-// Date        : Sun Nov  6 16:24:41 2022
+// Date        : Sat Nov 19 15:04:41 2022
 // Host        : cc7w running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               D:/Project/cod22-gha20/thinpad_top.srcs/sources_1/ip/pll_example/pll_example_stub.v
@@ -13,13 +13,14 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-module pll_example(clk_out1, clk_out2, clk_out3, clk_out4, reset, 
-  locked, clk_in1)
-/* synthesis syn_black_box black_box_pad_pin="clk_out1,clk_out2,clk_out3,clk_out4,reset,locked,clk_in1" */;
+module pll_example(clk_out1, clk_out2, clk_out3, clk_out4, clk_out5, 
+  reset, locked, clk_in1)
+/* synthesis syn_black_box black_box_pad_pin="clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,reset,locked,clk_in1" */;
   output clk_out1;
   output clk_out2;
   output clk_out3;
   output clk_out4;
+  output clk_out5;
   input reset;
   output locked;
   input clk_in1;
