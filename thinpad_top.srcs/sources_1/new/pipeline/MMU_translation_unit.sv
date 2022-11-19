@@ -113,8 +113,9 @@ module MMU_translation_unit #(
                 STATE_READ1_NXT: begin
 
                     if (cache_request_valid) begin
-                        pte2 <= cache_request_data;
+                        translation_result <= cache_request_data;
                         state <= STATE_IDLE;
+                        translation_ack <= 1;
                     end else begin
                         wb_stb_o <= 1;
                         wb_adr_o <= pte2_addr;
