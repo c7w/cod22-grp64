@@ -1,6 +1,7 @@
 module MMU_cache #(
     parameter ADDR_WIDTH = 32,
-    parameter DATA_WIDTH = 32
+    parameter DATA_WIDTH = 32,
+    parameter CACHE_SIZE = 64
 ) (
     input wire clk,
     input wire rst,
@@ -14,9 +15,20 @@ module MMU_cache #(
     input wire cache_wen,
     input wire [2:0] cache_width,
     input wire cache_sign_ext,
-    // TODO: You should promise that cache_addr do not change until I give cache_ack
     input wire [ADDR_WIDTH-1:0] cache_addr,
     input wire [DATA_WIDTH-1:0] data_i,
+
+    input wire fence_i,
+    input wire fence_i_wb,
+
+
+    // Cache -> Translation Unit
+    input wire [ADDR_WIDTH-1:0] translation_unit_request_addr,
+
+    // Translation Unit -> Cache
+    output logic translation_unit_request_valid,
+    output logic [DATA_WIDTH-1:0] translation_unit_request_data,
+
 
     // Cache -> Wishbone Master
     output wire wb_cyc_o, 
@@ -32,17 +44,22 @@ module MMU_cache #(
 );
 
     // Buffer
-    cache_entry_t cache_table [0:63];
+    cache_entry_t cache_table [0:CACHE_SIZE-1];
 
     // cast cache_addr (logic [31:0]) to cache_query(cache_query_t)
-    cache_query_t cache_query;
+    cache_query_t cache_query, translation_query;
     assign cache_query = cache_addr;
+    assign translation_query = translation_unit_request_addr;
 
-    cache_entry_t cache_entry;
+    cache_entry_t cache_entry, translation_entry;
     assign cache_entry = cache_table[cache_query.phys_tag];
+    assign translation_entry = cache_table[translation_query.phys_tag];
 
     wire cache_hit;
     assign cache_hit = (cache_entry.phys_index == cache_query.phys_index) & cache_entry.valid;
+    
+    assign translation_unit_request_valid = (translation_entry.phys_index == translation_query.phys_index) & translation_entry.valid;
+    assign translation_unit_request_data = translation_entry.data; 
 
     // Phys addr for cache_entry
     logic [ADDR_WIDTH-1:0] cache_entry_phys_addr;
@@ -136,14 +153,29 @@ module MMU_cache #(
         end
     end
 
+    logic cache_ack_fence_i;
+    logic [7:0] fence_i_stage;
+
     // Cache -> TLB
     always_comb begin
         cache_ack = 1'b0; data_o = 32'hadadadad;
-        if (~cache_en) begin
+        
+        if (fence_i) begin
+            if (~fence_i_wb) begin
+                cache_ack = 1'b1;
+            end else begin
+                cache_ack = cache_ack_fence_i;
+            end
+
+        end else if (~cache_en) begin
             cache_ack = 1'b1;
         end else begin
-            cache_ack = cache_hit | wb_ack_i;
-            data_o = hit_dat_i_assembled;
+            if (~cache_wen) begin
+                cache_ack = cache_hit | (wb_ack_i & state != STATE_WRITE_BACK);
+                data_o = hit_dat_i_assembled;
+            end else begin
+                cache_ack = cache_hit;
+            end
         end
     end
 
@@ -154,7 +186,9 @@ module MMU_cache #(
         STATE_WRITE_BACK,
         STATE_WRITE_BACK_NXT,
         STATE_LOAD,
-        STATE_LOAD_NXT
+        STATE_LOAD_NXT,
+        STATE_WRITE_BACK_FENCE,
+        STATE_WRITE_BACK_FENCE_NXT
     } state_t;
     state_t state;
 
@@ -168,7 +202,7 @@ module MMU_cache #(
 
     always_ff @(posedge clk) begin
         if (rst) begin
-            for (integer i = 0; i < 4096; i = i + 1) begin
+            for (integer i = 0; i < CACHE_SIZE; i = i + 1) begin
                 cache_table[i] <= 0;
             end
             state <= STATE_IDLE;
@@ -176,67 +210,115 @@ module MMU_cache #(
             wb_adr_o <= 0;
             wb_dat_o <= 0;
             wb_we_o <= 0;
+
+            cache_ack_fence_i <= 0;
+            fence_i_stage <= 0;
         end
  
         else begin
 
-            if (state == STATE_IDLE) begin
-                if (cache_en) begin
+            if (fence_i) begin
+                if (~fence_i_wb) begin
+                    // Reset cache table
+                    for (integer i = 0; i < CACHE_SIZE; i = i + 1) begin
+                        cache_table[i] <= 0;
+                    end
+                end else begin
 
-                    if (cache_hit && cache_wen) begin
-                        cache_table[cache_query.phys_tag].data <= data_i;
-                        cache_table[cache_query.phys_tag].dirty <= 1'b1;
-                    
-                    end else if (~cache_hit) begin
+                    if (fence_i_stage == CACHE_SIZE) begin
+                        fence_i_stage <= 0;
+                        cache_ack_fence_i <= 1;
+                    end else begin
 
-                        // Replace cache
-                        if (cache_entry.valid && cache_entry.dirty) begin
-                            // Write Back
-                            state <= STATE_WRITE_BACK;
-                            wb_stb_o <= 1;
-                            wb_adr_o <= cache_entry_phys_addr & ~32'h3;
-                            wb_dat_o <= cache_entry.data;
-                            wb_we_o <= 1;
-
-                        end else begin
-                            // Reload
-                            state <= STATE_LOAD;
-                            wb_stb_o <= 1;
-                            wb_adr_o <= cache_addr & ~32'h3;
-                            wb_dat_o <= 32'hacacacac;
-                            wb_we_o <= 0;
+                        if (state == STATE_IDLE) begin
+                            if (cache_table[fence_i_stage].valid & cache_table[fence_i_stage].dirty) begin
+                                state <= STATE_WRITE_BACK_FENCE;
+                                wb_stb_o <= 1;
+                                wb_adr_o <= cache_entry_phys_addr & ~32'h3;
+                                wb_dat_o <= cache_entry.data;
+                                wb_we_o <= 1;
+                            end else begin 
+                                // Go to next index
+                                fence_i_stage <= fence_i_stage + 1;
+                            end
+                        end else if (state == STATE_WRITE_BACK_FENCE) begin
+                            if (wb_ack_i) begin
+                                wb_stb_o <= 0;
+                                state <= STATE_IDLE;
+                                cache_table[fence_i_stage].dirty <= 0;
+                                fence_i_stage <= fence_i_stage + 1;
+                            end
                         end
 
+                        
                     end
 
                 end
             end
 
-            else if (state == STATE_WRITE_BACK) begin
-                if (wb_ack_i) begin
-                    wb_stb_o <= 0;
-                    state <= STATE_WRITE_BACK_NXT;
+            else begin
+
+                cache_ack_fence_i <= 0;
+
+                if (state == STATE_IDLE) begin
+                    if (cache_en) begin
+
+                        if (cache_hit && cache_wen) begin
+                            cache_table[cache_query.phys_tag].data <= data_i;
+                            cache_table[cache_query.phys_tag].dirty <= 1'b1;
+                        
+                        end else if (~cache_hit) begin
+
+                            // Replace cache
+                            if (cache_entry.valid && cache_entry.dirty) begin
+                                // Write Back
+                                state <= STATE_WRITE_BACK;
+                                wb_stb_o <= 1;
+                                wb_adr_o <= cache_entry_phys_addr & ~32'h3;
+                                wb_dat_o <= cache_entry.data;
+                                wb_we_o <= 1;
+
+                            end else begin
+                                // Reload
+                                state <= STATE_LOAD;
+                                wb_stb_o <= 1;
+                                wb_adr_o <= cache_addr & ~32'h3;
+                                wb_dat_o <= 32'hacacacac;
+                                wb_we_o <= 0;
+                            end
+
+                        end
+
+                    end
                 end
-            end
 
-            else if (state == STATE_WRITE_BACK_NXT) begin
-                wb_stb_o <= 1;
-                wb_adr_o <= cache_addr & ~32'h3;
-                wb_dat_o <= 32'hacacacac;
-                wb_we_o <= 0;
-                state <= STATE_LOAD;
-            end
-
-            else if (state == STATE_LOAD) begin
-                if (wb_ack_i) begin
-                    cache_table[cache_query.phys_tag].valid <= 1'b1;
-                    cache_table[cache_query.phys_tag].data <= wb_dat_i;
-                    cache_table[cache_query.phys_tag].dirty <= 1'b0;
-                    cache_table[cache_query.phys_tag].phys_index <= cache_query.phys_index;
-
-                    wb_stb_o <= 0;
-                    state <= STATE_IDLE;
+                else if (state == STATE_WRITE_BACK) begin
+                    if (wb_ack_i) begin
+                        wb_stb_o <= 0;
+                        state <= STATE_WRITE_BACK_NXT;
+                    end
                 end
+
+                else if (state == STATE_WRITE_BACK_NXT) begin
+                    wb_stb_o <= 1;
+                    wb_adr_o <= cache_addr & ~32'h3;
+                    wb_dat_o <= 32'hacacacac;
+                    wb_we_o <= 0;
+                    state <= STATE_LOAD;
+                end
+
+                else if (state == STATE_LOAD) begin
+                    if (wb_ack_i) begin
+                        cache_table[cache_query.phys_tag].valid <= 1'b1;
+                        cache_table[cache_query.phys_tag].data <= wb_dat_i;
+                        cache_table[cache_query.phys_tag].dirty <= 1'b0;
+                        cache_table[cache_query.phys_tag].phys_index <= cache_query.phys_index;
+
+                        wb_stb_o <= 0;
+                        state <= STATE_IDLE;
+                    end
+                end
+
             end
 
 

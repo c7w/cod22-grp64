@@ -15,6 +15,12 @@ module MMU_translation_unit #(
     input wire translation_en,
     input wire virt_addr_t translation_addr,
 
+    // Cache -> Translation Unit
+    output logic [ADDR_WIDTH-1:0] cache_request_addr,
+
+    // Translation Unit -> Cache
+    input wire cache_request_valid,
+    input wire [DATA_WIDTH-1:0] cache_request_data,
 
     // Translation Unit -> Wishbone master
     output wire wb_cyc_o, 
@@ -31,6 +37,7 @@ module MMU_translation_unit #(
 
     // Translation can be slow. But it wont affect final perf :)
 
+    assign cache_request_addr = (state == STATE_READ1_NXT) ? pte2_addr : translation_addr;
 
     // PTE Addr calculation
     pte_t pte1, pte2;
@@ -77,11 +84,21 @@ module MMU_translation_unit #(
                 STATE_IDLE: begin
                     translation_ack <= 0;
                     if (translation_en) begin
-                        translation_addr_cache <= translation_addr;
-                        state <= STATE_READ1;
 
-                        wb_stb_o <= 1;
-                        wb_adr_o <= pte1_addr;
+                        if (cache_request_valid) begin
+
+                            pte1 <= cache_request_data;
+                            state <= STATE_READ1_NXT;
+
+                        end else begin
+                            translation_addr_cache <= translation_addr;
+                            state <= STATE_READ1;
+
+                            wb_stb_o <= 1;
+                            wb_adr_o <= pte1_addr;
+                        end
+
+
                     end
                 end
 
@@ -94,9 +111,17 @@ module MMU_translation_unit #(
                 end
 
                 STATE_READ1_NXT: begin
-                    wb_stb_o <= 1;
-                    wb_adr_o <= pte2_addr;
-                    state <= STATE_READ2;
+
+                    if (cache_request_valid) begin
+                        pte2 <= cache_request_data;
+                        state <= STATE_IDLE;
+                    end else begin
+                        wb_stb_o <= 1;
+                        wb_adr_o <= pte2_addr;
+                        state <= STATE_READ2;
+                    end
+
+
                 end
 
                 STATE_READ2: begin
@@ -109,6 +134,7 @@ module MMU_translation_unit #(
                     end
                 end
 
+                // not used
                 STATE_READ2_NXT: begin
                     wb_stb_o <= 1;
                     wb_adr_o <= pte3_addr;

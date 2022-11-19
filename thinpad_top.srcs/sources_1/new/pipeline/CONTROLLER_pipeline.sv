@@ -26,6 +26,11 @@ module CONTROLLER_pipeline #(
     input wire [ADDR_WIDTH-1:0] ID_pc_addr, // ID_pc_addr
     input wire [ADDR_WIDTH-1:0] IF_pc_addr, // ID_pc_addr
 
+    input wire IF_drain_pipeline,
+    input wire ID_drain_pipeline,
+    input wire EXE_drain_pipeline,
+    input wire MEM_drain_pipeline,
+
     output logic branching,
     output logic[3:0] stall_o,
     output logic[3:0] bubble_o
@@ -49,6 +54,9 @@ module CONTROLLER_pipeline #(
 
     logic [ADDR_WIDTH-1:0] pc_addr_right;
 
+    wire drain_pipeline;
+    assign drain_pipeline = ID_drain_pipeline | EXE_drain_pipeline | MEM_drain_pipeline;
+
     always_comb begin
 
         if (CONTROLLER_csr_transfer_state == 2) begin
@@ -69,6 +77,7 @@ module CONTROLLER_pipeline #(
     always_comb begin
         stall_o = 4'b0000;
         bubble_o = 4'b0000;
+
 
         if (CONTROLLER_csr_transfer_state == 1) begin
             // Drain the whole pipeline
@@ -94,6 +103,12 @@ module CONTROLLER_pipeline #(
         else if (stall_IM) begin
             stall_o = 4'b1000;
             bubble_o = 4'b1000;
+
+        end else if (drain_pipeline) begin
+ 
+            stall_o = 4'b1000;
+            bubble_o = 4'b1000;
+
         end
 
     end

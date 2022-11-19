@@ -1,12 +1,17 @@
-module MEM_dm #(
+`include "../headers/mem.svh"
+`include "../headers/exception.svh"
+
+module MEM_MMU #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (
     input wire clk,  // clk with 50M frequency
     input wire rst,
 
+    input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i, // (+)
     input wire tlb_flush,  // must ensure query_en = 1 (+)
+    input wire fence_i,
 
     // data memory
     input wire dm_en,
@@ -51,6 +56,7 @@ module MEM_dm #(
         .clk(clk),
         .rst(rst),
 
+        .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(dm_en),
         .query_wen(dm_wen),
@@ -60,19 +66,22 @@ module MEM_dm #(
         .query_sign_ext(dm_sign_ext),
         .tlb_flush(tlb_flush),
 
+        .fence_i(fence_i),
+        .fence_i_wb(1'b1),
+
         .query_ack(mmu_ack),
         .query_data_o(dm_data_o),
         .query_exception(),   // todo: add exception for MEM stage
         .query_exception_code(),
 
-        .wb_cyc_o(wb_cyc_o),
-        .wb_stb_o(wb_stb_o),
-        .wb_ack_i(wb_ack_i),
-        .wb_adr_o(wb_adr_o),
-        .wb_dat_o(wb_dat_o),
-        .wb_dat_i(wb_dat_i),
-        .wb_sel_o(wb_sel_o),
-        .wb_we_o(wb_we_o),
+        .wb_cyc_o(wbm_cyc_o),
+        .wb_stb_o(wbm_stb_o),
+        .wb_ack_i(wbm_ack_i),
+        .wb_adr_o(wbm_adr_o),
+        .wb_dat_o(wbm_dat_o),
+        .wb_dat_i(wbm_dat_i),
+        .wb_sel_o(wbm_sel_o),
+        .wb_we_o(wbm_we_o),
 
         .mtimer_enabled(1'b1),
         .mtimer_mtime(mtimer_mtime),

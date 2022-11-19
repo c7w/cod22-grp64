@@ -2,7 +2,7 @@
     This module is used to manipulate multiple peripherals. (SRAM / UART / VGA / Flash)
 
 
-CPU ---> [T   L   B]  <---> [Cache] <---> [MMU] 
+CPU ---> [T   L   B]  <---> [Cache] <---> [SRAM] 
      |     |      /|\
      |     |       |
      |    \|/      | 
@@ -21,6 +21,7 @@ module MMU #(
     input wire rst,
 
     // CPU -> MMU
+    input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i,
     input wire query_en,
     input wire query_wen,
@@ -29,6 +30,9 @@ module MMU #(
     input wire [2:0] query_width,
     input wire query_sign_ext,
     input wire tlb_flush,  // must ensure query_en = 1
+    
+    input wire fence_i,
+    input wire fence_i_wb,
 
     // MMU -> CPU
     output logic query_ack,
@@ -188,12 +192,18 @@ module MMU #(
     logic wbm3_stb_o; // STB_I strobe input
     logic wbm3_cyc_o; // CYC_I cycle input
 
+
+    logic [ADDR_WIDTH-1:0] trans_cache_bypassing_addr;
+    logic trans_cache_bypassing_valid;
+    logic [DATA_WIDTH-1:0] trans_cache_bypassing_data;
+
     MMU_tlb mmu_tlb (
 
         .clk(clk),
         .rst(rst),
 
         // CPU -> TLB
+        .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(query_en_tlb),
         .query_wen(query_wen),
@@ -202,6 +212,8 @@ module MMU #(
         .query_width(query_width),
         .query_sign_ext(query_sign_ext),
         .tlb_flush(tlb_flush),
+        .fence_i(fence_i),
+        .fence_i_wb(fence_i_wb),
 
         // TLB -> CPU
         .query_ack(query_ack_tlb),
@@ -248,6 +260,13 @@ module MMU #(
         .translation_en(translation_en),
         .translation_addr(translation_addr),
 
+        // Cache -> Translation Unit
+        .cache_request_addr(trans_cache_bypassing_addr),
+
+        // Translation Unit -> Cache
+        .cache_request_valid(trans_cache_bypassing_valid),
+        .cache_request_data(trans_cache_bypassing_data),
+
         // Translation Unit -> Wishbone master
         .wb_cyc_o(wbm1_cyc_o),
         .wb_stb_o(wbm1_stb_o),
@@ -276,6 +295,13 @@ module MMU #(
         .cache_sign_ext(cache_sign_ext),
         .cache_addr(cache_addr),
         .data_i(cache_data_o),
+
+        // Cache -> Translation Unit
+        .translation_unit_request_addr(trans_cache_bypassing_addr),
+
+        // Translation Unit -> Cache
+        .translation_unit_request_valid(trans_cache_bypassing_valid),
+        .translation_unit_request_data(trans_cache_bypassing_data),
 
         // Cache -> Wishbone Master
         .wb_cyc_o(wbm0_cyc_o),
@@ -390,7 +416,7 @@ module MMU #(
         if (state == STATE_READ_UART) begin
             if (wb_ack_i) begin
                 query_ack_uart = 1;
-                query_data_o_uart = wb_dat_i;
+                query_data_o_uart = {24'b0, wb_dat_i[7:0]};
             end
         end else if (state == STATE_WRITE_UART) begin
             if (wb_ack_i) begin

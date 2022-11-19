@@ -10,6 +10,7 @@ module MMU_tlb #(
     input wire rst,
 
     // CPU -> TLB
+    input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i,
     input wire query_en,
     input wire query_wen,
@@ -18,6 +19,8 @@ module MMU_tlb #(
     input wire [2:0] query_width,
     input wire query_sign_ext,
     input wire tlb_flush,  // must ensure query_en = 1
+    input wire fence_i,
+    input wire fence_i_wb,
 
     // TLB -> CPU
     output logic query_ack,
@@ -39,6 +42,8 @@ module MMU_tlb #(
     input wire [DATA_WIDTH-1:0] cache_data_i,
 
     // TLB -> Cache
+    output logic cache_fence_i,
+    output logic cache_fence_i_wb,
     output logic cache_en,
     output logic cache_wen,
     output logic [2:0] cache_width,
@@ -57,9 +62,10 @@ module MMU_tlb #(
     wire tlb_query_t tlb_query;
     assign tlb_query = virt_addr;
 
+    // Whether enable virtual address or not
     tlbe_t tlb_entry;
     always_comb begin
-        if (satp_i.mode) begin
+        if (satp_i.mode & priviledge_mode_i != 2'b11) begin
             // Sv32
             tlb_entry = tlb_table[tlb_query.tlbt];
         end else begin
@@ -114,7 +120,7 @@ module MMU_tlb #(
     // TLB -> Translation unit
     assign satp_o = satp_i;
     always_comb begin
-        if (satp_i.mode & ~tlb_hit & ~translation_ack) begin
+        if (satp_i.mode & ~tlb_hit & ~translation_ack & query_en) begin
             translation_en = 1;
             translation_addr = virt_addr;
         end else begin

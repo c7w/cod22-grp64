@@ -404,6 +404,11 @@ module thinpad_top #(
         .ID_pc_addr(ID_pc_addr),
         .IF_pc_addr(IF_pc_addr),
         
+        .IF_drain_pipeline(IF_drain_pipeline),
+        .ID_drain_pipeline(ID_drain_pipeline),
+        .EXE_drain_pipeline(EXE_drain_pipeline),
+        .MEM_drain_pipeline(MEM_drain_pipeline),
+
         .branching(CONTROLLER_branching),
         .stall_o(CONTROLLER_stall),
         .bubble_o(CONTROLLER_bubble)
@@ -482,8 +487,10 @@ module thinpad_top #(
         .clk(sys_clk),
         .rst(reset_of_clk10M),
 
+        .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
         .satp_i(CONTROLLER_satp_bypassing),
         .tlb_flush(IF_tlb_flush),
+        .fence_i(MEM_fence_i),
         
         .pc_addr(IF_pc_addr),
         .branching(CONTROLLER_branching),
@@ -951,8 +958,10 @@ module thinpad_top #(
         .clk (sys_clk),
         .rst (reset_of_clk10M),
 
+        .priviledge_mode_i(CONTROLLER_priviledge_mode_reg),
         .satp_i(CONTROLLER_satp_reg),
         .tlb_flush(MEM_tlb_flush),
+        .fence_i(MEM_fence_i),
 
         .dm_en(MEM_dm_en),
         .dm_wen(MEM_dm_wen),

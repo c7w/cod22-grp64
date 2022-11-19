@@ -298,7 +298,7 @@ module IF_DECODER #(
         dm_en = 0; dm_wen = 0; 
         dm_width = 4; dm_sign_ext = 1;
         csr_opcode = 15;
-        tlb_flush = 0; drain_pipeline = 0; fence_i = 1;
+        tlb_flush = 0; drain_pipeline = 0; fence_i = 0;
 
         case (op_type)
             OP_LUI: begin

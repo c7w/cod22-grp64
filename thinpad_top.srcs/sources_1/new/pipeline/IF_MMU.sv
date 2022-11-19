@@ -8,8 +8,11 @@ module IF_MMU #(
 
     // CPU -> MMU
     // CPU -> TLB
+    // todo : priviledge mode i <= if mmu, dm mmu
+    input wire priviledge_mode_t priviledge_mode_i,
     input wire satp_t satp_i, // (+)
     input wire tlb_flush,  // must ensure query_en = 1 (+)
+    input wire fence_i,
 
     input wire[ADDR_WIDTH-1:0] pc_addr,
     input wire branching,  // not used ?
@@ -41,6 +44,7 @@ module IF_MMU #(
         .clk(clk),
         .rst(rst),
 
+        .priviledge_mode_i(priviledge_mode_i),
         .satp_i(satp_i),
         .query_en(~rst),
         .query_wen(1'b0),
@@ -49,6 +53,9 @@ module IF_MMU #(
         .query_width(3'd4),
         .query_sign_ext(1'b0),
         .tlb_flush(tlb_flush),
+
+        .fence_i(fence_i),
+        .fence_i_wb(1'b0),
 
         .query_ack(mmu_ack),
         .query_data_o(instr),
