@@ -37,9 +37,11 @@ module REG_IF_ID #(
     input wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_i,
     input wire[`PC_MUX_WIDTH-1:0] pc_mux_ctr_i,
 
+    input wire [DATA_WIDTH-1:0] instr_i,  // to calc mtval candidate
     input wire query_exception_i,
     input wire [`MXLEN-2:0] query_exception_code_i,
     input wire illegal_instruction_i,
+    input wire [DATA_WIDTH-1:0] query_exception_val_i,
 
     // output reg [DATA_WIDTH-1:0] rf_data_a_o,
     output reg [`CSR_ADDR_WIDTH-1:0] csr_addr_o,
@@ -50,9 +52,11 @@ module REG_IF_ID #(
     output reg [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_o,
     output reg[`PC_MUX_WIDTH-1:0] pc_mux_ctr_o,
 
+    output reg instr_o,
     output reg query_exception_o,
     output reg [`MXLEN-2:0] query_exception_code_o,
     output reg illegal_instruction_o,
+    output reg [DATA_WIDTH-1:0] query_exception_val_o,
 
     // EXE -> MEM
     input wire[ADDR_WIDTH-1:0] pc_addr_i,
@@ -109,7 +113,10 @@ module REG_IF_ID #(
 
             query_exception_o <= 0;
             query_exception_code_o <= 32'd31;
+            query_exception_val_o <= 0;
             illegal_instruction_o <= 0;
+
+            instr_o <= 32'h00000033;
 
             // bubble : mem
             pc_addr_o <= 0; // alu_out_o <= 0;
@@ -149,6 +156,8 @@ module REG_IF_ID #(
                     query_exception_o <= 0;
                     query_exception_code_o <= 32'd31;
                     illegal_instruction_o <= 0;
+                    query_exception_val_o <= 0;
+                    instr_o <= 32'h00000033;
 
                     // bubble : mem
                     pc_addr_o <= 0; // alu_out_o <= 0;
@@ -178,6 +187,8 @@ module REG_IF_ID #(
                     query_exception_o <= query_exception_i;
                     query_exception_code_o <= query_exception_code_i;
                     illegal_instruction_o <= illegal_instruction_i;
+                    instr_o <= instr_i;
+                    
 
                     // normal : mem
                     pc_addr_o <= pc_addr_i;

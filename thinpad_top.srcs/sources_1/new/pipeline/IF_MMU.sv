@@ -23,6 +23,7 @@ module IF_MMU #(
 
     output logic query_exception,
     output logic [`MXLEN-2:0] query_exception_code,
+    output logic [DATA_WIDTH-1:0] query_exception_val,
 
     // wishbone master
     output wire wb_cyc_o, 
@@ -45,6 +46,21 @@ module IF_MMU #(
     
     logic [DATA_WIDTH-1:0] instr;
 
+
+    logic query_exception_mmu;
+    logic [`MXLEN-2:0] query_exception_code_mmu;
+
+    always_comb begin
+        query_exception = query_exception_mmu;
+        query_exception_code = query_exception_code_mmu;
+        query_exception_val = request_addr;
+
+        if (request_addr & 32'h3 != 0) begin
+            query_exception = 1;
+            query_exception_code = `EXCEPTION_INSTRUCTION_ADDRESS_MISALIGNED;
+        end
+    end
+
     MMU mmu (
         .clk(clk),
         .rst(rst),
@@ -65,8 +81,8 @@ module IF_MMU #(
 
         .query_ack(mmu_ack),
         .query_data_o(instr),
-        .query_exception(query_exception),
-        .query_exception_code(query_exception_code),
+        .query_exception(query_exception_mmu),
+        .query_exception_code(query_exception_code_mmu),
 
         .wb_cyc_o(wb_cyc_o),
         .wb_stb_o(wb_stb_o),

@@ -79,12 +79,13 @@ module EXE_csr_transfer #(
     // From EXE
     input wire exe_exception,
     input wire [`MXLEN-2:0] exe_exception_code,
+    input wire [DATA_WIDTH-1:0] exe_exception_val,
 
     // From MEM::DM
-    // todo
     input wire dm_ack,
     input wire dm_exception,
     input wire [`MXLEN-2:0] dm_exception_code,
+    input wire [DATA_WIDTH-1:0] dm_exception_val,
 
     // Output Signals
     output logic [3:0] state_o,
@@ -173,6 +174,28 @@ module EXE_csr_transfer #(
     logic stval_wen_catch;
     logic stvec_wen_catch;
     logic sscratch_wen_catch;
+
+    logic [DATA_WIDTH-1:0] exception_val_m, exception_val_s;
+
+    always_comb begin
+        exception_val_m = mtval_i;
+        exception_val_s = stval_i;
+
+        if (dm_exception & dm_ack) begin
+            exception_val_m = dm_exception_val;
+            exception_val_s = dm_exception_val;
+        end
+
+        else if (exe_exception) begin
+            exception_val_m = exe_exception_val;
+            exception_val_s = exe_exception_val;
+        end
+
+        else if (csr_opcode == `CSR_OP_EBREAK) begin
+            exception_val_m = EXE_pc_addr;
+            exception_val_s = EXE_pc_addr;
+        end
+    end
 
     // Multiplex selector
     always_comb begin
@@ -464,7 +487,7 @@ module EXE_csr_transfer #(
                         sepc_o_catch <= MEM_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
                         scause_o_catch <= {1'b0, dm_exception_code};scause_wen_catch <= 1;
-                        stval_o_catch <= 0; stval_wen_catch <= 1;
+                        stval_o_catch <= exception_val_s; stval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             mstatus_i.mpp,
@@ -489,7 +512,7 @@ module EXE_csr_transfer #(
                         mepc_o_catch <= MEM_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b0, dm_exception_code}; mcause_wen_catch <= 1;
-                        mtval_o_catch <= 0; mtval_wen_catch <= 1;
+                        mtval_o_catch <= exception_val_m; mtval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             priviledge_mode_i, // mpp
@@ -517,7 +540,7 @@ module EXE_csr_transfer #(
                         sepc_o_catch <= EXE_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
                         scause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak};scause_wen_catch <= 1;
-                        stval_o_catch <= 0; stval_wen_catch <= 1;
+                        stval_o_catch <= exception_val_s; stval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             mstatus_i.mpp,
@@ -542,7 +565,7 @@ module EXE_csr_transfer #(
                         mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b0, exception_operand_for_ecall_ebreak}; mcause_wen_catch <= 1;
-                        mtval_o_catch <= 0; mtval_wen_catch <= 1;
+                        mtval_o_catch <= exception_val_m; mtval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             priviledge_mode_i, // mpp
@@ -623,7 +646,7 @@ module EXE_csr_transfer #(
                         mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
                         pc_nxt_exception <= mtvec_i;
                         mcause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; mcause_wen_catch <= 1;
-                        mtval_o_catch <= 0; mtval_wen_catch <= 1;
+                        mtval_o_catch <= mtval_i; mtval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             priviledge_mode_i, // mpp
@@ -654,7 +677,7 @@ module EXE_csr_transfer #(
                         sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
                         scause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; scause_wen_catch <= 1;
-                        stval_o_catch <= 0; stval_wen_catch <= 1;
+                        stval_o_catch <= stval_i; stval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],
                             mstatus_i.mpp,

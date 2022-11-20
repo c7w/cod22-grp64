@@ -71,12 +71,12 @@ module tb;
     reset_btn = 0;
     
     
-     #4800000;
+     #4000000;
      uart.pc_send_byte(8'h47); // G
      #10000;
-     uart.pc_send_byte(8'h00);
+     uart.pc_send_byte(8'hc4);
      #10000;
-     uart.pc_send_byte(8'h40);
+     uart.pc_send_byte(8'h10);
      #10000;
      uart.pc_send_byte(8'h00);
      #10000;
