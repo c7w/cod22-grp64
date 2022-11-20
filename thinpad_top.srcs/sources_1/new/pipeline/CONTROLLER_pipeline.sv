@@ -31,6 +31,7 @@ module CONTROLLER_pipeline #(
     input wire ID_drain_pipeline,
     input wire EXE_drain_pipeline,
     input wire MEM_drain_pipeline,
+    input wire WB_drain_pipeline,
 
     output logic branching,
     output logic[3:0] stall_o,
@@ -56,7 +57,7 @@ module CONTROLLER_pipeline #(
     assign stall_IM = ~im_ack;
 
     wire drain_pipeline;
-    assign drain_pipeline = ID_drain_pipeline | EXE_drain_pipeline | MEM_drain_pipeline;
+    assign drain_pipeline = ID_drain_pipeline | EXE_drain_pipeline | MEM_drain_pipeline | WB_drain_pipeline;
 
     always_comb begin
 

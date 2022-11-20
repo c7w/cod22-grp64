@@ -234,8 +234,11 @@ module MMU_cache #(
                             if (cache_table[fence_i_stage].valid & cache_table[fence_i_stage].dirty) begin
                                 state <= STATE_WRITE_BACK_FENCE;
                                 wb_stb_o <= 1;
-                                wb_adr_o <= cache_entry_phys_addr & ~32'h3;
-                                wb_dat_o <= cache_entry.data;
+                                wb_adr_o <= {
+                                    cache_table[fence_i_stage].phys_index, 
+                                    fence_i_stage[5:0], 
+                                    2'b00};
+                                wb_dat_o <= cache_table[fence_i_stage].data;
                                 wb_we_o <= 1;
                             end else begin 
                                 // Go to next index
@@ -264,7 +267,7 @@ module MMU_cache #(
                     if (cache_en) begin
 
                         if (cache_hit && cache_wen) begin
-                            cache_table[cache_query.phys_tag].data <= data_i;
+                            cache_table[cache_query.phys_tag].data <= dat_to_save;
                             cache_table[cache_query.phys_tag].dirty <= 1'b1;
                         
                         end else if (~cache_hit) begin

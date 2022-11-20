@@ -30,7 +30,7 @@ module EXE_branch_comp #(
             end
 
             `BC_OP_LTU: begin
-                cond = data_a <= data_b;
+                cond = data_a < data_b;
             end
 
             `BC_OP_NEQ: begin

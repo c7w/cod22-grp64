@@ -116,7 +116,12 @@ module MMU #(
 
         mmu_seize_master = 1;
 
-        if (~query_en) begin
+        if (fence_i) begin
+            mmu_seize_master = 0;
+            query_ack = query_ack_tlb;
+        end
+
+        else if (~query_en) begin
             query_ack = 1;
         end
 
@@ -294,6 +299,9 @@ module MMU #(
         .cache_addr(cache_addr),
         .data_i(cache_data_o),
 
+        .fence_i(fence_i),
+        .fence_i_wb(fence_i_wb),
+
         // Cache -> Translation Unit
         .translation_unit_request_addr(trans_cache_bypassing_addr),
 
@@ -316,7 +324,7 @@ module MMU #(
 
     MMU_master mmu_master (
         // TLB -> Wishbone master
-        .master_owner({mmu_seize_master, master_owner_tlb}),
+        .master_owner(fence_i ? 2'b00 : {mmu_seize_master, master_owner_tlb}),
 
         // Cache -> Wishbone master
         .wbm0_adr_o(wbm0_adr_o),

@@ -414,6 +414,7 @@ module thinpad_top #(
         .ID_drain_pipeline(ID_drain_pipeline),
         .EXE_drain_pipeline(EXE_drain_pipeline),
         .MEM_drain_pipeline(MEM_drain_pipeline),
+        .WB_drain_pipeline(WB_drain_pipeline),
 
         .branching(CONTROLLER_branching),
         .pc_addr_right(CONTROLLER_branching_addr),
@@ -506,6 +507,7 @@ module thinpad_top #(
     //     .wb_we_o(wbm_we_im)
     // );
 
+    logic WB_fence_i;
     IF_MMU instr_fetcher (
         .clk(sys_clk),
         .rst(reset_of_clk10M),
@@ -514,7 +516,7 @@ module thinpad_top #(
         .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
         .satp_i(CONTROLLER_satp_bypassing),
         .tlb_flush(IF_tlb_flush),
-        .fence_i(MEM_fence_i),
+        .fence_i(WB_fence_i),
         
         .pc_addr(IF_pc_addr),
         .branching(CONTROLLER_branching),
@@ -969,6 +971,8 @@ module thinpad_top #(
     logic MEM_dm_sign_ext;
     logic [4:0] MEM_rd;
 
+    logic WB_drain_pipeline;
+
     logic [DATA_WIDTH-1:0] MEM_alu, MEM_data_b;
 
     REG_EXE_MEM reg_exe_mem (
@@ -1129,10 +1133,14 @@ module thinpad_top #(
         .wb_en_i(MEM_wb_en),
         .wb_addr_i(MEM_rd),
         .wb_data_i(MEM_wb_data),
+        .drain_pipeline_i(MEM_drain_pipeline),
+        .fence_i_i(MEM_fence_i),
 
         .wb_en_o(RF_wen),
         .wb_addr_o(RF_waddr),
-        .wb_data_o(RF_wdata)
+        .wb_data_o(RF_wdata),
+        .drain_pipeline_o(WB_drain_pipeline),
+        .fence_i_o(WB_fence_i)
     );
 
 
