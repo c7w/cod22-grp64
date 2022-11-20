@@ -380,6 +380,7 @@ module thinpad_top #(
     logic [3:0] CONTROLLER_stall;
     logic [3:0] CONTROLLER_bubble;
     logic CONTROLLER_branching;
+    logic [ADDR_WIDTH-1:0] CONTROLLER_branching_addr;
     logic CONTROLLER_bc_cond;
     logic CONTROLLER_im_ack, CONTROLLER_dm_ack;
     logic CONTROLLER_data_hazard;
@@ -415,6 +416,7 @@ module thinpad_top #(
         .MEM_drain_pipeline(MEM_drain_pipeline),
 
         .branching(CONTROLLER_branching),
+        .pc_addr_right(CONTROLLER_branching_addr),
         .stall_o(CONTROLLER_stall),
         .bubble_o(CONTROLLER_bubble)
     );
@@ -448,14 +450,25 @@ module thinpad_top #(
         .rst (reset_of_clk10M),
         .stall(CONTROLLER_stall[3]),
         .pc_nxt(IF_pc_nxt),  // PC mux -> PC
-        .pc_addr(IF_pc_addr),  // PC -> instr fetcher
-        .pc_nxt_prediction(IF_pc_next_prediction)  // PC -> PC mux
+        .pc_addr(IF_pc_addr)  // PC -> instr fetcher
+    );
+
+    IF_BTB if_btb (
+        .clk(sys_clk),
+        .rst(reset_of_clk10M),
+
+        .curr_pc_addr(IF_pc_addr),
+        .predicted_pc_addr(IF_pc_next_prediction),
+
+        .exe_pc_addr(EXE_pc_addr),
+        .target_pc_addr(CONTROLLER_branching_addr),
+        .branching(CONTROLLER_branching)
     );
 
     IF_pc_mux pc_mux (
         .branching(CONTROLLER_branching),
         .pc_predicted(IF_pc_next_prediction),
-        .branch_addr(alu_o_branch),
+        .branch_addr(CONTROLLER_branching_addr),
         .pc_nxt(IF_pc_nxt)
     );
 

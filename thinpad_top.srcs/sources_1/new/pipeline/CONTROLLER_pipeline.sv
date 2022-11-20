@@ -34,7 +34,8 @@ module CONTROLLER_pipeline #(
 
     output logic branching,
     output logic[3:0] stall_o,
-    output logic[3:0] bubble_o
+    output logic[3:0] bubble_o,
+    output logic [ADDR_WIDTH-1:0] pc_addr_right
 );
 
     // wire is_write_EXE;
@@ -53,8 +54,6 @@ module CONTROLLER_pipeline #(
 
     wire stall_IM;
     assign stall_IM = ~im_ack;
-
-    logic [ADDR_WIDTH-1:0] pc_addr_right;
 
     wire drain_pipeline;
     assign drain_pipeline = ID_drain_pipeline | EXE_drain_pipeline | MEM_drain_pipeline;

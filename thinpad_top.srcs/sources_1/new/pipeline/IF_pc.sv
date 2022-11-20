@@ -3,17 +3,8 @@ module IF_pc (
     input wire rst,
     input wire stall,
     input wire[31:0] pc_nxt,
-    output reg[31:0] pc_addr,
-    output wire[31:0] pc_nxt_prediction
+    output reg[31:0] pc_addr
 );
-
-    logic [31:0] pc_nxt_prediction_comb;
-    assign pc_nxt_prediction = pc_nxt_prediction_comb;
-
-    always_comb begin
-        // TODO: add branching prediction?
-        pc_nxt_prediction_comb = pc_addr + 4;
-    end
 
     always_ff @( posedge clk ) begin
         if (rst) begin

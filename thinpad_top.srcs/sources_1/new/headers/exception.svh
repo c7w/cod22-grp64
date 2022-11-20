@@ -146,4 +146,27 @@ typedef enum logic [`CSR_OP_WIDTH-1:0] {
 
 /* End: Definition of constants */
 
+
+/* Start: Definition of BTB Table */
+// I'm too lazy to create a new file for this :(
+`define BTBO_WIDTH 2
+`define BTBI_WIDTH 4  // TLB Index. 16 Entries.
+`define BTBT_WIDTH 32-`BTBI_WIDTH-`BTBO_WIDTH  // TLB Tag
+
+typedef struct packed {
+    logic [`BTBT_WIDTH-1:0] tag_from;
+    logic valid;
+    logic [`BTBT_WIDTH-1:0] tag_to;
+    logic [`BTBI_WIDTH-1:0] index_to;
+} btbe_t;
+
+typedef struct packed {
+    logic [`BTBT_WIDTH-1:0] tag;
+    logic [`BTBI_WIDTH-1:0] index;
+    logic [`BTBO_WIDTH-1:0] offset;
+} btb_query_t; 
+
+/* End: Definition of BTB Table */
+
+
 `endif
