@@ -9,57 +9,58 @@ module tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 °´Å¥¿ª¹Ø£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
-  reg reset_btn;  // BTN6 ¸´Î»°´Å¥£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
+  reg push_btn;   // BTN5 ï¿½ï¿½Å¥ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Îª 1
+  reg reset_btn;  // BTN6 ï¿½ï¿½Î»ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Îª 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4£¬°´Å¥¿ª¹Ø£¬°´ÏÂÊ±Îª 1
-  reg [31:0] dip_sw;   // 32 Î»²¦Âë¿ª¹Ø£¬²¦µ½¡°ON¡±Ê±Îª 1
+  reg [3:0] touch_btn; // BTN1~BTN4ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Îª 1
+  reg [31:0] dip_sw;   // 32 Î»ï¿½ï¿½ï¿½ë¿ªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ONï¿½ï¿½Ê±Îª 1
 
-  wire [15:0] leds;  // 16 Î» LED£¬Êä³öÊ± 1 µãÁÁ
-  wire [7:0] dpy0;   // ÊýÂë¹ÜµÍÎ»ÐÅºÅ£¬°üÀ¨Ð¡Êýµã£¬Êä³ö 1 µãÁÁ
-  wire [7:0] dpy1;   // ÊýÂë¹Ü¸ßÎ»ÐÅºÅ£¬°üÀ¨Ð¡Êýµã£¬Êä³ö 1 µãÁÁ
+  wire [15:0] leds;  // 16 Î» LEDï¿½ï¿½ï¿½ï¿½ï¿½Ê± 1 ï¿½ï¿½ï¿½ï¿½
+  wire [7:0] dpy0;   // ï¿½ï¿½ï¿½ï¿½Üµï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½
+  wire [7:0] dpy1;   // ï¿½ï¿½ï¿½ï¿½Ü¸ï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½
 
-  wire txd;  // Ö±Á¬´®¿Ú·¢ËÍ¶Ë
-  wire rxd;  // Ö±Á¬´®¿Ú½ÓÊÕ¶Ë
+  wire txd;  // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½Í¶ï¿½
+  wire rxd;  // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Õ¶ï¿½
 
-  wire [31:0] base_ram_data;  // BaseRAM Êý¾Ý£¬µÍ 8 Î»Óë CPLD ´®¿Ú¿ØÖÆÆ÷¹²Ïí
-  wire [19:0] base_ram_addr;  // BaseRAM µØÖ·
-  wire[3:0] base_ram_be_n;    // BaseRAM ×Ö½ÚÊ¹ÄÜ£¬µÍÓÐÐ§¡£Èç¹û²»Ê¹ÓÃ×Ö½ÚÊ¹ÄÜ£¬Çë±£³ÖÎª 0
-  wire base_ram_ce_n;  // BaseRAM Æ¬Ñ¡£¬µÍÓÐÐ§
-  wire base_ram_oe_n;  // BaseRAM ¶ÁÊ¹ÄÜ£¬µÍÓÐÐ§
-  wire base_ram_we_n;  // BaseRAM Ð´Ê¹ÄÜ£¬µÍÓÐÐ§
+  wire [31:0] base_ram_data;  // BaseRAM ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ 8 Î»ï¿½ï¿½ CPLD ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  wire [19:0] base_ram_addr;  // BaseRAM ï¿½ï¿½Ö·
+  wire[3:0] base_ram_be_n;    // BaseRAM ï¿½Ö½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ö½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ë±£ï¿½ï¿½Îª 0
+  wire base_ram_ce_n;  // BaseRAM Æ¬Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire base_ram_oe_n;  // BaseRAM ï¿½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire base_ram_we_n;  // BaseRAM Ð´Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
 
-  wire [31:0] ext_ram_data;  // ExtRAM Êý¾Ý
-  wire [19:0] ext_ram_addr;  // ExtRAM µØÖ·
-  wire[3:0] ext_ram_be_n;    // ExtRAM ×Ö½ÚÊ¹ÄÜ£¬µÍÓÐÐ§¡£Èç¹û²»Ê¹ÓÃ×Ö½ÚÊ¹ÄÜ£¬Çë±£³ÖÎª 0
-  wire ext_ram_ce_n;  // ExtRAM Æ¬Ñ¡£¬µÍÓÐÐ§
-  wire ext_ram_oe_n;  // ExtRAM ¶ÁÊ¹ÄÜ£¬µÍÓÐÐ§
-  wire ext_ram_we_n;  // ExtRAM Ð´Ê¹ÄÜ£¬µÍÓÐÐ§
+  wire [31:0] ext_ram_data;  // ExtRAM ï¿½ï¿½ï¿½ï¿½
+  wire [19:0] ext_ram_addr;  // ExtRAM ï¿½ï¿½Ö·
+  wire[3:0] ext_ram_be_n;    // ExtRAM ï¿½Ö½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ö½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ë±£ï¿½ï¿½Îª 0
+  wire ext_ram_ce_n;  // ExtRAM Æ¬Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire ext_ram_oe_n;  // ExtRAM ï¿½ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire ext_ram_we_n;  // ExtRAM Ð´Ê¹ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
 
-  wire [22:0] flash_a;  // Flash µØÖ·£¬a0 ½öÔÚ 8bit Ä£Ê½ÓÐÐ§£¬16bit Ä£Ê½ÎÞÒâÒå
-  wire [15:0] flash_d;  // Flash Êý¾Ý
-  wire flash_rp_n;   // Flash ¸´Î»ÐÅºÅ£¬µÍÓÐÐ§
-  wire flash_vpen;   // Flash Ð´±£»¤ÐÅºÅ£¬µÍµçÆ½Ê±²»ÄÜ²Á³ý¡¢ÉÕÐ´
-  wire flash_ce_n;   // Flash Æ¬Ñ¡ÐÅºÅ£¬µÍÓÐÐ§
-  wire flash_oe_n;   // Flash ¶ÁÊ¹ÄÜÐÅºÅ£¬µÍÓÐÐ§
-  wire flash_we_n;   // Flash Ð´Ê¹ÄÜÐÅºÅ£¬µÍÓÐÐ§
-  wire flash_byte_n; // Flash 8bit Ä£Ê½Ñ¡Ôñ£¬µÍÓÐÐ§¡£ÔÚÊ¹ÓÃ flash µÄ 16 Î»Ä£Ê½Ê±ÇëÉèÎª 1
+  wire [22:0] flash_a;  // Flash ï¿½ï¿½Ö·ï¿½ï¿½a0 ï¿½ï¿½ï¿½ï¿½ 8bit Ä£Ê½ï¿½ï¿½Ð§ï¿½ï¿½16bit Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  wire [15:0] flash_d;  // Flash ï¿½ï¿½ï¿½ï¿½
+  wire flash_rp_n;   // Flash ï¿½ï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire flash_vpen;   // Flash Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½Íµï¿½Æ½Ê±ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
+  wire flash_ce_n;   // Flash Æ¬Ñ¡ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire flash_oe_n;   // Flash ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire flash_we_n;   // Flash Ð´Ê¹ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire flash_byte_n; // Flash 8bit Ä£Ê½Ñ¡ï¿½ñ£¬µï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ flash ï¿½ï¿½ 16 Î»Ä£Ê½Ê±ï¿½ï¿½ï¿½ï¿½Îª 1
 
-  wire uart_rdn;  // ¶Á´®¿ÚÐÅºÅ£¬µÍÓÐÐ§
-  wire uart_wrn;  // Ð´´®¿ÚÐÅºÅ£¬µÍÓÐÐ§
-  wire uart_dataready;  // ´®¿ÚÊý¾Ý×¼±¸ºÃ
-  wire uart_tbre;  // ·¢ËÍÊý¾Ý±êÖ¾
-  wire uart_tsre;  // Êý¾Ý·¢ËÍÍê±Ï±êÖ¾
+  wire uart_rdn;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire uart_wrn;  // Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ÅºÅ£ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+  wire uart_dataready;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½
+  wire uart_tbre;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½Ö¾
+  wire uart_tsre;  // ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½Ö¾
 
-  // Windows ÐèÒª×¢ÒâÂ·¾¶·Ö¸ô·ûµÄ×ªÒå£¬ÀýÈç "D:\\foo\\bar.bin"
-  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM ³õÊ¼»¯ÎÄ¼þ£¬ÇëÐÞ¸ÄÎªÊµ¼ÊµÄ¾ø¶ÔÂ·¾¶
-  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\testall.bin"; // BaseRAM ³õÊ¼»¯ÎÄ¼þ£¬ÇëÐÞ¸ÄÎªÊµ¼ÊµÄ¾ø¶ÔÂ·¾¶
+  // Windows ï¿½ï¿½Òª×¢ï¿½ï¿½Â·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½å£¬ï¿½ï¿½ï¿½ï¿½ "D:\\foo\\bar.bin"
+  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ÎªÊµï¿½ÊµÄ¾ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\testall.bin"; // BaseRAM
+  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\rbl.img"; // BaseRAM
   // D:\Project\rv-2022\supervisor-rv\kernel
-  parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM ³õÊ¼»¯ÎÄ¼þ£¬ÇëÐÞ¸ÄÎªÊµ¼ÊµÄ¾ø¶ÔÂ·¾¶
-  parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash ³õÊ¼»¯ÎÄ¼þ£¬ÇëÐÞ¸ÄÎªÊµ¼ÊµÄ¾ø¶ÔÂ·¾¶
+  parameter EXT_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\ucore.img";  // ExtRAM
+  parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash
 
   initial begin
-    // ÔÚÕâÀï¿ÉÒÔ×Ô¶¨Òå²âÊÔÊäÈëÐòÁÐ£¬ÀýÈç£º
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ç£º
 //    dip_sw = 32'h2;
 //    touch_btn = 0;
 //    reset_btn = 0;
@@ -71,32 +72,32 @@ module tb;
     reset_btn = 0;
     
     
-     #4000000;
-     uart.pc_send_byte(8'h47); // G
-     #10000;
-     uart.pc_send_byte(8'hc4);
-     #10000;
-     uart.pc_send_byte(8'h10);
-     #10000;
-     uart.pc_send_byte(8'h00);
-     #10000;
-     uart.pc_send_byte(8'h80);
-     #100000;
-     uart.pc_send_byte(8'h52); // R
+    //  #4000000;
+    //  uart.pc_send_byte(8'h47); // G
+    //  #10000;
+    //  uart.pc_send_byte(8'hc4);
+    //  #10000;
+    //  uart.pc_send_byte(8'h10);
+    //  #10000;
+    //  uart.pc_send_byte(8'h00);
+    //  #10000;
+    //  uart.pc_send_byte(8'h80);
+    //  #100000;
+    //  uart.pc_send_byte(8'h52); // R
      //    for (integer i = 0;uart.pc_send_byte(8'h80); i < 20; i = i + 1) begin
-//      #100;  // µÈ´ý 100ns
-//      push_btn = 1;  // °´ÏÂ push_btn °´Å¥
-//      #100;  // µÈ´ý 100ns
-//      push_btn = 0;  // ËÉ¿ª push_btn °´Å¥
+//      #100;  // ï¿½È´ï¿½ 100ns
+//      push_btn = 1;  // ï¿½ï¿½ï¿½ï¿½ push_btn ï¿½ï¿½Å¥
+//      #100;  // ï¿½È´ï¿½ 100ns
+//      push_btn = 0;  // ï¿½É¿ï¿½ push_btn ï¿½ï¿½Å¥
 //    end
   
-//    // Ä£Äâ PC Í¨¹ýÖ±Á¬´®¿Ú£¬Ïò FPGA ·¢ËÍ×Ö·û
+//    // Ä£ï¿½ï¿½ PC Í¨ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ FPGA ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 //    uart.pc_send_byte(8'h32); // ASCII '2'
 //    #10000;
 //    uart.pc_send_byte(8'h33); // ASCII '3'
   end
 
-  // ´ý²âÊÔÓÃ»§Éè¼Æ
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½
   thinpad_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -135,12 +136,12 @@ module tb;
       .flash_byte_n(flash_byte_n),
       .flash_we_n(flash_we_n)
   );
-  // Ê±ÖÓÔ´
+  // Ê±ï¿½ï¿½Ô´
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)
   );
-  // CPLD ´®¿Ú·ÂÕæÄ£ÐÍ
+  // CPLD ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
   cpld_model cpld (
       .clk_uart(clk_11M0592),
       .uart_rdn(uart_rdn),
@@ -150,12 +151,12 @@ module tb;
       .uart_tsre(uart_tsre),
       .data(base_ram_data[7:0])
   );
-  // Ö±Á¬´®¿Ú·ÂÕæÄ£ÐÍ
+  // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
   uart_model uart (
     .rxd (txd),
     .txd (rxd)
   );
-  // BaseRAM ·ÂÕæÄ£ÐÍ
+  // BaseRAM ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
   sram_model base1 (
       .DataIO(base_ram_data[15:0]),
       .Address(base_ram_addr[19:0]),
@@ -174,7 +175,7 @@ module tb;
       .LB_n(base_ram_be_n[2]),
       .UB_n(base_ram_be_n[3])
   );
-  // ExtRAM ·ÂÕæÄ£ÐÍ
+  // ExtRAM ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
   sram_model ext1 (
       .DataIO(ext_ram_data[15:0]),
       .Address(ext_ram_addr[19:0]),
@@ -193,7 +194,7 @@ module tb;
       .LB_n(ext_ram_be_n[2]),
       .UB_n(ext_ram_be_n[3])
   );
-  // Flash ·ÂÕæÄ£ÐÍ
+  // Flash ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
   x28fxxxp30 #(
       .FILENAME_MEM(FLASH_INIT_FILE)
   ) flash (
@@ -219,7 +220,7 @@ module tb;
     $stop;
   end
 
-  // ´ÓÎÄ¼þ¼ÓÔØ BaseRAM
+  // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ BaseRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
@@ -241,7 +242,7 @@ module tb;
     end
   end
 
-  // ´ÓÎÄ¼þ¼ÓÔØ ExtRAM
+  // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ ExtRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
@@ -251,7 +252,7 @@ module tb;
       $display("Failed to open ExtRAM init file");
     end else begin
       n_Init_Size = $fread(tmp_array, n_File_ID);
-      n_Init_Size = n_Init_Size / 4;
+      n_Init_Size = (n_Init_Size + 3) / 4;
       $fclose(n_File_ID);
     end
     $display("ExtRAM Init Size(words): %d", n_Init_Size);

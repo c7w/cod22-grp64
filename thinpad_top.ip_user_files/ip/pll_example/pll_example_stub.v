@@ -1,7 +1,7 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-// Date        : Sat Nov 19 15:04:41 2022
+// Date        : Sun Nov 20 22:16:54 2022
 // Host        : cc7w running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               D:/Project/cod22-gha20/thinpad_top.srcs/sources_1/ip/pll_example/pll_example_stub.v
