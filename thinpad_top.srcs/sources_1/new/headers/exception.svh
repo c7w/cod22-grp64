@@ -125,6 +125,7 @@ typedef enum logic [`CSR_OP_WIDTH-1:0] {
 
 
 /* Start: Definition of constants */
+`define INTERRUPT_SUPERVISOR_TIMER 31'd5
 `define INTERRUPT_MACHINE_TIMER 31'd7
 `define INTERRUPT_UNKNOWN {31{1'b1}}
 

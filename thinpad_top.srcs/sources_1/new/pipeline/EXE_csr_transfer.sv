@@ -676,7 +676,7 @@ module EXE_csr_transfer #(
                         /* Start: Raise an exception to S Level */
                         sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
                         pc_nxt_exception <= stvec_i;
-                        scause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; scause_wen_catch <= 1;
+                        scause_o_catch <= {1'b1, `INTERRUPT_SUPERVISOR_TIMER}; scause_wen_catch <= 1;
                         stval_o_catch <= stval_i; stval_wen_catch <= 1;
                         mstatus_o_catch <= {
                             mstatus_i[31:13],

@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 `default_nettype none
 //`include "../../sources_1/new/headers/ops.vh"
@@ -53,11 +53,10 @@ module tb;
 
   // Windows ��Ҫע��·���ָ�����ת�壬���� "D:\\foo\\bar.bin"
   // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
-  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\testall.bin"; // BaseRAM
-  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\rbl.img"; // BaseRAM
+  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\rbl.img"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
   // D:\Project\rv-2022\supervisor-rv\kernel
-  parameter EXT_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\ucore.img";  // ExtRAM
-  parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash
+  parameter EXT_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\ucore.img";  // ExtRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
+  parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
 
   initial begin
     // ����������Զ�������������У����磺
@@ -72,18 +71,18 @@ module tb;
     reset_btn = 0;
     
     
-    //  #4000000;
-    //  uart.pc_send_byte(8'h47); // G
-    //  #10000;
-    //  uart.pc_send_byte(8'hc4);
-    //  #10000;
-    //  uart.pc_send_byte(8'h10);
-    //  #10000;
-    //  uart.pc_send_byte(8'h00);
-    //  #10000;
-    //  uart.pc_send_byte(8'h80);
-    //  #100000;
-    //  uart.pc_send_byte(8'h52); // R
+     #4000000;
+     uart.pc_send_byte(8'h47); // G
+     #10000;
+     uart.pc_send_byte(8'hc4);
+     #10000;
+     uart.pc_send_byte(8'h10);
+     #10000;
+     uart.pc_send_byte(8'h00);
+     #10000;
+     uart.pc_send_byte(8'h80);
+     #100000;
+     uart.pc_send_byte(8'h52); // R
      //    for (integer i = 0;uart.pc_send_byte(8'h80); i < 20; i = i + 1) begin
 //      #100;  // �ȴ� 100ns
 //      push_btn = 1;  // ���� push_btn ��ť
@@ -252,7 +251,7 @@ module tb;
       $display("Failed to open ExtRAM init file");
     end else begin
       n_Init_Size = $fread(tmp_array, n_File_ID);
-      n_Init_Size = (n_Init_Size + 3) / 4;
+      n_Init_Size = n_Init_Size / 4;
       $fclose(n_File_ID);
     end
     $display("ExtRAM Init Size(words): %d", n_Init_Size);
