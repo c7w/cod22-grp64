@@ -80,6 +80,13 @@ module MMU_master #(
             wb_dat_o = wbm3_dat_o;
             wb_sel_o = wbm3_sel_o;
             wb_we_o = wbm3_we_o;
+        end else begin
+            wb_cyc_o = 0;
+            wb_stb_o = 0;
+            wb_adr_o = 0;
+            wb_dat_o = 0;
+            wb_sel_o = 0;
+            wb_we_o = 0;
         end
     end
 

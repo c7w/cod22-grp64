@@ -82,7 +82,7 @@ module wb_arbiter_2 #
 wire [1:0] request;
 wire [1:0] grant;
 
-logic grant_valid;
+wire grant_valid;
 
 assign request[0] = wbm0_cyc_i;
 assign request[1] = wbm1_cyc_i;

@@ -55,7 +55,7 @@ module tb;
   // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
   parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\rbl.img"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
   // D:\Project\rv-2022\supervisor-rv\kernel
-  parameter EXT_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\ucore.img";  // ExtRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
+  parameter EXT_RAM_INIT_FILE = "D:\\Project\\ucore_os_lab\\labcodes_answer\\lab8\\bin\\ucore.img";  // ExtRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
   parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
 
   initial begin
@@ -71,18 +71,18 @@ module tb;
     reset_btn = 0;
     
     
-     #4000000;
-     uart.pc_send_byte(8'h47); // G
-     #10000;
-     uart.pc_send_byte(8'hc4);
-     #10000;
-     uart.pc_send_byte(8'h10);
-     #10000;
-     uart.pc_send_byte(8'h00);
-     #10000;
-     uart.pc_send_byte(8'h80);
-     #100000;
-     uart.pc_send_byte(8'h52); // R
+    //  #4000000;
+    //  uart.pc_send_byte(8'h47); // G
+    //  #10000;
+    //  uart.pc_send_byte(8'hc4);
+    //  #10000;
+    //  uart.pc_send_byte(8'h10);
+    //  #10000;
+    //  uart.pc_send_byte(8'h00);
+    //  #10000;
+    //  uart.pc_send_byte(8'h80);
+    //  #100000;
+    //  uart.pc_send_byte(8'h52); // R
      //    for (integer i = 0;uart.pc_send_byte(8'h80); i < 20; i = i + 1) begin
 //      #100;  // �ȴ� 100ns
 //      push_btn = 1;  // ���� push_btn ��ť

@@ -10,51 +10,51 @@ module thinpad_top #(
     input wire clk_50M,     // 50MHz 时钟输入
     input wire clk_11M0592, // 11.0592MHz 时钟输入（备用，可不用）
 
-    input wire push_btn,  // BTN5 按钮�?????????关，带消抖电路，按下时为 1
-    input wire reset_btn, // BTN6 复位按钮，带消抖电路，按下时�????????? 1
+    input wire push_btn,  // BTN5 按钮�?????????关，带消抖电路，按下时为 1
+    input wire reset_btn, // BTN6 复位按钮，带消抖电路，按下时�????????? 1
 
     input  wire [ 3:0] touch_btn,  // BTN1~BTN4，按钮开关，按下时为 1
-    input  wire [31:0] dip_sw,     // 32 位拨码开关，拨到“ON”时�????????? 1
-    output wire [15:0] leds,       // 16 �????????? LED，输出时 1 点亮
+    input  wire [31:0] dip_sw,     // 32 位拨码开关，拨到“ON”时�????????? 1
+    output wire [15:0] leds,       // 16 �????????? LED，输出时 1 点亮
     output wire [ 7:0] dpy0,       // 数码管低位信号，包括小数点，输出 1 点亮
     output wire [ 7:0] dpy1,       // 数码管高位信号，包括小数点，输出 1 点亮
 
-    // CPLD 串口控制器信�?????????
-    output wire uart_rdn,        // 读串口信号，低有�?????????
-    output wire uart_wrn,        // 写串口信号，低有�?????????
-    input  wire uart_dataready,  // 串口数据准备�?????????
-    input  wire uart_tbre,       // 发�?�数据标�?????????
-    input  wire uart_tsre,       // 数据发�?�完毕标�?????????
+    // CPLD 串口控制器信�?????????
+    output wire uart_rdn,        // 读串口信号，低有�?????????
+    output wire uart_wrn,        // 写串口信号，低有�?????????
+    input  wire uart_dataready,  // 串口数据准备�?????????
+    input  wire uart_tbre,       // 发�?�数据标�?????????
+    input  wire uart_tsre,       // 数据发�?�完毕标�?????????
 
     // BaseRAM 信号
-    inout wire [31:0] base_ram_data,  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共�?????????
+    inout wire [31:0] base_ram_data,  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共�?????????
     output wire [19:0] base_ram_addr,  // BaseRAM 地址
-    output wire [3:0] base_ram_be_n,  // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持�????????? 0
-    output wire base_ram_ce_n,  // BaseRAM 片�?�，低有�?????????
-    output wire base_ram_oe_n,  // BaseRAM 读使能，低有�?????????
-    output wire base_ram_we_n,  // BaseRAM 写使能，低有�?????????
+    output wire [3:0] base_ram_be_n,  // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持�????????? 0
+    output wire base_ram_ce_n,  // BaseRAM 片�?�，低有�?????????
+    output wire base_ram_oe_n,  // BaseRAM 读使能，低有�?????????
+    output wire base_ram_we_n,  // BaseRAM 写使能，低有�?????????
 
     // ExtRAM 信号
     inout wire [31:0] ext_ram_data,  // ExtRAM 数据
     output wire [19:0] ext_ram_addr,  // ExtRAM 地址
-    output wire [3:0] ext_ram_be_n,  // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持�????????? 0
-    output wire ext_ram_ce_n,  // ExtRAM 片�?�，低有�?????????
-    output wire ext_ram_oe_n,  // ExtRAM 读使能，低有�?????????
-    output wire ext_ram_we_n,  // ExtRAM 写使能，低有�?????????
+    output wire [3:0] ext_ram_be_n,  // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持�????????? 0
+    output wire ext_ram_ce_n,  // ExtRAM 片�?�，低有�?????????
+    output wire ext_ram_oe_n,  // ExtRAM 读使能，低有�?????????
+    output wire ext_ram_we_n,  // ExtRAM 写使能，低有�?????????
 
     // 直连串口信号
     output wire txd,  // 直连串口发�?�端
-    input  wire rxd,  // 直连串口接收�?????????
+    input  wire rxd,  // 直连串口接收�?????????
 
     // Flash 存储器信号，参�?? JS28F640 芯片手册
-    output wire [22:0] flash_a,  // Flash 地址，a0 仅在 8bit 模式有效�?????????16bit 模式无意�?????????
+    output wire [22:0] flash_a,  // Flash 地址，a0 仅在 8bit 模式有效�?????????16bit 模式无意�?????????
     inout wire [15:0] flash_d,  // Flash 数据
     output wire flash_rp_n,  // Flash 复位信号，低有效
-    output wire flash_vpen,  // Flash 写保护信号，低电平时不能擦除、烧�?????????
-    output wire flash_ce_n,  // Flash 片�?�信号，低有�?????????
-    output wire flash_oe_n,  // Flash 读使能信号，低有�?????????
-    output wire flash_we_n,  // Flash 写使能信号，低有�?????????
-    output wire flash_byte_n, // Flash 8bit 模式选择，低有效。在使用 flash �????????? 16 位模式时请设�????????? 1
+    output wire flash_vpen,  // Flash 写保护信号，低电平时不能擦除、烧�?????????
+    output wire flash_ce_n,  // Flash 片�?�信号，低有�?????????
+    output wire flash_oe_n,  // Flash 读使能信号，低有�?????????
+    output wire flash_we_n,  // Flash 写使能信号，低有�?????????
+    output wire flash_byte_n, // Flash 8bit 模式选择，低有效。在使用 flash �????????? 16 位模式时请设�????????? 1
 
     // USB 控制器信号，参�?? SL811 芯片手册
     output wire sl811_a0,
@@ -77,13 +77,13 @@ module thinpad_top #(
     input wire dm9k_int,
 
     // 图像输出信号
-    output wire [2:0] video_red,    // 红色像素�?????????3 �?????????
-    output wire [2:0] video_green,  // 绿色像素�?????????3 �?????????
-    output wire [1:0] video_blue,   // 蓝色像素�?????????2 �?????????
-    output wire       video_hsync,  // 行同步（水平同步）信�?????????
-    output wire       video_vsync,  // 场同步（垂直同步）信�?????????
+    output wire [2:0] video_red,    // 红色像素�?????????3 �?????????
+    output wire [2:0] video_green,  // 绿色像素�?????????3 �?????????
+    output wire [1:0] video_blue,   // 蓝色像素�?????????2 �?????????
+    output wire       video_hsync,  // 行同步（水平同步）信�?????????
+    output wire       video_vsync,  // 场同步（垂直同步）信�?????????
     output wire       video_clk,    // 像素时钟输出
-    output wire       video_de      // 行数据有效信号，用于区分消隐�?????????
+    output wire       video_de      // 行数据有效信号，用于区分消隐�?????????
 );
 
   /* =========== Demo code begin =========== */
@@ -96,27 +96,28 @@ module thinpad_top #(
         // Clock in ports
         .clk_in1(clk_50M),  // 外部时钟输入
         // Clock out ports
-        .clk_out1(clk_10M),  // 时钟输出 1，频率在 IP 配置界面中设�?????????
-        .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设�?????????
+        .clk_out1(clk_10M),  // 时钟输出 1，频率在 IP 配置界面中设�?????????
+        .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设�?????????
         .clk_out3(clk_30M),
         .clk_out4(clk_40M),
         .clk_out5(clk_48M),
         // Status and control signals
         .reset(reset_btn),  // PLL 复位输入
-        .locked(locked)  // PLL 锁定指示输出�?????????"1"表示时钟稳定�?????????
+        .locked(locked)  // PLL 锁定指示输出�?????????"1"表示时钟稳定�?????????
                         // 后级电路复位信号应当由它生成（见下）
     );
 
     logic reset_of_clk10M;
-    // 异步复位，同步释放，�????????? locked 信号转为后级电路的复�????????? reset_of_clk10M
+    // 异步复位，同步释放，�????????? locked 信号转为后级电路的复�????????? reset_of_clk10M
     always_ff @(posedge clk_10M or negedge locked) begin
         if (~locked) reset_of_clk10M <= 1'b1;
         else reset_of_clk10M <= 1'b0;
     end
 
 
-    wire sys_clk;
-    assign sys_clk = clk_40M;
+    wire sys_clk, sys_rst;
+    assign sys_clk = clk_50M;
+    assign sys_rst = reset_btn;
 
     assign uart_rdn = 1'b1;
     assign uart_wrn = 1'b1;
@@ -132,7 +133,7 @@ module thinpad_top #(
   // // g=dpy0[7] // |     |
   // //           // ---d---  p
 
-  // // 7 段数码管译码器演示，�????????? number �????????? 16 进制显示在数码管上面
+  // // 7 段数码管译码器演示，�????????? number �????????? 16 进制显示在数码管上面
   // logic [7:0] number;
   // SEG7_LUT segL (
   //     .oSEG1(dpy0),
@@ -147,14 +148,14 @@ module thinpad_top #(
   // assign leds = led_bits;
 
   // always_ff @(posedge push_btn or posedge reset_btn) begin
-  //   if (reset_btn) begin  // 复位按下，设�????????? LED 为初始�??
+  //   if (reset_btn) begin  // 复位按下，设�????????? LED 为初始�??
   //     led_bits <= 16'h1;
-  //   end else begin  // 每次按下按钮�?????????关，LED 循环左移
+  //   end else begin  // 每次按下按钮�?????????关，LED 循环左移
   //     led_bits <= {led_bits[14:0], led_bits[15]};
   //   end
   // end
 
-  // // 直连串口接收发�?�演示，从直连串口收到的数据再发送出�?????????
+  // // 直连串口接收发�?�演示，从直连串口收到的数据再发送出�?????????
   // logic [7:0] ext_uart_rx;
   // logic [7:0] ext_uart_buffer, ext_uart_tx;
   // logic ext_uart_ready, ext_uart_clear, ext_uart_busy;
@@ -162,19 +163,19 @@ module thinpad_top #(
 
   // assign number = ext_uart_buffer;
 
-  // // 接收模块�?????????9600 无检验位
+  // // 接收模块�?????????9600 无检验位
   // async_receiver #(
   //     .ClkFrequency(50000000),
   //     .Baud(9600)
   // ) ext_uart_r (
   //     .clk           (clk_50M),         // 外部时钟信号
   //     .RxD           (rxd),             // 外部串行信号输入
-  //     .RxD_data_ready(ext_uart_ready),  // 数据接收到标�?????????
+  //     .RxD_data_ready(ext_uart_ready),  // 数据接收到标�?????????
   //     .RxD_clear     (ext_uart_clear),  // 清除接收标志
-  //     .RxD_data      (ext_uart_rx)      // 接收到的�?????????字节数据
+  //     .RxD_data      (ext_uart_rx)      // 接收到的�?????????字节数据
   // );
 
-  // assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer �?????????
+  // assign ext_uart_clear = ext_uart_ready; // 收到数据的同时，清除标志，因为数据已取到 ext_uart_buffer �?????????
   // always_ff @(posedge clk_50M) begin  // 接收到缓冲区 ext_uart_buffer
   //   if (ext_uart_ready) begin
   //     ext_uart_buffer <= ext_uart_rx;
@@ -183,7 +184,7 @@ module thinpad_top #(
   //     ext_uart_avai <= 0;
   //   end
   // end
-  // always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发�?�出�?????????
+  // always_ff @(posedge clk_50M) begin  // 将缓冲区 ext_uart_buffer 发�?�出�?????????
   //   if (!ext_uart_busy && ext_uart_avai) begin
   //     ext_uart_tx <= ext_uart_buffer;
   //     ext_uart_start <= 1;
@@ -199,8 +200,8 @@ module thinpad_top #(
   // ) ext_uart_t (
   //     .clk      (clk_50M),         // 外部时钟信号
   //     .TxD      (txd),             // 串行信号输出
-  //     .TxD_busy (ext_uart_busy),   // 发�?�器忙状态指�?????????
-  //     .TxD_start(ext_uart_start),  // �?????????始发送信�?????????
+  //     .TxD_busy (ext_uart_busy),   // 发�?�器忙状态指�?????????
+  //     .TxD_start(ext_uart_start),  // �?????????始发送信�?????????
   //     .TxD_data (ext_uart_tx)      // 待发送的数据
   // );
 
@@ -212,8 +213,8 @@ module thinpad_top #(
   // assign video_clk   = clk_50M;
   // vga #(12, 800, 856, 976, 1040, 600, 637, 643, 666, 1, 1) vga800x600at75 (
   //     .clk        (clk_50M),
-  //     .hdata      (hdata),        // 横坐�?????????
-  //     .vdata      (),             // 纵坐�?????????
+  //     .hdata      (hdata),        // 横坐�?????????
+  //     .vdata      (),             // 纵坐�?????????
   //     .hsync      (video_hsync),
   //     .vsync      (video_vsync),
   //     .data_enable(video_de)
@@ -298,7 +299,7 @@ module thinpad_top #(
 
     CONTROLLER_csrs controller_csrs (
         .clk (sys_clk),
-        .rst (reset_of_clk10M),
+        .rst (sys_rst),
 
         .priviledge_mode_wen(CONTROLLER_priviledge_mode_wen),
         .mtvec_wen(CONTROLLER_mtvec_wen),
@@ -448,7 +449,7 @@ module thinpad_top #(
 
     IF_pc pc (
         .clk (sys_clk),
-        .rst (reset_of_clk10M),
+        .rst (sys_rst),
         .stall(CONTROLLER_stall[3]),
         .pc_nxt(IF_pc_nxt),  // PC mux -> PC
         .pc_addr(IF_pc_addr)  // PC -> instr fetcher
@@ -456,7 +457,7 @@ module thinpad_top #(
 
     IF_BTB if_btb (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .curr_pc_addr(IF_pc_addr),
         .predicted_pc_addr(IF_pc_next_prediction),
@@ -490,7 +491,7 @@ module thinpad_top #(
 
     // IF_im instr_fetcher (
     //     .clk(sys_clk),
-    //     .rst(reset_of_clk10M),
+    //     .rst(sys_rst),
 
     //     .pc_addr(IF_pc_addr),
     //     .branching(CONTROLLER_branching),
@@ -510,7 +511,7 @@ module thinpad_top #(
     logic WB_fence_i;
     IF_MMU instr_fetcher (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .mstatus_i(CONTROLLER_mstatus_bypassing),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
@@ -595,7 +596,7 @@ module thinpad_top #(
 
     REG_IF_ID reg_if_id (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
         .stall(CONTROLLER_stall[2]),
         .bubble(CONTROLLER_bubble[3]),
 
@@ -678,7 +679,7 @@ module thinpad_top #(
 
     RegisterFile rf (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .waddr(RF_waddr),
         .wdata(RF_wdata),
@@ -762,7 +763,7 @@ module thinpad_top #(
 
     REG_ID_EXE reg_id_exe (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .stall(CONTROLLER_stall[1]),
         .bubble(CONTROLLER_bubble[2]),
@@ -833,7 +834,7 @@ module thinpad_top #(
     EXE_csr_transfer exe_csr_transfer (
 
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .csr_addr(EXE_csr_addr),
         .zimm(EXE_imm),
@@ -977,7 +978,7 @@ module thinpad_top #(
 
     REG_EXE_MEM reg_exe_mem (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .stall(CONTROLLER_stall[0]),
         .bubble(CONTROLLER_bubble[1]),
@@ -1034,7 +1035,7 @@ module thinpad_top #(
 
     CONTROLLER_mtimer controller_mtimer (
         .clk (sys_clk),
-        .rst (reset_of_clk10M),
+        .rst (sys_rst),
 
         .mtime(mtimer_mtime),
         .mtimecmp(mtimer_mtimecmp),
@@ -1048,7 +1049,7 @@ module thinpad_top #(
 
     // MEM_dm data_fetcher (
     //     .clk (sys_clk),
-    //     .rst (reset_of_clk10M),
+    //     .rst (sys_rst),
 
     //     .dm_en(MEM_dm_en),
     //     .dm_wen(MEM_dm_wen),
@@ -1078,7 +1079,7 @@ module thinpad_top #(
 
     MEM_MMU data_fetcher (
         .clk (sys_clk),
-        .rst (reset_of_clk10M),
+        .rst (sys_rst),
 
         .mstatus_i(CONTROLLER_mstatus_reg),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_reg),
@@ -1127,7 +1128,7 @@ module thinpad_top #(
 
     REG_MEM_WB reg_mem_wb (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
         .bubble(CONTROLLER_bubble[0]),
 
         .wb_en_i(MEM_wb_en),
@@ -1158,7 +1159,7 @@ module thinpad_top #(
     // Arbiter: 0 for DM, 1 for IM
     wb_arbiter_2 arbiter (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         .wbm0_adr_i(wbm_adr_dm),
         .wbm0_dat_i(wbm_dat_m2s_dm),
@@ -1226,7 +1227,7 @@ module thinpad_top #(
     // Wishbone multiplexer
     wb_mux_3 wb_mux (
         .clk(sys_clk),
-        .rst(reset_of_clk10M),
+        .rst(sys_rst),
 
         // Master interface (to arbiter)
         .wbm_adr_i(wbs_adr_o),
@@ -1290,64 +1291,116 @@ module thinpad_top #(
     );
 
     // Slaves
-    sram_controller_single #(
-        .SRAM_ADDR_WIDTH(20),
-        .SRAM_DATA_WIDTH(32)
+    /* verilator lint_off PINMISSING */
+    wb_dp_ram #(
+        .INIT_FILE ("/mnt/d/Project/rv-2022/asmcode/rbl.img")
     ) sram_controller_base (
-        .clk_i(sys_clk),
-        .rst_i(reset_of_clk10M),
+        .a_clk(sys_clk),
+        .a_adr_i(wbs0_adr_o),
+        .a_dat_i(wbs0_dat_o),
+        .a_dat_o(wbs0_dat_i),
+        .a_we_i(wbs0_we_o),
+        .a_sel_i(wbs0_sel_o),
+        .a_stb_i(wbs0_stb_o),
+        .a_ack_o(wbs0_ack_i),
+        .a_cyc_i(wbs0_cyc_o),
 
-        // Wishbone slave (to MUX)
-        .wb_cyc_i(wbs0_cyc_o),
-        .wb_stb_i(wbs0_stb_o),
-        .wb_ack_o(wbs0_ack_i),
-        .wb_adr_i(wbs0_adr_o),
-        .wb_dat_i(wbs0_dat_o),
-        .wb_dat_o(wbs0_dat_i),
-        .wb_sel_i(wbs0_sel_o),
-        .wb_we_i (wbs0_we_o),
-
-        // To SRAM chip
-        .sram_addr(base_ram_addr),
-        .sram_data(base_ram_data),
-        .sram_ce_n(base_ram_ce_n),
-        .sram_oe_n(base_ram_oe_n),
-        .sram_we_n(base_ram_we_n),
-        .sram_be_n(base_ram_be_n)
+        .b_clk(1'b0)
     );
 
-    sram_controller_single #(
-        .SRAM_ADDR_WIDTH(20),
-        .SRAM_DATA_WIDTH(32)
-    ) sram_controller_ext (
-        .clk_i(sys_clk),
-        .rst_i(reset_of_clk10M),
+    wb_dp_ram #(
+        .INIT_FILE ("/mnt/d/Project/ucore_os_lab/labcodes_answer/lab8/bin/ucore.img")
+    ) sram_controller_exe (
+        .a_clk(sys_clk),
+        .a_adr_i(wbs1_adr_o),
+        .a_dat_i(wbs1_dat_o),
+        .a_dat_o(wbs1_dat_i),
+        .a_we_i(wbs1_we_o),
+        .a_sel_i(wbs1_sel_o),
+        .a_stb_i(wbs1_stb_o),
+        .a_ack_o(wbs1_ack_i),
+        .a_cyc_i(wbs1_cyc_o),
 
-        // Wishbone slave (to MUX)
-        .wb_cyc_i(wbs1_cyc_o),
-        .wb_stb_i(wbs1_stb_o),
-        .wb_ack_o(wbs1_ack_i),
-        .wb_adr_i(wbs1_adr_o),
-        .wb_dat_i(wbs1_dat_o),
-        .wb_dat_o(wbs1_dat_i),
-        .wb_sel_i(wbs1_sel_o),
-        .wb_we_i (wbs1_we_o),
-
-        // To SRAM chip
-        .sram_addr(ext_ram_addr),
-        .sram_data(ext_ram_data),
-        .sram_ce_n(ext_ram_ce_n),
-        .sram_oe_n(ext_ram_oe_n),
-        .sram_we_n(ext_ram_we_n),
-        .sram_be_n(ext_ram_be_n)
+        .b_clk(1'b0)
     );
+    /* verilator lint_on PINMISSING */
 
-    uart_controller #(
-        .CLK_FREQ(40_000_000),
-        .BAUD    (115200)
-    ) uart_controller (
+    // sram_controller_single #(
+    //     .SRAM_ADDR_WIDTH(20),
+    //     .SRAM_DATA_WIDTH(32)
+    // ) sram_controller_base (
+    //     .clk_i(sys_clk),
+    //     .rst_i(sys_rst),
+
+    //     // Wishbone slave (to MUX)
+    //     .wb_cyc_i(wbs0_cyc_o),
+    //     .wb_stb_i(wbs0_stb_o),
+    //     .wb_ack_o(wbs0_ack_i),
+    //     .wb_adr_i(wbs0_adr_o),
+    //     .wb_dat_i(wbs0_dat_o),
+    //     .wb_dat_o(wbs0_dat_i),
+    //     .wb_sel_i(wbs0_sel_o),
+    //     .wb_we_i (wbs0_we_o),
+
+    //     // To SRAM chip
+    //     .sram_addr(base_ram_addr),
+    //     .sram_data(base_ram_data),
+    //     .sram_ce_n(base_ram_ce_n),
+    //     .sram_oe_n(base_ram_oe_n),
+    //     .sram_we_n(base_ram_we_n),
+    //     .sram_be_n(base_ram_be_n)
+    // );
+
+    // sram_controller_single #(
+    //     .SRAM_ADDR_WIDTH(20),
+    //     .SRAM_DATA_WIDTH(32)
+    // ) sram_controller_ext (
+    //     .clk_i(sys_clk),
+    //     .rst_i(sys_rst),
+
+    //     // Wishbone slave (to MUX)
+    //     .wb_cyc_i(wbs1_cyc_o),
+    //     .wb_stb_i(wbs1_stb_o),
+    //     .wb_ack_o(wbs1_ack_i),
+    //     .wb_adr_i(wbs1_adr_o),
+    //     .wb_dat_i(wbs1_dat_o),
+    //     .wb_dat_o(wbs1_dat_i),
+    //     .wb_sel_i(wbs1_sel_o),
+    //     .wb_we_i (wbs1_we_o),
+
+    //     // To SRAM chip
+    //     .sram_addr(ext_ram_addr),
+    //     .sram_data(ext_ram_data),
+    //     .sram_ce_n(ext_ram_ce_n),
+    //     .sram_oe_n(ext_ram_oe_n),
+    //     .sram_we_n(ext_ram_we_n),
+    //     .sram_be_n(ext_ram_be_n)
+    // );
+
+    // uart_controller #(
+    //     .CLK_FREQ(40_000_000),
+    //     .BAUD    (115200)
+    // ) uart_controller (
+    //     .clk_i(sys_clk),
+    //     .rst_i(sys_rst),
+
+    //     .wb_cyc_i(wbs2_cyc_o),
+    //     .wb_stb_i(wbs2_stb_o),
+    //     .wb_ack_o(wbs2_ack_i),
+    //     .wb_adr_i(wbs2_adr_o),
+    //     .wb_dat_i(wbs2_dat_o),
+    //     .wb_dat_o(wbs2_dat_i),
+    //     .wb_sel_i(wbs2_sel_o),
+    //     .wb_we_i (wbs2_we_o),
+
+    //     // to UART pins
+    //     .uart_txd_o(txd),
+    //     .uart_rxd_i(rxd)
+    // );
+
+    fake_uart_controller uart_controller (
         .clk_i(sys_clk),
-        .rst_i(reset_of_clk10M),
+        .rst_i(sys_rst),
 
         .wb_cyc_i(wbs2_cyc_o),
         .wb_stb_i(wbs2_stb_o),
@@ -1358,9 +1411,9 @@ module thinpad_top #(
         .wb_sel_i(wbs2_sel_o),
         .wb_we_i (wbs2_we_o),
 
-        // to UART pins
-        .uart_txd_o(txd),
-        .uart_rxd_i(rxd)
-    );
+        .external_valid(1'b0),
+        .external_data(8'b0)
+
+    );   
 
 endmodule

@@ -41,7 +41,7 @@ module ALU(
         end
         
         else if (op == 9) begin
-            y = signed'(a) >>> (b & 31);
+            y = $signed(a) >>> (b & 31);
         end
         
         else if (op == 10) begin

@@ -11,3 +11,6 @@ thinpad_top.sim/
 /.Xilinx
 
 obj_dir/
+waveform.fst
+waveform.vcd
+sim.out

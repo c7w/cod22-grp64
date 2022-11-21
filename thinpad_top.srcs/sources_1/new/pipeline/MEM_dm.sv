@@ -63,14 +63,13 @@ module MEM_dm #(
     
     // Start: Generate dm_data_o
     logic [DATA_WIDTH-1:0] dm_data_o_cached;
+    logic [DATA_WIDTH-1:0] dm_data_o_candidate_8;
+    assign dm_data_o_candidate_8 = {{24{1'b0}}, data_shifted[7:0]};
     always_comb begin
         if (wbm_ack_i) begin
-            if (width_cached == 1) begin
-                dm_data_o = {
-                    {24{1'b0}}, 
-                    data_shifted[7:0]
-                };
-            end else if (width_cached == 2) begin
+            if (width_cached == 3'd1) begin
+                dm_data_o = dm_data_o_candidate_8;
+            end else if (width_cached == 3'd2) begin
                 dm_data_o = {
                     {16{1'b0}}, 
                     data_shifted[15:0]
