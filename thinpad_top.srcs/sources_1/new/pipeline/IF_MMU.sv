@@ -55,7 +55,7 @@ module IF_MMU #(
         query_exception_code = query_exception_code_mmu;
         query_exception_val = request_addr;
 
-        if (request_addr & 32'h3 != 0) begin
+        if ((request_addr & 32'h3) != 32'h0) begin
             query_exception = 1;
             query_exception_code = `EXCEPTION_INSTRUCTION_ADDRESS_MISALIGNED;
         end

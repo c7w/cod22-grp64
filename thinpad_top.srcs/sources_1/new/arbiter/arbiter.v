@@ -94,12 +94,16 @@ always @* begin
     grant_encoded_next = 0;
     mask_next = mask_reg;
 
+    /* verilator lint_off WIDTH */
     if (ARB_BLOCK && !ARB_BLOCK_ACK && grant_reg & request) begin
+    /* verilator lint_on WIDTH */
         // granted request still asserted; hold it
         grant_valid_next = grant_valid_reg;
         grant_next = grant_reg;
         grant_encoded_next = grant_encoded_reg;
+    /* verilator lint_off WIDTH */
     end else if (ARB_BLOCK && ARB_BLOCK_ACK && grant_valid && !(grant_reg & acknowledge)) begin
+    /* verilator lint_on WIDTH */
         // granted request not yet acknowledged; hold it
         grant_valid_next = grant_valid_reg;
         grant_next = grant_reg;

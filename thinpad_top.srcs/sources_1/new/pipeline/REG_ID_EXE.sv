@@ -27,7 +27,7 @@ module REG_ID_EXE #(
     input wire [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_i,
     input wire[`PC_MUX_WIDTH-1:0] pc_mux_ctr_i,
 
-    input wire instr_i,
+    input wire [DATA_WIDTH-1:0] instr_i,
     input wire query_exception_i,
     input wire [`MXLEN-2:0] query_exception_code_i,
     input wire illegal_instruction_i,
@@ -102,7 +102,7 @@ module REG_ID_EXE #(
             pc_mux_ctr_o <= `PC_MUX_INC;
 
             query_exception_o <= 0;
-            query_exception_code_o <= 32'd31;
+            query_exception_code_o <= 31'd31;
             query_exception_val_o <= 0;
 
             // bubble : mem
@@ -142,7 +142,7 @@ module REG_ID_EXE #(
                     pc_mux_ctr_o <= `PC_MUX_INC;
 
                     query_exception_o <= 0;
-                    query_exception_code_o <= 32'd31;
+                    query_exception_code_o <= 31'd31;
                     query_exception_val_o <= 0;
 
                     // bubble : mem
@@ -180,7 +180,7 @@ module REG_ID_EXE #(
                         query_exception_val_o <= instr_i;
                     end
                     else begin
-                        query_exception_code_o <= 32'd31;
+                        query_exception_code_o <= 31'd31;
                         query_exception_val_o <= query_exception_val_i;
                     end
                     

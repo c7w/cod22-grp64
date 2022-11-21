@@ -481,7 +481,9 @@ module EXE_csr_transfer #(
                     exception_stage_reg <= EXCEPTION_DM;
                     state <= STATE_BLOCK;
 
+                    /* verilator lint_off WIDTH */
                     if (priviledge_mode_i <= `PRIVILEDGE_MODE_S && medeleg_i[dm_exception_code]) begin // delegated to S level
+                    /* verilator lint_on WIDTH */
 
                         /* Start: Raise an exception to S Level */
                         sepc_o_catch <= MEM_pc_addr; sepc_wen_catch <= 1;
@@ -534,7 +536,9 @@ module EXE_csr_transfer #(
                     exception_stage_reg <= EXCEPTION_EXE;
                     state <= STATE_BLOCK;
 
+                    /* verilator lint_off WIDTH */
                     if (priviledge_mode_i <= `PRIVILEDGE_MODE_S && medeleg_i[exception_operand_for_ecall_ebreak]) begin // delegated to S level
+                    /* verilator lint_on WIDTH */
 
                         /* Start: Raise an exception to S Level */
                         sepc_o_catch <= EXE_pc_addr; sepc_wen_catch <= 1;

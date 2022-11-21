@@ -1,4 +1,5 @@
-verilator -Ithinpad_top.srcs/sources_1/new/ \
+verilator -Wno-SYMRSVDWORD -Wno-CASEINCOMPLETE -Wno-UNSIGNED -Wno-TIMESCALEMOD \
+          -Ithinpad_top.srcs/sources_1/new/ \
           -Iobj_dir/null_models \
           -Ithinpad_top.srcs/sources_1/new/headers/ \
           -Ithinpad_top.srcs/sources_1/new/arbiter/ \
@@ -6,5 +7,30 @@ verilator -Ithinpad_top.srcs/sources_1/new/ \
           -Ithinpad_top.srcs/sources_1/new/lab5/ \
           -Ithinpad_top.srcs/sources_1/new/pipeline/ \
           -Ithinpad_top.srcs/sources_1/ip/pll_example/ \
-          -cc thinpad_top.srcs/sources_1/new/async.v thinpad_top.srcs/sources_1/new/thinpad_top.sv \
+          -Ithinpad_top.srcs/sources_1/new/async.v \
+          -Ithinpad_top.srcs/sim_1/new/ \
+          -cc thinpad_top.srcs/sim_1/new/full_model.sv \
+          -cc thinpad_top.srcs/sources_1/new/thinpad_top.sv \
+          -cc thinpad_top.srcs/sources_1/new/async.v \
+          --timing
           
+
+
+
+
+          
+# iverilog -g2012 -o test.out \
+#         -Ithinpad_top.srcs/sources_1/new/headers/ \
+#         thinpad_top.srcs/sources_1/new/ALU.sv \
+#         thinpad_top.srcs/sources_1/new/RegisterFile.sv \
+#         thinpad_top.srcs/sources_1/new/arbiter/* \
+#         thinpad_top.srcs/sources_1/new/lab4/sram_controller_single.sv \
+#         thinpad_top.srcs/sources_1/new/lab5/uart_controller.sv \
+#         thinpad_top.srcs/sources_1/new/lab5/wb_mux_3.v \
+#         thinpad_top.srcs/sources_1/new/pipeline/*\
+#         thinpad_top.srcs/sources_1/ip/pll_example/pll_example.v \
+#         thinpad_top.srcs/sources_1/ip/pll_example/pll_example_clk_wiz.v \
+#         thinpad_top.srcs/sources_1/new/async.v \
+#         obj_dir/null_models/* \
+#         -Ithinpad_top.srcs/sim_1/new/ \
+#         thinpad_top.srcs/sources_1/new/thinpad_top.sv

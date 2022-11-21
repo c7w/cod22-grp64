@@ -52,7 +52,7 @@ module REG_IF_ID #(
     output reg [`ALU_MUX_B_WIDTH-1:0] alu_mux_b_ctr_o,
     output reg[`PC_MUX_WIDTH-1:0] pc_mux_ctr_o,
 
-    output reg instr_o,
+    output reg [DATA_WIDTH-1:0] instr_o,
     output reg query_exception_o,
     output reg [`MXLEN-2:0] query_exception_code_o,
     output reg illegal_instruction_o,
@@ -112,7 +112,7 @@ module REG_IF_ID #(
             pc_mux_ctr_o <= `PC_MUX_INC;
 
             query_exception_o <= 0;
-            query_exception_code_o <= 32'd31;
+            query_exception_code_o <= 31'd31;
             query_exception_val_o <= 0;
             illegal_instruction_o <= 0;
 
@@ -154,7 +154,7 @@ module REG_IF_ID #(
                     pc_mux_ctr_o <= `PC_MUX_INC;
 
                     query_exception_o <= 0;
-                    query_exception_code_o <= 32'd31;
+                    query_exception_code_o <= 31'd31;
                     illegal_instruction_o <= 0;
                     query_exception_val_o <= 0;
                     instr_o <= 32'h00000033;

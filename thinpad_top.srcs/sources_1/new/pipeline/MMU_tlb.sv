@@ -44,8 +44,6 @@ module MMU_tlb #(
     input wire [DATA_WIDTH-1:0] cache_data_i,
 
     // TLB -> Cache
-    output logic cache_fence_i,
-    output logic cache_fence_i_wb,
     output logic cache_en,
     output logic cache_wen,
     output logic [2:0] cache_width,
@@ -88,7 +86,7 @@ module MMU_tlb #(
     logic [ADDR_WIDTH-1:0] tlb_phys_addr;
     always_comb begin
         if (tlb_hit) begin
-            tlb_phys_addr = {tlb_entry.pte.ppn1, tlb_entry.pte.ppn0, virt_addr.offset};
+            tlb_phys_addr = {tlb_entry.pte.ppn1[9:0], tlb_entry.pte.ppn0, virt_addr.offset};
         end
         else begin
             tlb_phys_addr = 32'hffffffff;  // Disabled
@@ -98,7 +96,7 @@ module MMU_tlb #(
     logic [ADDR_WIDTH-1:0] trans_unit_phys_addr;
     always_comb begin
         if (translation_ack) begin
-            trans_unit_phys_addr = {translation_result.ppn1, translation_result.ppn0, virt_addr.offset};
+            trans_unit_phys_addr = {translation_result.ppn1[9:0], translation_result.ppn0, virt_addr.offset};
         end else begin
             trans_unit_phys_addr = 32'hffffffff;
             // trans_unit_phys_addr would be written in TLB the next time cycle, so no need to cache it

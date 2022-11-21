@@ -105,7 +105,9 @@ module sram_controller_single #(
                                     sram_be_n <= 0; 
                                     sram_data_t_reg <= 1;
                                 end
+                                /* verilator lint_off WIDTH */
                                 sram_addr <= wb_adr_i >> 2; 
+                                /* verilator lint_on WIDTH */
                                 sram_ce_n <= 0;
 
                                 // Save request body for debouncing
@@ -160,6 +162,10 @@ module sram_controller_single #(
                 STATE_WRITE_3: begin
                     sram_ce_n <= 1;
                     state <= STATE_IDLE;
+                end
+
+                STATE_DONE: begin
+
                 end
             
             endcase

@@ -118,7 +118,7 @@ module CONTROLLER_bypassing_unit #(
             if (exe_dm_mux == `DM_MUX_ALU) begin
                 bypass_valid2 = 1; req_data2 = exe_bypassing_data_alu;
             end else if (exe_dm_mux == `DM_MUX_PC_INC) begin
-                bypass_valid2 = 2; req_data2 = exe_bypassing_data_pc_addr_inc;
+                bypass_valid2 = 1; req_data2 = exe_bypassing_data_pc_addr_inc;
             end else if (exe_dm_mux == `DM_MUX_MEM) begin
                 bypass_valid2 = 0;
             end else begin

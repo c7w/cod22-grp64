@@ -72,7 +72,7 @@ module MEM_MMU #(
         query_exception_code = query_exception_code_mmu;
         query_exception_val = request_addr;
 
-        if (dm_en & request_addr & 32'h3 != 0 & request_width == 4) begin
+        if (dm_en && ((request_addr & 32'h3) != 0) && request_width == 4) begin
             query_exception = 1;
             if (dm_wen) begin
                 query_exception_code = `EXCEPTION_STORE_ADDRESS_MISALIGNED;
@@ -81,7 +81,7 @@ module MEM_MMU #(
             end
         end
 
-        else if (dm_en & request_addr & 32'h1 != 0 & request_width == 2) begin
+        else if (dm_en && ((request_addr & 32'h1) != 0) && request_width == 2) begin
             query_exception = 1;
             if (dm_wen) begin
                 query_exception_code = `EXCEPTION_STORE_ADDRESS_MISALIGNED;

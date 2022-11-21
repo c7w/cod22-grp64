@@ -70,7 +70,7 @@ module MMU_cache #(
 
     // Addr offset
     wire [5:0] offset;
-    assign offset = cache_addr & 32'h00000003;
+    assign offset = cache_addr[5:0] & 6'h03;
 
     logic [DATA_WIDTH-1:0] hit_dat_i_shifted;
     always_comb begin
@@ -96,7 +96,7 @@ module MMU_cache #(
             end
             2: begin
                 if (cache_sign_ext) begin
-                    hit_dat_i_assembled = {{24{hit_dat_i_shifted[15]}}, hit_dat_i_shifted[15:0]};
+                    hit_dat_i_assembled = {{16{hit_dat_i_shifted[15]}}, hit_dat_i_shifted[15:0]};
                 end else begin
                     hit_dat_i_assembled = {{16{1'b0}}, hit_dat_i_shifted[15:0]};
                 end
@@ -231,14 +231,21 @@ module MMU_cache #(
                     end else begin
 
                         if (state == STATE_IDLE) begin
+                            /* verilator lint_off WIDTH */
                             if (cache_table[fence_i_stage].valid & cache_table[fence_i_stage].dirty) begin
+                            /* verilator lint_on WIDTH */
                                 state <= STATE_WRITE_BACK_FENCE;
                                 wb_stb_o <= 1;
                                 wb_adr_o <= {
+                                    /* verilator lint_off WIDTH */
                                     cache_table[fence_i_stage].phys_index, 
+                                    /* verilator lint_on WIDTH */
                                     fence_i_stage[5:0], 
                                     2'b00};
+                                    
+                                /* verilator lint_off WIDTH */
                                 wb_dat_o <= cache_table[fence_i_stage].data;
+                                /* verilator lint_on WIDTH */
                                 wb_we_o <= 1;
                             end else begin 
                                 // Go to next index
@@ -248,7 +255,9 @@ module MMU_cache #(
                             if (wb_ack_i) begin
                                 wb_stb_o <= 0;
                                 state <= STATE_IDLE;
+                                /* verilator lint_off WIDTH */
                                 cache_table[fence_i_stage].dirty <= 0;
+                                /* verilator lint_on WIDTH */
                                 fence_i_stage <= fence_i_stage + 1;
                             end
                         end
