@@ -132,11 +132,15 @@ begin
 end
 
 // and decide when is the good time to sample the RxD line
+/* verilator lint_off WIDTH */
 function integer log2(input integer v); begin log2=0; while(v>>log2) log2=log2+1; end endfunction
+/* verilator lint_on WIDTH */
 localparam l2o = log2(Oversampling);
 reg [l2o-2:0] OversamplingCnt = 0;
+/* verilator lint_off WIDTH */
 always @(posedge clk) if(OversamplingTick) OversamplingCnt <= (RxD_state==0) ? 1'd0 : OversamplingCnt + 1'd1;
 wire sampleNow = OversamplingTick && (OversamplingCnt==Oversampling/2-1);
+/* verilator lint_on WIDTH */
 `endif
 
 // now we can accumulate the RxD bits in a shift-register
@@ -195,8 +199,9 @@ module BaudTickGen(
 parameter ClkFrequency = 25000000;
 parameter Baud = 115200;
 parameter Oversampling = 1;
-
+/* verilator lint_off WIDTH */
 function integer log2(input integer v); begin log2=0; while(v>>log2) log2=log2+1; end endfunction
+/* verilator lint_on WIDTH */
 localparam AccWidth = log2(ClkFrequency/Baud)+8;  // +/- 2% max timing error over a byte
 reg [AccWidth:0] Acc = 0;
 localparam ShiftLimiter = log2(Baud*Oversampling >> (31-AccWidth));  // this makes sure Inc calculation doesn't overflow

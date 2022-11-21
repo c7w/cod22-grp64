@@ -82,7 +82,7 @@ module uart_controller #(
     end else if(wb_stb_i && wb_we_i) begin
       case (wb_adr_i[7:0])
         REG_DATA: begin
-          if(wb_sel_i[0]) begin
+          if (wb_sel_i[0]) begin
             txd_data  <= wb_dat_i[7:0];
             txd_start <= 1;
           end

@@ -3,47 +3,47 @@ module lab5_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 按钮开关，带消抖电路，按下时为 1
-  reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时为 1
+  reg push_btn;   // BTN5 ��ť���أ���������·������ʱΪ 1
+  reg reset_btn;  // BTN6 ��λ��ť����������·������ʱΪ 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4，按钮开关，按下时为 1
-  reg [31:0] dip_sw;   // 32 位拨码开关，拨到“ON”时为 1
+  reg [3:0] touch_btn; // BTN1~BTN4����ť���أ�����ʱΪ 1
+  reg [31:0] dip_sw;   // 32 λ���뿪�أ�������ON��ʱΪ 1
 
-  wire [15:0] leds;  // 16 位 LED，输出时 1 点亮
-  wire [7:0] dpy0;   // 数码管低位信号，包括小数点，输出 1 点亮
-  wire [7:0] dpy1;   // 数码管高位信号，包括小数点，输出 1 点亮
+  wire [15:0] leds;  // 16 λ LED�����ʱ 1 ����
+  wire [7:0] dpy0;   // ����ܵ�λ�źţ�����С���㣬��� 1 ����
+  wire [7:0] dpy1;   // ����ܸ�λ�źţ�����С���㣬��� 1 ����
 
-  wire [31:0] base_ram_data;  // BaseRAM 数据，低 8 位与 CPLD 串口控制器共享
-  wire [19:0] base_ram_addr;  // BaseRAM 地址
-  wire[3:0] base_ram_be_n;    // BaseRAM 字节使能，低有效。如果不使用字节使能，请保持为 0
-  wire base_ram_ce_n;  // BaseRAM 片选，低有效
-  wire base_ram_oe_n;  // BaseRAM 读使能，低有效
-  wire base_ram_we_n;  // BaseRAM 写使能，低有效
+  wire [31:0] base_ram_data;  // BaseRAM ���ݣ��� 8 λ�� CPLD ���ڿ���������
+  wire [19:0] base_ram_addr;  // BaseRAM ��ַ
+  wire[3:0] base_ram_be_n;    // BaseRAM �ֽ�ʹ�ܣ�����Ч�������ʹ���ֽ�ʹ�ܣ��뱣��Ϊ 0
+  wire base_ram_ce_n;  // BaseRAM Ƭѡ������Ч
+  wire base_ram_oe_n;  // BaseRAM ��ʹ�ܣ�����Ч
+  wire base_ram_we_n;  // BaseRAM дʹ�ܣ�����Ч
 
-  wire [31:0] ext_ram_data;  // ExtRAM 数据
-  wire [19:0] ext_ram_addr;  // ExtRAM 地址
-  wire[3:0] ext_ram_be_n;    // ExtRAM 字节使能，低有效。如果不使用字节使能，请保持为 0
-  wire ext_ram_ce_n;  // ExtRAM 片选，低有效
-  wire ext_ram_oe_n;  // ExtRAM 读使能，低有效
-  wire ext_ram_we_n;  // ExtRAM 写使能，低有效
+  wire [31:0] ext_ram_data;  // ExtRAM ����
+  wire [19:0] ext_ram_addr;  // ExtRAM ��ַ
+  wire[3:0] ext_ram_be_n;    // ExtRAM �ֽ�ʹ�ܣ�����Ч�������ʹ���ֽ�ʹ�ܣ��뱣��Ϊ 0
+  wire ext_ram_ce_n;  // ExtRAM Ƭѡ������Ч
+  wire ext_ram_oe_n;  // ExtRAM ��ʹ�ܣ�����Ч
+  wire ext_ram_we_n;  // ExtRAM дʹ�ܣ�����Ч
 
-  wire txd;  // 直连串口发送端
-  wire rxd;  // 直连串口接收端
+  wire txd;  // ֱ�����ڷ��Ͷ�
+  wire rxd;  // ֱ�����ڽ��ն�
 
-  // CPLD 串口
-  wire uart_rdn;  // 读串口信号，低有效
-  wire uart_wrn;  // 写串口信号，低有效
-  wire uart_dataready;  // 串口数据准备好
-  wire uart_tbre;  // 发送数据标志
-  wire uart_tsre;  // 数据发送完毕标志
+  // CPLD ����
+  wire uart_rdn;  // �������źţ�����Ч
+  wire uart_wrn;  // д�����źţ�����Ч
+  wire uart_dataready;  // ��������׼����
+  wire uart_tbre;  // �������ݱ�־
+  wire uart_tsre;  // ���ݷ�����ϱ�־
 
-  // Windows 需要注意路径分隔符的转义，例如 "D:\\foo\\bar.bin"
-  parameter BASE_RAM_INIT_FILE = "/tmp/main.bin"; // BaseRAM 初始化文件，请修改为实际的绝对路径
-  parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM 初始化文件，请修改为实际的绝对路径
+  // Windows ��Ҫע��·���ָ�����ת�壬���� "D:\\foo\\bar.bin"
+  parameter BASE_RAM_INIT_FILE = "/tmp/main.bin"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
+  parameter EXT_RAM_INIT_FILE = "/tmp/eram.bin";  // ExtRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
 
   initial begin
-    // 在这里可以自定义测试输入序列，例如：
-    dip_sw = 32'h2;
+    // ����������Զ�������������У����磺
+    dip_sw = 32'h80000004;
     touch_btn = 0;
     reset_btn = 0;
     push_btn = 0;
@@ -53,26 +53,36 @@ module lab5_tb;
     #100;
     reset_btn = 0;
 
-    // TODO: 根据实验的操作要求，自定义下面的输入序列
+    // DontCare: ����ʵ��Ĳ���Ҫ���Զ����������������
     for (integer i = 0; i < 20; i = i + 1) begin
-      #100;  // 等待 100ns
-      push_btn = 1;  // 按下 push_btn 按钮
-      #100;  // 等待 100ns
-      push_btn = 0;  // 松开 push_btn 按钮
+      #100;  // �ȴ� 100ns
+      push_btn = 1;  // ���� push_btn ��ť
+      #100;  // �ȴ� 100ns
+      push_btn = 0;  // �ɿ� push_btn ��ť
     end
 
-    // 模拟 PC 通过串口，向 FPGA 发送字符
+    // ģ�� PC ͨ�����ڣ��� FPGA �����ַ�
     uart.pc_send_byte(8'h32); // ASCII '2'
+    uart.pc_send_byte(8'h33); // ASCII '2'
+    uart.pc_send_byte(8'h34); // ASCII '2'
+    uart.pc_send_byte(8'h35); // ASCII '2'
+    uart.pc_send_byte(8'h36); // ASCII '2'
+    uart.pc_send_byte(8'h37); // ASCII '2'
+    uart.pc_send_byte(8'h38); // ASCII '2'
+    uart.pc_send_byte(8'h39); // ASCII '2'
+    uart.pc_send_byte(8'h39); // ASCII '2'
+    uart.pc_send_byte(8'h37); // ASCII '2'
+    
     #10000;
     uart.pc_send_byte(8'h33); // ASCII '3'
 
-    // PC 接收到数据后，会在仿真窗口中打印出数据
+    // PC ���յ����ݺ󣬻��ڷ��洰���д�ӡ������
 
-    // 等待一段时间，结束仿真
+    // �ȴ�һ��ʱ�䣬��������
     #10000 $finish;
   end
 
-  // 待测试用户设计
+  // �������û����
   lab5_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -112,13 +122,13 @@ module lab5_tb;
       .flash_we_n()
   );
 
-  // 时钟源
+  // ʱ��Դ
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)
   );
 
-  // CPLD 串口仿真模型
+  // CPLD ���ڷ���ģ��
   cpld_model cpld (
       .clk_uart(clk_11M0592),
       .uart_rdn(uart_rdn),
@@ -128,12 +138,12 @@ module lab5_tb;
       .uart_tsre(uart_tsre),
       .data(base_ram_data[7:0])
   );
-  // 直连串口仿真模型
+  // ֱ�����ڷ���ģ��
   uart_model uart (
     .rxd (txd),
     .txd (rxd)
   );
-  // BaseRAM 仿真模型
+  // BaseRAM ����ģ��
   sram_model base1 (
       .DataIO(base_ram_data[15:0]),
       .Address(base_ram_addr[19:0]),
@@ -152,7 +162,7 @@ module lab5_tb;
       .LB_n(base_ram_be_n[2]),
       .UB_n(base_ram_be_n[3])
   );
-  // ExtRAM 仿真模型
+  // ExtRAM ����ģ��
   sram_model ext1 (
       .DataIO(ext_ram_data[15:0]),
       .Address(ext_ram_addr[19:0]),
@@ -172,7 +182,7 @@ module lab5_tb;
       .UB_n(ext_ram_be_n[3])
   );
 
-  // 从文件加载 BaseRAM
+  // ���ļ����� BaseRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
@@ -194,7 +204,7 @@ module lab5_tb;
     end
   end
 
-  // 从文件加载 ExtRAM
+  // ���ļ����� ExtRAM
   initial begin
     reg [31:0] tmp_array[0:1048575];
     integer n_File_ID, n_Init_Size;
