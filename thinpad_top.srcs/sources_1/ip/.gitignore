@@ -2,3 +2,5 @@
 !*.xci
 !*.xml
 !.gitignore
+!pll_example.v
+!pll_example_clk_wiz.v
