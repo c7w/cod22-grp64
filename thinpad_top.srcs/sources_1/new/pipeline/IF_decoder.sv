@@ -1,7 +1,7 @@
 `include "../headers/ctrl.vh"
 `include "../headers/branch_comp.vh"
 
-module IF_DECODER #(
+module IF_decoder #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32
 ) (

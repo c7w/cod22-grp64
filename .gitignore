@@ -9,3 +9,5 @@ thinpad_top.sim/
 /.lint/
 /.Xil
 /.Xilinx
+
+obj_dir/

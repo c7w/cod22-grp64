@@ -50,7 +50,7 @@ module MMU_master #(
         wbm0_dat_i = 0; wbm0_ack_i = 0;
         wbm1_dat_i = 0; wbm1_ack_i = 0;
 
-        if (master_owner == 1'b00) begin
+        if (master_owner == 2'b00) begin
             // Cache
             wb_cyc_o = wbm0_cyc_o;
             wb_stb_o = wbm0_stb_o;

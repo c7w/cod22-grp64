@@ -233,7 +233,7 @@ module tb;
       $fclose(n_File_ID);
     end
     $display("BaseRAM Init Size(words): %d", n_Init_Size);
-    for (integer i = 0; i < n_Init_Size; i++) begin
+    for (integer i = 0; i < n_Init_Size; i = i + 1) begin
       base1.mem_array0[i] = tmp_array[i][24+:8];
       base1.mem_array1[i] = tmp_array[i][16+:8];
       base2.mem_array0[i] = tmp_array[i][8+:8];

@@ -44,7 +44,7 @@ module IF_MMU #(
 
     logic request_comb;
     
-    logic [DATA_WIDTH-1:0] instr;
+    // logic [DATA_WIDTH-1:0] instr;
 
 
     logic query_exception_mmu;
