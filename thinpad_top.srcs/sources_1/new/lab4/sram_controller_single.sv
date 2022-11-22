@@ -87,52 +87,46 @@ module sram_controller_single #(
                 STATE_IDLE: begin
                     if (wb_stb_i && wb_cyc_i) begin
 
-                        if ((wb_adr_i == wb_adr_i_cache) && (wb_dat_i == wb_dat_i_cache) && (wb_sel_i == wb_sel_i_cache) && (wb_we_i == wb_we_i_cache)) begin
-                            // Same request. Ignore it.
+                        // Only query valid addresses
+                        if (wb_adr_i >= 32'h80000000 & wb_adr_i < 32'h80800000) begin
+
+                            if(wb_we_i) begin
+                                state <= STATE_WRITE;
+                                sram_be_n <= ~wb_sel_i;
+                                sram_data_o_reg <= wb_dat_i;  
+                                sram_data_t_reg <= 0;
+                            end else if (~wb_we_i) begin
+                                state <= STATE_READ;
+                                sram_oe_n <= 0;
+                                sram_be_n <= 0; 
+                                sram_data_t_reg <= 1;
+                            end
+                            /* verilator lint_off WIDTH */
+                            sram_addr <= wb_adr_i >> 2; 
+                            /* verilator lint_on WIDTH */
+                            sram_ce_n <= 0;
+
+                            // Save request body for debouncing
+                            wb_adr_i_cache <= wb_adr_i;
+                            wb_dat_i_cache <= wb_dat_i;
+                            wb_sel_i_cache <= wb_sel_i;
+                            wb_we_i_cache <= wb_we_i;
+                            
+                            // Start to request!
+
                         end else begin
 
-                            // Only query valid addresses
-                            if (wb_adr_i >= 32'h80000000 & wb_adr_i < 32'h80800000) begin
-
-                                if(wb_we_i) begin
-                                    state <= STATE_WRITE;
-                                    sram_be_n <= ~wb_sel_i;
-                                    sram_data_o_reg <= wb_dat_i;  
-                                    sram_data_t_reg <= 0;
-                                end else if (~wb_we_i) begin
-                                    state <= STATE_READ;
-                                    sram_oe_n <= 0;
-                                    sram_be_n <= 0; 
-                                    sram_data_t_reg <= 1;
-                                end
-                                /* verilator lint_off WIDTH */
-                                sram_addr <= wb_adr_i >> 2; 
-                                /* verilator lint_on WIDTH */
-                                sram_ce_n <= 0;
-
-                                // Save request body for debouncing
-                                wb_adr_i_cache <= wb_adr_i;
-                                wb_dat_i_cache <= wb_dat_i;
-                                wb_sel_i_cache <= wb_sel_i;
-                                wb_we_i_cache <= wb_we_i;
-                                
-                                // Start to request!
-
+                            if (wb_we_i) begin
+                                // Write
+                                state <= STATE_WRITE_3;
                             end else begin
-
-                                if (wb_we_i) begin
-                                    // Write
-                                    state <= STATE_WRITE_3;
-                                end else begin
-                                    // Read
-                                    wb_dat_o <= 32'heeee0000;
-                                    state <= STATE_READ_2;
-                                end
-
+                                // Read
+                                wb_dat_o <= 32'heeee0000;
+                                state <= STATE_READ_2;
                             end
 
-
                         end
+
 
                     end 
                 
