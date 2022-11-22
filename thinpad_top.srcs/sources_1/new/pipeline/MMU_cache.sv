@@ -47,9 +47,10 @@ module MMU_cache #(
     cache_entry_t cache_table [0:CACHE_SIZE-1];
 
     // cast cache_addr (logic [31:0]) to cache_query(cache_query_t)
-    cache_query_t cache_query, translation_query;
+    cache_query_t cache_query, translation_query, wb_adr_o_query;
     assign cache_query = cache_addr;
     assign translation_query = translation_unit_request_addr;
+    assign wb_adr_o_query = wb_adr_o;
 
     cache_entry_t cache_entry, translation_entry;
     assign cache_entry = cache_table[cache_query.phys_tag];
@@ -171,7 +172,7 @@ module MMU_cache #(
             cache_ack = 1'b1;
         end else begin
             if (~cache_wen) begin
-                cache_ack = cache_hit | (wb_ack_i & state != STATE_WRITE_BACK);
+                cache_ack = cache_hit | (wb_ack_i & state != STATE_WRITE_BACK & (wb_adr_o == cache_addr));
                 data_o = hit_dat_i_assembled;
             end else begin
                 cache_ack = cache_hit;
@@ -321,13 +322,16 @@ module MMU_cache #(
 
                 else if (state == STATE_LOAD) begin
                     if (wb_ack_i) begin
-                        cache_table[cache_query.phys_tag].valid <= 1'b1;
-                        cache_table[cache_query.phys_tag].data <= wb_dat_i;
-                        cache_table[cache_query.phys_tag].dirty <= 1'b0;
-                        cache_table[cache_query.phys_tag].phys_index <= cache_query.phys_index;
+
+
+                        cache_table[wb_adr_o_query.phys_tag].valid <= 1'b1;
+                        cache_table[wb_adr_o_query.phys_tag].data <= wb_dat_i;
+                        cache_table[wb_adr_o_query.phys_tag].dirty <= 1'b0;
+                        cache_table[wb_adr_o_query.phys_tag].phys_index <= wb_adr_o_query.phys_index;
 
                         wb_stb_o <= 0;
                         state <= STATE_IDLE;
+
                     end
                 end
 

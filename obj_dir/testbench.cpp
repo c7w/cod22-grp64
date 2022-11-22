@@ -7,9 +7,9 @@
 
 #define MAX_RST_TIME ((vluint64_t)(100'000))
 
-#define RECORD_START ((vluint64_t)(1'840'000'000'000))
-#define MAX_SIM_TIME ((vluint64_t)(1'860'000'000'000))
-#define RECORD_END MAX_SIM_TIME
+#define RECORD_START ((vluint64_t)(1'500'000'000'000))
+#define RECORD_END ((vluint64_t)(1'550'000'000'000))
+#define MAX_SIM_TIME ((vluint64_t)(2'500'000'000'000))
 #define INTERVAL ((vluint64_t)(10'000))
 vluint64_t sim_time = 0;
 

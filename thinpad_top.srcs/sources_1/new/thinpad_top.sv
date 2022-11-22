@@ -116,7 +116,6 @@ module thinpad_top #(
 
 
     wire sys_clk, sys_rst;
-    assign sys_clk = clk_40M;
     assign sys_rst = reset_btn;
 
     assign uart_rdn = 1'b1;
@@ -391,6 +390,7 @@ module thinpad_top #(
     CONTROLLER_pipeline CONTROLLER_pipeline (
         .im_ack(CONTROLLER_im_ack),
         .dm_ack(CONTROLLER_dm_ack),
+        .dm_exception(MEM_query_exception),
         
         .data_hazard(CONTROLLER_data_hazard),
         .ID_rs1(ID_rs1),
@@ -1341,6 +1341,7 @@ module thinpad_top #(
     //     .external_data(8'b0)
 
     // );   
+    // assign sys_clk = clk_50M;
     /* verilator lint_on PINMISSING */
 
     sram_controller_single #(
@@ -1415,5 +1416,6 @@ module thinpad_top #(
         .uart_txd_o(txd),
         .uart_rxd_i(rxd)
     );
+    assign sys_clk = clk_40M;
 
 endmodule

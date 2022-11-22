@@ -37,7 +37,7 @@ module MMU_translation_unit #(
 
     // Translation can be slow. But it wont affect final perf :)
 
-    assign cache_request_addr = (state == STATE_READ1_NXT) ? pte2_addr : translation_addr;
+    assign cache_request_addr = (state == STATE_READ1_NXT) ? pte2_addr : pte1_addr;
 
     // PTE Addr calculation
     pte_t pte1, pte2;
@@ -56,9 +56,7 @@ module MMU_translation_unit #(
         STATE_IDLE,
         STATE_READ1,
         STATE_READ1_NXT,
-        STATE_READ2,
-        STATE_READ2_NXT,
-        STATE_WAIT
+        STATE_READ2
     } state_t;
     state_t state, state_nxt;
 
@@ -135,22 +133,6 @@ module MMU_translation_unit #(
                     end
                 end
 
-                // not used
-                STATE_READ2_NXT: begin
-                    wb_stb_o <= 1;
-                    wb_adr_o <= pte3_addr;
-                    state <= STATE_WAIT;
-                end
-
-                STATE_WAIT: begin
-                    if (wb_ack_i) begin
-                        translation_result <= wb_dat_i;
-                        translation_ack <= 1;
-
-                        wb_stb_o <= 0;
-                        state <= STATE_IDLE;
-                    end
-                end
             endcase
 
         end

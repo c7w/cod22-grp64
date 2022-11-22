@@ -372,9 +372,13 @@ module EXE_csr_transfer #(
                 `CSR_MSCRATCH_ADDR: begin mscratch_o_normal = calc_result; mscratch_wen_normal = 1; end
                 `CSR_MEPC_ADDR: begin mepc_o_normal = calc_result; mepc_wen_normal = 1; end
                 `CSR_MCAUSE_ADDR: begin mcause_o_normal = calc_result; mcause_wen_normal = 1; end
+                // Note here write mstatus
+                `CSR_SSTATUS_ADDR: begin mstatus_o_normal = (calc_result & `SSTATUS_WRITE_MASK) | (mstatus_i & ~`SSTATUS_WRITE_MASK); mstatus_wen_normal = 1; end
                 `CSR_MSTATUS_ADDR: begin mstatus_o_normal = calc_result; mstatus_wen_normal = 1; end
                 `CSR_MIE_ADDR: begin mie_o_normal = calc_result; mie_wen_normal = 1; end
+                `CSR_SIE_ADDR: begin mie_o_normal = (calc_result & `SIE_WRITE_MASK) | (mie_i & ~`SIE_WRITE_MASK);; mie_wen_normal = 1; end
                 `CSR_MIP_ADDR: begin mip_o_normal = calc_result; mip_wen_normal = 1; end
+                `CSR_SIP_ADDR: begin mip_o_normal = (calc_result & `SIP_WRITE_MASK) | (mip_i & ~`SIP_WRITE_MASK);; mip_wen_normal = 1; end
                 `CSR_MTVAL_ADDR: begin mtval_o_normal = calc_result; mtval_wen_normal = 1; end
                 `CSR_MIDELEG_ADDR: begin mideleg_o_normal = calc_result; mideleg_wen_normal = 1; end
                 `CSR_MEDELEG_ADDR: begin medeleg_o_normal = calc_result; medeleg_wen_normal = 1; end
@@ -398,8 +402,11 @@ module EXE_csr_transfer #(
             `CSR_MEPC_ADDR: csr_data = mepc_i;
             `CSR_MCAUSE_ADDR: csr_data = mcause_i;
             `CSR_MSTATUS_ADDR: csr_data = mstatus_i;
+            `CSR_SSTATUS_ADDR: csr_data = mstatus_i & `SSTATUS_WRITE_MASK;
             `CSR_MIE_ADDR: csr_data = mie_i;
+            `CSR_SIE_ADDR: csr_data = mie_i & `SIE_WRITE_MASK;
             `CSR_MIP_ADDR: csr_data = mip_i;
+            `CSR_SIP_ADDR: csr_data = mip_i & `SIP_WRITE_MASK;
             `CSR_MTVAL_ADDR: csr_data = mtval_i;
             `CSR_MIDELEG_ADDR: csr_data = mideleg_i;
             `CSR_MEDELEG_ADDR: csr_data = medeleg_i;

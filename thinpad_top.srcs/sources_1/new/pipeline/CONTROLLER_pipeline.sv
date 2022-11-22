@@ -7,6 +7,7 @@ module CONTROLLER_pipeline #(
 ) (
     input wire im_ack,
     input wire dm_ack,
+    input wire dm_exception,
 
     input wire data_hazard,
     input wire [4:0] ID_rs1,
@@ -80,14 +81,19 @@ module CONTROLLER_pipeline #(
         stall_o = 4'b0000;
         bubble_o = 4'b0000;
 
+        if (dm_ack & dm_exception) begin
+            stall_o = 4'b1000;
+            bubble_o = 4'b1111;
 
-        if (CONTROLLER_csr_transfer_state == 1) begin
+        end 
+        
+        else if (CONTROLLER_csr_transfer_state == 1) begin
             // Drain the whole pipeline
             stall_o = 4'b1000;
-            bubble_o = 4'b1100;
+            bubble_o = 4'b1110;
         end
 
-        if (stall_DM) begin
+        else if (stall_DM) begin
             stall_o = 4'b1111;
             bubble_o = 4'b0001;
         end

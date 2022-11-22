@@ -93,7 +93,7 @@ module CONTROLLER_csrs #(
             mscratch_reg <= 32'd0;
             mepc_reg <= 32'd0;
             mcause_reg <= 32'd0;
-            mstatus_reg <= 32'd0;
+            mstatus_reg <= 32'h40000;
             mie_reg <= 32'd0;
             mip_reg <= 32'd0;
             mtval_reg <= 32'd0;

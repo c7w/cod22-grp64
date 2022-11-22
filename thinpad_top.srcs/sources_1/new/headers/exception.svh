@@ -6,6 +6,9 @@
 `define MSTATUS_WRITE_MASK 32'b10000000011111111111100110111011
 `define SSTATUS_WRITE_MASK 32'b1_00000000000_11_0_1111_0000_1_00_11_00_11
 
+`define SIE_WRITE_MASK 32'b00000000000000000000001100110011
+`define SIP_WRITE_MASK 32'b00000000000000000000001100110011
+
 
 // CSRs
 // Ref: https://www.five-embeddev.com/quickref/csrs.html
@@ -35,6 +38,7 @@ typedef struct packed {
 } mcause_t;
 
 `define CSR_MSTATUS_ADDR `CSR_ADDR_WIDTH'h300
+`define CSR_SSTATUS_ADDR `CSR_ADDR_WIDTH'h100
 typedef struct packed {
     logic sd; 
     logic[7:0] trash_0;
@@ -44,12 +48,14 @@ typedef struct packed {
 } mstatus_t;
 
 `define CSR_MIE_ADDR `CSR_ADDR_WIDTH'h304
+`define CSR_SIE_ADDR `CSR_ADDR_WIDTH'h104
 typedef struct packed {
     logic[`MXLEN-13:0] trash_0;
     logic meie, trash_1, seie, ueie, mtie, trash_2, stie, utie, msie, trash_3, ssie, usie;
 } mie_t;
 
 `define CSR_MIP_ADDR `CSR_ADDR_WIDTH'h344
+`define CSR_SIP_ADDR `CSR_ADDR_WIDTH'h144
 typedef struct packed {
     logic[`MXLEN-13:0] trash_0;
     logic meip, trash_1, seip, ueip, mtip, trash_2, stip, utip, msip, trash_3, ssip, usip;
