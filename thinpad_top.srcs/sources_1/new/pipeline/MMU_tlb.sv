@@ -105,7 +105,7 @@ module MMU_tlb #(
 
 
     // TLB -> CPU
-    assign query_ack = (~query_en & ~fence_i) | (fence_i & cache_ack) | query_exception | (tlb_hit & cache_ack);
+    assign query_ack = (~query_en & ~fence_i) | (fence_i & cache_ack) | query_exception | (tlb_hit & cache_ack) | tlb_flush;
     reg [DATA_WIDTH-1:0] query_data_o_reg;
     always_comb begin
         if (cache_ack) begin

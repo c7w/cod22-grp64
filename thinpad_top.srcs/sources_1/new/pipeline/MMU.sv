@@ -116,7 +116,11 @@ module MMU #(
 
         mmu_seize_master = 1;
 
-        if (fence_i) begin
+        if (tlb_flush) begin
+            
+            query_ack = 1;
+
+        end else if (fence_i) begin
             mmu_seize_master = 0;
             query_ack = query_ack_tlb;
         end

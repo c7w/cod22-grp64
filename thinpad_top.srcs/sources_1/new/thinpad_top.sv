@@ -116,7 +116,7 @@ module thinpad_top #(
 
 
     wire sys_clk, sys_rst;
-    assign sys_clk = clk_50M;
+    assign sys_clk = clk_40M;
     assign sys_rst = reset_btn;
 
     assign uart_rdn = 1'b1;
@@ -516,7 +516,7 @@ module thinpad_top #(
         .mstatus_i(CONTROLLER_mstatus_bypassing),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
         .satp_i(CONTROLLER_satp_bypassing),
-        .tlb_flush(IF_tlb_flush),
+        .tlb_flush(MEM_tlb_flush),
         .fence_i(WB_fence_i),
         
         .pc_addr(IF_pc_addr),
@@ -1292,95 +1292,39 @@ module thinpad_top #(
 
     // Slaves
     /* verilator lint_off PINMISSING */
-    wb_dp_ram #(
-        .INIT_FILE ("/mnt/d/Project/rv-2022/asmcode/rbl.img")
-    ) sram_controller_base (
-        .a_clk(sys_clk),
-        .a_adr_i(wbs0_adr_o),
-        .a_dat_i(wbs0_dat_o),
-        .a_dat_o(wbs0_dat_i),
-        .a_we_i(wbs0_we_o),
-        .a_sel_i(wbs0_sel_o),
-        .a_stb_i(wbs0_stb_o),
-        .a_ack_o(wbs0_ack_i),
-        .a_cyc_i(wbs0_cyc_o),
-
-        .b_clk(1'b0)
-    );
-
-    wb_dp_ram #(
-        .INIT_FILE ("/mnt/d/Project/ucore_os_lab/labcodes_answer/lab8/bin/ucore.img")
-    ) sram_controller_exe (
-        .a_clk(sys_clk),
-        .a_adr_i(wbs1_adr_o),
-        .a_dat_i(wbs1_dat_o),
-        .a_dat_o(wbs1_dat_i),
-        .a_we_i(wbs1_we_o),
-        .a_sel_i(wbs1_sel_o),
-        .a_stb_i(wbs1_stb_o),
-        .a_ack_o(wbs1_ack_i),
-        .a_cyc_i(wbs1_cyc_o),
-
-        .b_clk(1'b0)
-    );
-    /* verilator lint_on PINMISSING */
-
-    // sram_controller_single #(
-    //     .SRAM_ADDR_WIDTH(20),
-    //     .SRAM_DATA_WIDTH(32)
+    // wb_dp_ram #(
+    //     .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/rbl.img")
     // ) sram_controller_base (
-    //     .clk_i(sys_clk),
-    //     .rst_i(sys_rst),
+    //     .a_clk(sys_clk),
+    //     .a_adr_i(wbs0_adr_o),
+    //     .a_dat_i(wbs0_dat_o),
+    //     .a_dat_o(wbs0_dat_i),
+    //     .a_we_i(wbs0_we_o),
+    //     .a_sel_i(wbs0_sel_o),
+    //     .a_stb_i(wbs0_stb_o),
+    //     .a_ack_o(wbs0_ack_i),
+    //     .a_cyc_i(wbs0_cyc_o),
 
-    //     // Wishbone slave (to MUX)
-    //     .wb_cyc_i(wbs0_cyc_o),
-    //     .wb_stb_i(wbs0_stb_o),
-    //     .wb_ack_o(wbs0_ack_i),
-    //     .wb_adr_i(wbs0_adr_o),
-    //     .wb_dat_i(wbs0_dat_o),
-    //     .wb_dat_o(wbs0_dat_i),
-    //     .wb_sel_i(wbs0_sel_o),
-    //     .wb_we_i (wbs0_we_o),
-
-    //     // To SRAM chip
-    //     .sram_addr(base_ram_addr),
-    //     .sram_data(base_ram_data),
-    //     .sram_ce_n(base_ram_ce_n),
-    //     .sram_oe_n(base_ram_oe_n),
-    //     .sram_we_n(base_ram_we_n),
-    //     .sram_be_n(base_ram_be_n)
+    //     .b_clk(1'b0)
     // );
 
-    // sram_controller_single #(
-    //     .SRAM_ADDR_WIDTH(20),
-    //     .SRAM_DATA_WIDTH(32)
-    // ) sram_controller_ext (
-    //     .clk_i(sys_clk),
-    //     .rst_i(sys_rst),
+    // wb_dp_ram #(
+    //     .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/ucore.img")
+    // ) sram_controller_exe (
+    //     .a_clk(sys_clk),
+    //     .a_adr_i(wbs1_adr_o),
+    //     .a_dat_i(wbs1_dat_o),
+    //     .a_dat_o(wbs1_dat_i),
+    //     .a_we_i(wbs1_we_o),
+    //     .a_sel_i(wbs1_sel_o),
+    //     .a_stb_i(wbs1_stb_o),
+    //     .a_ack_o(wbs1_ack_i),
+    //     .a_cyc_i(wbs1_cyc_o),
 
-    //     // Wishbone slave (to MUX)
-    //     .wb_cyc_i(wbs1_cyc_o),
-    //     .wb_stb_i(wbs1_stb_o),
-    //     .wb_ack_o(wbs1_ack_i),
-    //     .wb_adr_i(wbs1_adr_o),
-    //     .wb_dat_i(wbs1_dat_o),
-    //     .wb_dat_o(wbs1_dat_i),
-    //     .wb_sel_i(wbs1_sel_o),
-    //     .wb_we_i (wbs1_we_o),
-
-    //     // To SRAM chip
-    //     .sram_addr(ext_ram_addr),
-    //     .sram_data(ext_ram_data),
-    //     .sram_ce_n(ext_ram_ce_n),
-    //     .sram_oe_n(ext_ram_oe_n),
-    //     .sram_we_n(ext_ram_we_n),
-    //     .sram_be_n(ext_ram_be_n)
+    //     .b_clk(1'b0)
     // );
 
-    // uart_controller #(
-    //     .CLK_FREQ(40_000_000),
-    //     .BAUD    (115200)
-    // ) uart_controller (
+    // fake_uart_controller uart_controller (
     //     .clk_i(sys_clk),
     //     .rst_i(sys_rst),
 
@@ -1393,12 +1337,68 @@ module thinpad_top #(
     //     .wb_sel_i(wbs2_sel_o),
     //     .wb_we_i (wbs2_we_o),
 
-    //     // to UART pins
-    //     .uart_txd_o(txd),
-    //     .uart_rxd_i(rxd)
-    // );
+    //     .external_valid(1'b0),
+    //     .external_data(8'b0)
 
-    fake_uart_controller uart_controller (
+    // );   
+    /* verilator lint_on PINMISSING */
+
+    sram_controller_single #(
+        .SRAM_ADDR_WIDTH(20),
+        .SRAM_DATA_WIDTH(32)
+    ) sram_controller_base (
+        .clk_i(sys_clk),
+        .rst_i(sys_rst),
+
+        // Wishbone slave (to MUX)
+        .wb_cyc_i(wbs0_cyc_o),
+        .wb_stb_i(wbs0_stb_o),
+        .wb_ack_o(wbs0_ack_i),
+        .wb_adr_i(wbs0_adr_o),
+        .wb_dat_i(wbs0_dat_o),
+        .wb_dat_o(wbs0_dat_i),
+        .wb_sel_i(wbs0_sel_o),
+        .wb_we_i (wbs0_we_o),
+
+        // To SRAM chip
+        .sram_addr(base_ram_addr),
+        .sram_data(base_ram_data),
+        .sram_ce_n(base_ram_ce_n),
+        .sram_oe_n(base_ram_oe_n),
+        .sram_we_n(base_ram_we_n),
+        .sram_be_n(base_ram_be_n)
+    );
+
+    sram_controller_single #(
+        .SRAM_ADDR_WIDTH(20),
+        .SRAM_DATA_WIDTH(32)
+    ) sram_controller_ext (
+        .clk_i(sys_clk),
+        .rst_i(sys_rst),
+
+        // Wishbone slave (to MUX)
+        .wb_cyc_i(wbs1_cyc_o),
+        .wb_stb_i(wbs1_stb_o),
+        .wb_ack_o(wbs1_ack_i),
+        .wb_adr_i(wbs1_adr_o),
+        .wb_dat_i(wbs1_dat_o),
+        .wb_dat_o(wbs1_dat_i),
+        .wb_sel_i(wbs1_sel_o),
+        .wb_we_i (wbs1_we_o),
+
+        // To SRAM chip
+        .sram_addr(ext_ram_addr),
+        .sram_data(ext_ram_data),
+        .sram_ce_n(ext_ram_ce_n),
+        .sram_oe_n(ext_ram_oe_n),
+        .sram_we_n(ext_ram_we_n),
+        .sram_be_n(ext_ram_be_n)
+    );
+
+    uart_controller #(
+        .CLK_FREQ(40_000_000),
+        .BAUD    (115200)
+    ) uart_controller (
         .clk_i(sys_clk),
         .rst_i(sys_rst),
 
@@ -1411,9 +1411,9 @@ module thinpad_top #(
         .wb_sel_i(wbs2_sel_o),
         .wb_we_i (wbs2_we_o),
 
-        .external_valid(1'b0),
-        .external_data(8'b0)
-
-    );   
+        // to UART pins
+        .uart_txd_o(txd),
+        .uart_rxd_i(rxd)
+    );
 
 endmodule
