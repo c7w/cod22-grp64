@@ -8,7 +8,9 @@
 module full_model (
   input wire clk_50M,
   input wire clk_11M0592,
-  input wire reset_btn
+  input wire reset_btn,
+  input wire data_valid,
+  input wire [7:0] dat_to_send
 );
 
   reg push_btn;   // BTN5 ��ť���أ���������·������ʱΪ 1
@@ -97,7 +99,10 @@ module full_model (
       .flash_oe_n(flash_oe_n),
       .flash_ce_n(flash_ce_n),
       .flash_byte_n(flash_byte_n),
-      .flash_we_n(flash_we_n)
+      .flash_we_n(flash_we_n),
+
+      .data_valid(data_valid),
+      .dat_to_send(dat_to_send)
   );
   /* verilator lint_on PINMISSING */
 
@@ -114,20 +119,20 @@ module full_model (
   //     .clk_50M    (clk_50M)
   // );
   // CPLD ���ڷ���ģ��
-  cpld_model cpld (
-      .clk_uart(clk_11M0592),
-      .uart_rdn(uart_rdn),
-      .uart_wrn(uart_wrn),
-      .uart_dataready(uart_dataready),
-      .uart_tbre(uart_tbre),
-      .uart_tsre(uart_tsre),
-      .data(base_ram_data[7:0])
-  );
+  // cpld_model cpld (
+  //     .clk_uart(clk_11M0592),
+  //     .uart_rdn(uart_rdn),
+  //     .uart_wrn(uart_wrn),
+  //     .uart_dataready(uart_dataready),
+  //     .uart_tbre(uart_tbre),
+  //     .uart_tsre(uart_tsre),
+  //     .data(base_ram_data[7:0])
+  // );
   // ֱ�����ڷ���ģ��
-  uart_model uart (
-    .rxd (txd),
-    .txd (rxd)
-  );
+  // uart_model uart (
+  //   .rxd (txd),
+  //   .txd (rxd)
+  // );
   // BaseRAM ����ģ��
   // sram_model_sim base1 (
   //     .DataIO(base_ram_data[15:0]),

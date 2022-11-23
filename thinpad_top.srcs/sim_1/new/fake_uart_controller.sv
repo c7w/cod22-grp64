@@ -137,6 +137,7 @@ module fake_uart_controller #(
         else begin
 
             if (external_valid) begin
+                $display("Fake uart sent 0x%02x", external_data);
                 received[s2] <= external_data;
                 s2 <= s2 + 1;
             end

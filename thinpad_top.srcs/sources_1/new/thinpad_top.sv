@@ -83,7 +83,11 @@ module thinpad_top #(
     output wire       video_hsync,  // 行同步（水平同步）信�?????????
     output wire       video_vsync,  // 场同步（垂直同步）信�?????????
     output wire       video_clk,    // 像素时钟输出
-    output wire       video_de      // 行数据有效信号，用于区分消隐�?????????
+    output wire       video_de,      // 行数据有效信号，用于区分消隐�?????????
+
+    // Debugging
+    input wire data_valid,
+    input wire [7:0] dat_to_send
 );
 
   /* =========== Demo code begin =========== */
@@ -1337,8 +1341,8 @@ module thinpad_top #(
     //     .wb_sel_i(wbs2_sel_o),
     //     .wb_we_i (wbs2_we_o),
 
-    //     .external_valid(1'b0),
-    //     .external_data(8'b0)
+    //     .external_valid(data_valid),
+    //     .external_data(dat_to_send)
 
     // );   
     // assign sys_clk = clk_50M;

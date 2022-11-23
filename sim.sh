@@ -18,7 +18,7 @@ verilator -Wno-SYMRSVDWORD -Wno-CASEINCOMPLETE -Wno-UNSIGNED -Wno-TIMESCALEMOD \
           
 make -C obj_dir -f Vfull_model.mk Vfull_model
 
-obj_dir/Vfull_model # > sim.out
+obj_dir/Vfull_model > sim.out
 
 vcd2fst -v waveform.vcd -f waveform.fst --parallel
 rm waveform.vcd

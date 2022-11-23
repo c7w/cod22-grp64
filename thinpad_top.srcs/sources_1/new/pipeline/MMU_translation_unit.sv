@@ -78,62 +78,72 @@ module MMU_translation_unit #(
         end
 
         else begin
-            case (state) 
-                STATE_IDLE: begin
-                    translation_ack <= 0;
-                    if (translation_en) begin
+
+            if (translation_en) begin
+
+                case (state) 
+                    STATE_IDLE: begin
+                        translation_ack <= 0;
+                        if (translation_en) begin
+
+                            if (cache_request_valid) begin
+
+                                pte1 <= cache_request_data;
+                                state <= STATE_READ1_NXT;
+
+                            end else begin
+                                translation_addr_cache <= translation_addr;
+                                state <= STATE_READ1;
+
+                                wb_stb_o <= 1;
+                                wb_adr_o <= pte1_addr;
+                            end
+
+
+                        end
+                    end
+
+                    STATE_READ1: begin
+                        if (wb_ack_i) begin
+                            pte1 <= wb_dat_i;
+                            wb_stb_o <= 0;
+                            state <= STATE_READ1_NXT;
+                        end
+                    end
+
+                    STATE_READ1_NXT: begin
 
                         if (cache_request_valid) begin
-
-                            pte1 <= cache_request_data;
-                            state <= STATE_READ1_NXT;
-
+                            translation_result <= cache_request_data;
+                            state <= STATE_IDLE;
+                            translation_ack <= 1;
                         end else begin
-                            translation_addr_cache <= translation_addr;
-                            state <= STATE_READ1;
-
                             wb_stb_o <= 1;
-                            wb_adr_o <= pte1_addr;
+                            wb_adr_o <= pte2_addr;
+                            state <= STATE_READ2;
                         end
 
 
                     end
-                end
 
-                STATE_READ1: begin
-                    if (wb_ack_i) begin
-                        pte1 <= wb_dat_i;
-                        wb_stb_o <= 0;
-                        state <= STATE_READ1_NXT;
-                    end
-                end
+                    STATE_READ2: begin
+                        if (wb_ack_i) begin
+                            translation_result <= wb_dat_i;
+                            translation_ack <= 1;
 
-                STATE_READ1_NXT: begin
-
-                    if (cache_request_valid) begin
-                        translation_result <= cache_request_data;
-                        state <= STATE_IDLE;
-                        translation_ack <= 1;
-                    end else begin
-                        wb_stb_o <= 1;
-                        wb_adr_o <= pte2_addr;
-                        state <= STATE_READ2;
+                            wb_stb_o <= 0;
+                            state <= STATE_IDLE;
+                        end
                     end
 
+                endcase
 
-                end
-
-                STATE_READ2: begin
-                    if (wb_ack_i) begin
-                        translation_result <= wb_dat_i;
-                        translation_ack <= 1;
-
-                        wb_stb_o <= 0;
-                        state <= STATE_IDLE;
-                    end
-                end
-
-            endcase
+            end else begin
+                state <= STATE_IDLE;
+                wb_stb_o <= 0;
+                translation_ack <= 0;
+                translation_result <= 0;
+            end
 
         end
     end
