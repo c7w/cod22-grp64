@@ -104,10 +104,15 @@ module MMU_translation_unit #(
                     end
 
                     STATE_READ1: begin
-                        if (wb_ack_i) begin
-                            pte1 <= wb_dat_i;
+                        if (translation_en) begin
+                            if (wb_ack_i) begin
+                                pte1 <= wb_dat_i;
+                                wb_stb_o <= 0;
+                                state <= STATE_READ1_NXT;
+                            end
+                        end else begin
                             wb_stb_o <= 0;
-                            state <= STATE_READ1_NXT;
+                            state <= STATE_IDLE;
                         end
                     end
 
@@ -127,12 +132,17 @@ module MMU_translation_unit #(
                     end
 
                     STATE_READ2: begin
-                        if (wb_ack_i) begin
-                            translation_result <= wb_dat_i;
-                            translation_ack <= 1;
+                        if (translation_en) begin
+                            if (wb_ack_i) begin
+                                translation_result <= wb_dat_i;
+                                translation_ack <= 1;
 
-                            wb_stb_o <= 0;
-                            state <= STATE_IDLE;
+                                wb_stb_o <= 0;
+                                state <= STATE_IDLE;
+                            end
+                        end else begin
+                                wb_stb_o <= 0;
+                                state <= STATE_IDLE;
                         end
                     end
 
