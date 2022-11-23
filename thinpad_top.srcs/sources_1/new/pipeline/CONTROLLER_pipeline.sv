@@ -90,7 +90,7 @@ module CONTROLLER_pipeline #(
         else if (CONTROLLER_csr_transfer_state == 1) begin
             // Drain the whole pipeline
             stall_o = 4'b1000;
-            bubble_o = 4'b1110;
+            bubble_o = 4'b1111;
         end
 
         else if (stall_DM) begin
