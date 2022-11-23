@@ -511,7 +511,7 @@ module thinpad_top #(
     //     .wb_sel_o(wbm_sel_im),
     //     .wb_we_o(wbm_we_im)
     // );
-
+    logic WB_tlb_flush;
     logic WB_fence_i;
     IF_MMU instr_fetcher (
         .clk(sys_clk),
@@ -520,7 +520,7 @@ module thinpad_top #(
         .mstatus_i(CONTROLLER_mstatus_bypassing),
         .priviledge_mode_i(CONTROLLER_priviledge_mode_bypassing),
         .satp_i(CONTROLLER_satp_bypassing),
-        .tlb_flush(MEM_tlb_flush),
+        .tlb_flush(WB_tlb_flush),
         .fence_i(WB_fence_i),
         
         .pc_addr(IF_pc_addr),
@@ -1140,12 +1140,14 @@ module thinpad_top #(
         .wb_data_i(MEM_wb_data),
         .drain_pipeline_i(MEM_drain_pipeline),
         .fence_i_i(MEM_fence_i),
+        .tlb_flush_i(MEM_tlb_flush),
 
         .wb_en_o(RF_wen),
         .wb_addr_o(RF_waddr),
         .wb_data_o(RF_wdata),
         .drain_pipeline_o(WB_drain_pipeline),
-        .fence_i_o(WB_fence_i)
+        .fence_i_o(WB_fence_i),
+        .tlb_flush_o(WB_tlb_flush)
     );
 
 

@@ -7,9 +7,9 @@
 
 #define MAX_RST_TIME ((vluint64_t)(100'000))
 
-#define RECORD_START ((vluint64_t)(299'950'000'000'000))
-#define RECORD_END ((vluint64_t)(300'000'000'000'000))
-#define MAX_SIM_TIME ((vluint64_t)(5'000'000'000'000))
+#define RECORD_START ((vluint64_t)(10'000'000'000))
+#define RECORD_END ((vluint64_t)(10'000'000'000))
+#define MAX_SIM_TIME ((vluint64_t)(15'000'000'000'000))
 #define START_SENDING_TIME ((vluint64_t)(2'000'000'000'000))
 #define INTERVAL ((vluint64_t)(12'500))
 vluint64_t sim_time = 0;
@@ -22,7 +22,7 @@ int main(int argc, char** argv, char** env) {
     dut->trace(m_trace, 5);
     m_trace->open("waveform.vcd");
 
-    char dat_to_send[100] = "matrix\n"; int pos = 0;
+    char dat_to_send[100] = "ls\nls\nforktest\n"; int pos = 0;
     bool send_flag = 0;
 
     while (sim_time < MAX_SIM_TIME) {

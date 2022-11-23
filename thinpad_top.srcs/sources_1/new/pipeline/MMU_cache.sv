@@ -218,7 +218,7 @@ module MMU_cache #(
  
         else begin
 
-            if (fence_i) begin
+            if (fence_i & ~cache_ack_fence_i) begin
                 if (~fence_i_wb) begin
                     // Reset cache table
                     for (integer i = 0; i < CACHE_SIZE; i = i + 1) begin

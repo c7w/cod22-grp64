@@ -107,7 +107,7 @@ module MEM_MMU #(
         .query_sign_ext(dm_sign_ext),
         .tlb_flush(tlb_flush),
 
-        .fence_i(fence_i),
+        .fence_i(fence_i | tlb_flush),
         .fence_i_wb(1'b1),
 
         .query_ack(mmu_ack),
