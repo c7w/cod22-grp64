@@ -138,9 +138,13 @@ module CONTROLLER_csrs #(
             end
 
             if (mip_wen) begin
-                mip_reg <= {mip_i[31:8], time_interrupt, mip_i[6:0]};
+                mip_reg <= mip_i;
             end else begin
-                mip_reg <= {mip_reg[31:8], time_interrupt, mip_reg[6:0]};
+                if (time_interrupt) begin
+                    mip_reg <= {mip_reg[31:8], time_interrupt, mip_reg[6:0]};
+                end else begin
+                    mip_reg <= {mip_reg[31:8], 1'b0, mip_reg[6:0]};
+                end
             end
 
             if (mtval_wen) begin

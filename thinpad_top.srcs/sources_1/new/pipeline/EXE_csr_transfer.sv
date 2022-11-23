@@ -483,8 +483,12 @@ module EXE_csr_transfer #(
 
             if (state == STATE_SEQ || state == STATE_BLOCK) begin
 
+                if (state == STATE_BLOCK && drained) begin
+                    state <= STATE_CATCH;
+                end
+
                 // DM exception
-                if (dm_exception & dm_ack & EXCEPTION_DM < exception_stage_reg) begin
+                else if (dm_exception & dm_ack & EXCEPTION_DM < exception_stage_reg) begin
                     exception_stage_reg <= EXCEPTION_DM;
                     state <= STATE_BLOCK;
 
@@ -644,76 +648,66 @@ module EXE_csr_transfer #(
 
                 end
 
-
-                else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0) begin
-
-                    // This interrupt cannot be delegated
-                    if ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie)) begin
-
-                        exception_stage_reg <= INTERRUPT_TIMER;
-                        state <= STATE_BLOCK;
-
-                        /* Start: Raise an exception to M Level */
-                        mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
-                        pc_nxt_exception <= mtvec_i;
-                        mcause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; mcause_wen_catch <= 1;
-                        mtval_o_catch <= mtval_i; mtval_wen_catch <= 1;
-                        mstatus_o_catch <= {
-                            mstatus_i[31:13],
-                            priviledge_mode_i, // mpp
-                            mstatus_i.trash_1,
-                            mstatus_i.spp,
-                            mstatus_i.mie,  // mpie <= mie
-                            mstatus_i.trash_2,
-                            mstatus_i.spie, mstatus_i.upie, 1'b0, // mie
-                            mstatus_i.trash_3, mstatus_i.sie, mstatus_i.uie
-                        }; mstatus_wen_catch <= 1;
-
-                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_M; priviledge_mode_wen_catch <= 1;
-                        /* End: Raise an exception to M Level */
-
-                    end
-
-                end
-
-                else if (mip_i.stip & mie_i.stie) begin
+                else if (mip_i.stip && mie_i.stie && state == STATE_SEQ && EXE_pc_addr != 0 &&  (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie))) begin
 
                     // Forwarded exception
-                    if (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie)) begin
+                    exception_stage_reg <= INTERRUPT_TIMER;
+                    state <= STATE_BLOCK;
 
-                        exception_stage_reg <= INTERRUPT_TIMER;
-                        state <= STATE_BLOCK;
+                    /* Start: Raise an exception to S Level */
+                    sepc_o_catch <= EXE_pc_addr; sepc_wen_catch <= 1;
+                    pc_nxt_exception <= stvec_i;
+                    scause_o_catch <= {1'b1, `INTERRUPT_SUPERVISOR_TIMER}; scause_wen_catch <= 1;
+                    stval_o_catch <= stval_i; stval_wen_catch <= 1;
+                    mstatus_o_catch <= {
+                        mstatus_i[31:13],
+                        mstatus_i.mpp,
+                        mstatus_i.trash_1,
+                        priviledge_mode_i[0],  // spp <= priv level
+                        mstatus_i.mpie, 
+                        mstatus_i.trash_2,
+                        mstatus_i.sie, // spie <= sie
+                        mstatus_i.upie, 
+                        mstatus_i.mie,
+                        mstatus_i.trash_3, 
+                        1'b0,  // sie 
+                        mstatus_i.uie
+                    }; mstatus_wen_catch <= 1;
 
-                        /* Start: Raise an exception to S Level */
-                        sepc_o_catch <= ID_pc_addr; sepc_wen_catch <= 1;
-                        pc_nxt_exception <= stvec_i;
-                        scause_o_catch <= {1'b1, `INTERRUPT_SUPERVISOR_TIMER}; scause_wen_catch <= 1;
-                        stval_o_catch <= stval_i; stval_wen_catch <= 1;
-                        mstatus_o_catch <= {
-                            mstatus_i[31:13],
-                            mstatus_i.mpp,
-                            mstatus_i.trash_1,
-                            priviledge_mode_i[0],  // spp <= priv level
-                            mstatus_i.mpie, 
-                            mstatus_i.trash_2,
-                            mstatus_i.sie, // spie <= sie
-                            mstatus_i.upie, 
-                            mstatus_i.mie,
-                            mstatus_i.trash_3, 
-                            1'b0,  // sie 
-                            mstatus_i.uie
-                        }; mstatus_wen_catch <= 1;
+                    priviledge_mode_o_catch <= `PRIVILEDGE_MODE_S; priviledge_mode_wen_catch <= 1;
+                    /* End: Raise an exception to S Level */
 
-                        priviledge_mode_o_catch <= `PRIVILEDGE_MODE_S; priviledge_mode_wen_catch <= 1;
-                        /* End: Raise an exception to S Level */
-
-                    end
                 end
 
-                // criterion to judge if the pipeline has drained
-                else if (state == STATE_BLOCK && drained) begin
-                    state <= STATE_CATCH;
+                else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0 && ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie))) begin
+
+                    // This interrupt cannot be delegated
+
+                    exception_stage_reg <= INTERRUPT_TIMER;
+                    state <= STATE_BLOCK;
+
+                    /* Start: Raise an exception to M Level */
+                    mepc_o_catch <= EXE_pc_addr; mepc_wen_catch <= 1;
+                    pc_nxt_exception <= mtvec_i;
+                    mcause_o_catch <= {1'b1, `INTERRUPT_MACHINE_TIMER}; mcause_wen_catch <= 1;
+                    mtval_o_catch <= mtval_i; mtval_wen_catch <= 1;
+                    mstatus_o_catch <= {
+                        mstatus_i[31:13],
+                        priviledge_mode_i, // mpp
+                        mstatus_i.trash_1,
+                        mstatus_i.spp,
+                        mstatus_i.mie,  // mpie <= mie
+                        mstatus_i.trash_2,
+                        mstatus_i.spie, mstatus_i.upie, 1'b0, // mie
+                        mstatus_i.trash_3, mstatus_i.sie, mstatus_i.uie
+                    }; mstatus_wen_catch <= 1;
+
+                    priviledge_mode_o_catch <= `PRIVILEDGE_MODE_M; priviledge_mode_wen_catch <= 1;
+                    /* End: Raise an exception to M Level */
+
                 end
+
+
 
             end else begin
                 // reset
