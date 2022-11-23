@@ -648,7 +648,7 @@ module EXE_csr_transfer #(
 
                 end
 
-                else if (mip_i.stip && mie_i.stie && state == STATE_SEQ && EXE_pc_addr != 0 &&  (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie))) begin
+                else if (mip_i.stip && mie_i.stie && state == STATE_SEQ && EXE_pc_addr != 0 &&  (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie)) && ~(0 <= csr_opcode && csr_opcode < 6) ) begin
 
                     // Forwarded exception
                     exception_stage_reg <= INTERRUPT_TIMER;
@@ -679,7 +679,7 @@ module EXE_csr_transfer #(
 
                 end
 
-                else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0 && ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie))) begin
+                else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0 && ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie)) && ~(0 <= csr_opcode && csr_opcode < 6) ) begin
 
                     // This interrupt cannot be delegated
 

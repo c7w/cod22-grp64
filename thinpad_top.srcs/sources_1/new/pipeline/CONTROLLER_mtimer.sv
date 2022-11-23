@@ -1,4 +1,8 @@
 `define INC_INTERVAL 64'd4
+// 4 is right
+// 8 is stable
+// todo: maybe 16 for debugging?
+
 
 module CONTROLLER_mtimer (
     input wire clk,

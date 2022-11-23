@@ -14,7 +14,8 @@ verilator -Wno-SYMRSVDWORD -Wno-CASEINCOMPLETE -Wno-UNSIGNED -Wno-TIMESCALEMOD \
         -cc thinpad_top.srcs/sources_1/new/async.v \
         --exe obj_dir/testbench.cpp \
         --top-module full_model \
-        --trace
+        --trace \
+        -O3 --x-assign fast --x-initial fast --noassert
           
 make -C obj_dir -f Vfull_model.mk Vfull_model
 
