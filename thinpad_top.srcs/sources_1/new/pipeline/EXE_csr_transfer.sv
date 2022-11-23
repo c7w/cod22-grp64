@@ -356,7 +356,7 @@ module EXE_csr_transfer #(
         stvec_wen_normal = 0;
         sscratch_wen_normal = 0;
 
-        if (0 <= csr_opcode && csr_opcode < 6) begin
+        if (0 <= csr_opcode && csr_opcode < 6 && dm_ack && (~dm_exception)) begin
             case (csr_opcode) 
                 CSR_OP_CSRRW: calc_result = x_rs1;
                 CSR_OP_CSRRS: calc_result = csr_data | x_rs1;

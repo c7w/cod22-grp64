@@ -9,7 +9,7 @@
 
 #define RECORD_START ((vluint64_t)(299'950'000'000'000))
 #define RECORD_END ((vluint64_t)(300'000'000'000'000))
-#define MAX_SIM_TIME ((vluint64_t)(300'000'000'000'000))
+#define MAX_SIM_TIME ((vluint64_t)(5'000'000'000'000))
 #define START_SENDING_TIME ((vluint64_t)(2'000'000'000'000))
 #define INTERVAL ((vluint64_t)(12'500))
 vluint64_t sim_time = 0;
