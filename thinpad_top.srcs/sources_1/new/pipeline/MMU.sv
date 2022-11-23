@@ -84,8 +84,12 @@ module MMU #(
             device = DEVICE_MTIMER;
         end
 
+        else if (32'h8100_0000 <= virt_addr && virt_addr <= 32'h8100_1FFF) begin
+            device = DEVICE_VGA;
+        end
+
         else begin
-            // ? for VGA and Flash
+            // ? for Flash
         end
     end
 
@@ -141,7 +145,7 @@ module MMU #(
             query_ack = 1'b1;
             query_data_o = mtimer_rdata;
 
-        end else if (device == DEVICE_UART) begin
+        end else if (device == DEVICE_UART || device == DEVICE_VGA) begin
 
             query_ack = query_ack_uart;
             query_data_o = query_data_o_uart;
