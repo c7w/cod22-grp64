@@ -1,4 +1,4 @@
-`define INC_INTERVAL 64'd16
+`define INC_INTERVAL 64'd8
 
 module CONTROLLER_mtimer (
     input wire clk,
