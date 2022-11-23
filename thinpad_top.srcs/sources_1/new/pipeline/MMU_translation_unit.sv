@@ -79,7 +79,7 @@ module MMU_translation_unit #(
 
         else begin
 
-            if (translation_en) begin
+            // if (translation_en) begin
 
                 case (state) 
                     STATE_IDLE: begin
@@ -138,12 +138,12 @@ module MMU_translation_unit #(
 
                 endcase
 
-            end else begin
-                state <= STATE_IDLE;
-                wb_stb_o <= 0;
-                translation_ack <= 0;
-                translation_result <= 0;
-            end
+            // end else begin
+            //     state <= STATE_IDLE;
+            //     wb_stb_o <= 0;
+            //     translation_ack <= 0;
+            //     translation_result <= 0;
+            // end
 
         end
     end
