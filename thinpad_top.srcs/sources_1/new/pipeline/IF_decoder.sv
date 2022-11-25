@@ -400,6 +400,7 @@ module IF_decoder #(
                 endcase
                 imm = 0; imm_en = 0;
                 wb_en = 1; dm_en = 0; dm_wen = 0;
+                drain_pipeline = 1;
             end
 
             OP_CSRRWI, OP_CSRRSI, OP_CSRRCI: begin
@@ -410,6 +411,7 @@ module IF_decoder #(
                 endcase
                 imm = {27'b0, instr[19:15]}; imm_en = 1;
                 wb_en = 1; dm_en = 0; dm_wen = 0;
+                drain_pipeline = 1;
             end
 
             OP_ECALL, OP_EBREAK, OP_SRET, OP_MRET: begin
@@ -421,6 +423,7 @@ module IF_decoder #(
                 endcase
                 imm = 0; imm_en = 0;
                 wb_en = 0; dm_en = 0; dm_wen = 0;
+                drain_pipeline = 1;
             end
 
             // OP_URET

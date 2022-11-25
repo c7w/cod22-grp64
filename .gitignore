@@ -15,3 +15,5 @@ obj_dir/*
 waveform.fst
 waveform.vcd
 sim.out
+
+*.img

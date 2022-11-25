@@ -5,13 +5,13 @@
 #include "Vfull_model.h"
 #include "Vfull_model___024unit.h"
 
-#define MAX_RST_TIME ((vluint64_t)(100'000))
+#define MAX_RST_TIME ((vluint64_t)(200'000))
 
 #define RECORD_START ((vluint64_t)(8'050'000'000'000))
 #define RECORD_END ((vluint64_t)(8'000'000'000'000))
 #define MAX_SIM_TIME ((vluint64_t)(20'000'000'000'000))
-#define START_SENDING_TIME ((vluint64_t)(2'000'000'000'000))
-#define INTERVAL ((vluint64_t)(12'500))
+#define START_SENDING_TIME ((vluint64_t)(4'000'000'000'000))
+#define INTERVAL ((vluint64_t)(25'000))
 vluint64_t sim_time = 0;
 
 int main(int argc, char** argv, char** env) {

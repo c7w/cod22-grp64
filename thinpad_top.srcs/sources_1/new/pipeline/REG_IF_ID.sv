@@ -186,6 +186,8 @@ module REG_IF_ID #(
 
                     query_exception_o <= query_exception_i;
                     query_exception_code_o <= query_exception_code_i;
+                    query_exception_val_o <= query_exception_val_i;
+                    
                     illegal_instruction_o <= illegal_instruction_i;
                     instr_o <= instr_i;
                     
