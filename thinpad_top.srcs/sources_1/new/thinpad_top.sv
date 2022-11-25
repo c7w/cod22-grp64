@@ -300,6 +300,8 @@ module thinpad_top #(
 
     logic CONTROLLER_interrupt_timer;
 
+    logic [1:0] CONTROLLER_exception;
+
     CONTROLLER_csrs controller_csrs (
         .clk (sys_clk),
         .rst (sys_rst),
@@ -424,7 +426,9 @@ module thinpad_top #(
         .branching(CONTROLLER_branching),
         .pc_addr_right(CONTROLLER_branching_addr),
         .stall_o(CONTROLLER_stall),
-        .bubble_o(CONTROLLER_bubble)
+        .bubble_o(CONTROLLER_bubble),
+
+        .CONTROLLER_exception(CONTROLLER_exception)
     );
 
     // IF
@@ -915,7 +919,9 @@ module thinpad_top #(
         .dm_exception_val(MEM_query_exception_val),
 
         .state_o(CONTROLLER_csr_transfer_state),
-        .pc_nxt_exception(pc_nxt_exception)
+        .pc_nxt_exception(pc_nxt_exception),
+
+        .exception_controller(CONTROLLER_exception)
     );
 
     logic [DATA_WIDTH-1:0] alu_a, alu_b, alu_o;

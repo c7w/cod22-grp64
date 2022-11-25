@@ -28,6 +28,8 @@ module CONTROLLER_pipeline #(
     input wire [ADDR_WIDTH-1:0] ID_pc_addr, // ID_pc_addr
     input wire [ADDR_WIDTH-1:0] IF_pc_addr, // ID_pc_addr
 
+    input wire [1:0] CONTROLLER_exception,
+
     input wire IF_drain_pipeline,
     input wire ID_drain_pipeline,
     input wire EXE_drain_pipeline,
@@ -81,17 +83,27 @@ module CONTROLLER_pipeline #(
         stall_o = 4'b0000;
         bubble_o = 4'b0000;
 
-        if (dm_ack & dm_exception) begin
-            stall_o = 4'b1000;
-            bubble_o = 4'b1111;
-
-        end 
-        
-        else if (CONTROLLER_csr_transfer_state == 1) begin
-            // Drain the whole pipeline
+        if (CONTROLLER_exception == 2) begin
             stall_o = 4'b1000;
             bubble_o = 4'b1111;
         end
+
+        else if (CONTROLLER_exception == 1) begin
+            stall_o = 4'b1000;
+            bubble_o = 4'b1110;
+        end
+
+        // else if (dm_ack & dm_exception) begin
+        //     stall_o = 4'b1000;
+        //     bubble_o = 4'b1111;
+
+        // end 
+        
+        // else if (CONTROLLER_csr_transfer_state == 1) begin
+        //     // Drain the whole pipeline
+        //     stall_o = 4'b1000;
+        //     bubble_o = 4'b1111;
+        // end
 
         else if (stall_DM) begin
             stall_o = 4'b1111;

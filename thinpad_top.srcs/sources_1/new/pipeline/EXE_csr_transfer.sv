@@ -70,6 +70,8 @@ module EXE_csr_transfer #(
     output logic stvec_wen,
     output logic sscratch_wen,
 
+    output logic [1:0] exception_controller,
+
 
     input wire [ADDR_WIDTH-1:0] IF_pc_addr,
     input wire [ADDR_WIDTH-1:0] ID_pc_addr,
@@ -780,6 +782,35 @@ module EXE_csr_transfer #(
         end 
     end
 
+
+    always_comb begin
+        exception_controller = 0;
+
+        if (state == STATE_BLOCK) begin
+            exception_controller = 1;
+        end
+
+        else if (dm_exception & dm_ack & EXCEPTION_DM < exception_stage_reg) begin
+            exception_controller = 2;
+        end
+
+        else if ((csr_opcode == `CSR_OP_ECALL | csr_opcode == `CSR_OP_EBREAK | exe_exception) && EXCEPTION_EXE < exception_stage_reg) begin
+            exception_controller = 1;
+        end
+
+        else if ((csr_opcode == `CSR_OP_URET || csr_opcode == `CSR_OP_SRET || csr_opcode == `CSR_OP_MRET) && EXCEPTION_EXE < exception_stage_reg) begin
+            exception_controller = 1;
+        end
+
+        else if (mip_i.stip && mie_i.stie && state == STATE_SEQ && EXE_pc_addr != 0 &&  (priviledge_mode_i < `PRIVILEDGE_MODE_S || (priviledge_mode_i == `PRIVILEDGE_MODE_S && mstatus_i.sie)) && ~(0 <= csr_opcode && csr_opcode < 6) ) begin
+            exception_controller = 1;
+        end
+
+        else if (mip_i.mtip && mie_i.mtie && state == STATE_SEQ && EXE_pc_addr != 0 && ( priviledge_mode_i < `PRIVILEDGE_MODE_M || (priviledge_mode_i == `PRIVILEDGE_MODE_M && mstatus_i.mie)) && ~(0 <= csr_opcode && csr_opcode < 6) ) begin
+            exception_controller = 1;
+        end
+
+    end
 
 
 endmodule

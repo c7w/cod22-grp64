@@ -62,12 +62,14 @@ module fake_uart_controller #(
                     REG_DATA: begin
                         if (wb_sel_i[0]) begin
                             
-                            $write("[%0t]: fake uart received 0x%02x", $time, wb_dat_i[7:0]);
+                            // $write("[%0t]: fake uart received 0x%02x", $time, wb_dat_i[7:0]);
                             
-                            if (wb_dat_i[7:0] >= 8'h21 && wb_dat_i[7:0] <= 8'h7E)
-                                $write(", ASCII: %c\n", wb_dat_i[7:0]);
-                            else
-                                $write("\n");
+                            // if (wb_dat_i[7:0] >= 8'h21 && wb_dat_i[7:0] <= 8'h7E)
+                            //     $write(", ASCII: %c\n", wb_dat_i[7:0]);
+                            // else
+                            //     $write("\n");
+
+                            $write("%c", wb_dat_i[7:0]);
 
                             lock_write <= 1;
                             

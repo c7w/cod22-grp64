@@ -17,3 +17,4 @@ waveform.vcd
 sim.out
 
 *.img
+test.S
