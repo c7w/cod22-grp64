@@ -83,11 +83,7 @@ module thinpad_top #(
     output wire       video_hsync,  // 行同步（水平同步）信�?????????
     output wire       video_vsync,  // 场同步（垂直同步）信�?????????
     output wire       video_clk,    // 像素时钟输出
-    output wire       video_de,      // 行数据有效信号，用于区分消隐�?????????
-
-    // Debugging
-    input wire data_valid,
-    input wire [7:0] dat_to_send
+    output wire       video_de      // 行数据有效信号，用于区分消隐�?????????
 );
 
   /* =========== Demo code begin =========== */
@@ -104,7 +100,6 @@ module thinpad_top #(
         .clk_out2(clk_20M),  // 时钟输出 2，频率在 IP 配置界面中设�?????????
         .clk_out3(clk_30M),
         .clk_out4(clk_40M),
-        .clk_out5(clk_48M),
         // Status and control signals
         .reset(reset_btn),  // PLL 复位输入
         .locked(locked)  // PLL 锁定指示输出�?????????"1"表示时钟稳定�?????????
@@ -1235,9 +1230,18 @@ module thinpad_top #(
     logic [3:0] wbs2_sel_o;
     logic wbs2_we_o;
 
+    logic wbs3_cyc_o;
+    logic wbs3_stb_o;
+    logic wbs3_ack_i;
+    logic [31:0] wbs3_adr_o;
+    logic [31:0] wbs3_dat_o;
+    logic [31:0] wbs3_dat_i;
+    logic [3:0] wbs3_sel_o;
+    logic wbs3_we_o;
+
 
     // Wishbone multiplexer
-    wb_mux_3 wb_mux (
+    wb_mux_4 wb_mux (
         .clk(sys_clk),
         .rst(sys_rst),
 
@@ -1299,7 +1303,24 @@ module thinpad_top #(
         .wbs2_ack_i(wbs2_ack_i),
         .wbs2_err_i('0),
         .wbs2_rty_i('0),
-        .wbs2_cyc_o(wbs2_cyc_o)
+        .wbs2_cyc_o(wbs2_cyc_o),
+        
+        // Slave interface 3 (to VGA controller)
+        // Address range: 0x8100_0000 ~ 0x8100_1FFF
+        // 100 * 75 pixels * 8 bit color depth
+        .wbs3_addr    (32'h8100_0000),
+        .wbs3_addr_msk(32'hFFFF_E000),
+
+        .wbs3_adr_o(wbs3_adr_o),
+        .wbs3_dat_i(wbs3_dat_i),
+        .wbs3_dat_o(wbs3_dat_o),
+        .wbs3_we_o (wbs3_we_o),
+        .wbs3_sel_o(wbs3_sel_o),
+        .wbs3_stb_o(wbs3_stb_o),
+        .wbs3_ack_i(wbs3_ack_i),
+        .wbs3_err_i('0),
+        .wbs3_rty_i('0),
+        .wbs3_cyc_o(wbs3_cyc_o)
     );
 
     // Slaves
@@ -1431,5 +1452,27 @@ module thinpad_top #(
         .uart_rxd_i(rxd)
     );
     assign sys_clk = clk_20M;
+
+    vga vga (
+        .clk_i        (sys_clk),
+        .clk_50M      (clk_50M),
+        .rst_i        (reset_of_clk10M),
+        .wb_cyc_i     (wbs3_cyc_o),
+        .wb_stb_i     (wbs3_stb_o),
+        .wb_ack_o     (wbs3_ack_i),
+        .wb_adr_i     (wbs3_adr_o),
+        .wb_dat_i     (wbs3_dat_o),
+        // .wb_dat_o     (wbs3_dat_i),
+        .wb_sel_i     (wbs3_sel_o),
+        .wb_we_i      (wbs3_we_o),
+        .video_red_o  (video_red),
+        .video_green_o(video_green),
+        .video_blue_o (video_blue),
+        .video_hsync_o(video_hsync),
+        .video_vsync_o(video_vsync),
+        .video_de_o   (video_de)
+    );
+    assign wbs3_dat_i = 32'bz;
+    assign video_clk = clk_50M;
 
 endmodule
