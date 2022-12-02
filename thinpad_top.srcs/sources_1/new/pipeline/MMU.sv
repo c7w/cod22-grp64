@@ -381,7 +381,8 @@ module MMU #(
     typedef enum logic[3:0] {
         STATE_IDLE,
         STATE_READ_UART,
-        STATE_WRITE_UART
+        STATE_WRITE_UART,
+        STATE_WRITE_VGA
     } state_t;
     state_t state, state_nxt;
 
@@ -396,6 +397,10 @@ module MMU #(
 
             else if (device == DEVICE_UART & query_en & ~query_wen) begin
                 state_nxt = STATE_READ_UART;
+            end
+
+            else if (device == DEVICE_VGA && query_en && query_wen) begin
+                state_nxt = STATE_WRITE_VGA;
             end
         end
 
@@ -414,6 +419,15 @@ module MMU #(
             end
             else begin
                 state_nxt = STATE_WRITE_UART;
+            end
+        end
+
+        else if (state == STATE_WRITE_VGA) begin
+            if (wb_ack_i) begin
+                state_nxt = STATE_IDLE;
+            end
+            else begin
+                state_nxt = STATE_WRITE_VGA;
             end
         end
     end
@@ -440,6 +454,10 @@ module MMU #(
             if (wb_ack_i) begin
                 query_ack_uart = 1;
             end
+        end else if (state == STATE_WRITE_VGA) begin
+            if (wb_ack_i) begin
+                query_ack_uart = 1;
+            end
         end
     end
 
@@ -462,6 +480,15 @@ module MMU #(
         end
 
         else if (state == STATE_WRITE_UART) begin
+            wbm3_stb_o = 1;
+            wbm3_cyc_o = 1;
+            wbm3_sel_o = 4'b1111;
+            wbm3_we_o = 1'b1;
+            wbm3_dat_o = query_data_i;
+            wbm3_adr_o = virt_addr;
+        end
+
+        else if (state == STATE_WRITE_VGA) begin
             wbm3_stb_o = 1;
             wbm3_cyc_o = 1;
             wbm3_sel_o = 4'b1111;
