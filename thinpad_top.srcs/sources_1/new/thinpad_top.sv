@@ -106,16 +106,18 @@ module thinpad_top #(
                         // 后级电路复位信号应当由它生成（见下）
     );
 
-    logic reset_of_clk10M;
-    // 异步复位，同步释放，�????????? locked 信号转为后级电路的复�????????? reset_of_clk10M
-    always_ff @(posedge clk_10M or negedge locked) begin
-        if (~locked) reset_of_clk10M <= 1'b1;
-        else reset_of_clk10M <= 1'b0;
-    end
 
 
     wire sys_clk, sys_rst;
-    assign sys_rst = reset_btn;
+
+    logic reset_of_sys_clk;
+    always_ff @(posedge sys_clk or negedge locked) begin
+        if (~locked) reset_of_sys_clk <= 1'b1;
+        else reset_of_sys_clk <= 1'b0;
+    end
+
+    assign sys_rst = reset_of_sys_clk;
+
 
     assign uart_rdn = 1'b1;
     assign uart_wrn = 1'b1;
@@ -1483,7 +1485,7 @@ module thinpad_top #(
     vga vga (
         .clk_i        (sys_clk),
         .clk_50M      (clk_50M),
-        .rst_i        (reset_of_clk10M),
+        .rst_i        (reset_of_sys_clk),
         .wb_cyc_i     (wbs3_cyc_o),
         .wb_stb_i     (wbs3_stb_o),
         .wb_ack_o     (wbs3_ack_i),
