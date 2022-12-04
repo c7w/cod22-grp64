@@ -1480,7 +1480,7 @@ module thinpad_top #(
         .uart_txd_o(txd),
         .uart_rxd_i(rxd)
     );
-    assign sys_clk = clk_20M;
+    assign sys_clk = clk_30M;
 
     vga vga (
         .clk_i        (sys_clk),
