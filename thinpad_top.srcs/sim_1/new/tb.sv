@@ -51,12 +51,13 @@ module tb;
   wire uart_tbre;  // �������ݱ�־
   wire uart_tsre;  // ���ݷ�����ϱ�־
 
-  // Windows ��Ҫע��·���ָ�����ת�壬���� "D:\\foo\\bar.bin"
-  // parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\test_program.bin"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
-  parameter BASE_RAM_INIT_FILE = "D:\\Project\\rv-2022\\asmcode\\rbl.img"; // BaseRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
-  // D:\Project\rv-2022\supervisor-rv\kernel
-  parameter EXT_RAM_INIT_FILE = "D:\\Project\\ucore_os_lab\\labcodes_answer\\lab8\\bin\\ucore.img";  // ExtRAM ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
-  parameter FLASH_INIT_FILE = "/tmp/kernel.elf";  // Flash ��ʼ���ļ������޸�Ϊʵ�ʵľ���·��
+/* config of lambda */
+  // parameter BASE_RAM_INIT_FILE = "D:\\ComputerOrganization\\rv-2022\\asmcode\\load.bin"; 
+  // parameter EXT_RAM_INIT_FILE = "D:\\ComputerOrganization\\rv-2022\\asmcode\\sum.bin"; 
+  parameter FLASH_INIT_FILE = "D:\\ComputerOrganization\\rv-2022\\asmcode\\words.bin"; 
+  parameter BASE_RAM_INIT_FILE = "D:\\ComputerOrganization\\rv-2022\\asmcode\\read.bin"; 
+  parameter EXT_RAM_INIT_FILE = "D:\\ComputerOrganization\\ucore.img"; 
+
 
   initial begin
     // ����������Զ�������������У����磺
