@@ -119,7 +119,7 @@ wire wbs1_match = ~|((wbm_adr_i ^ wbs1_addr) & wbs1_addr_msk);
 wire wbs2_match = ~|((wbm_adr_i ^ wbs2_addr) & wbs2_addr_msk);
 
 // Changed: default goto wbs0
-wire wbs0_sel = wbs0_match | (~wbs0_match & ~wbs1_match & ~wbs2_match);
+wire wbs0_sel = wbs0_match;
 wire wbs1_sel = wbs1_match & ~(wbs0_match);
 wire wbs2_sel = wbs2_match & ~(wbs0_match | wbs1_match);
 

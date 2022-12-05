@@ -159,6 +159,7 @@ module MMU #(
 
     // inner wires
     logic translation_ack;
+    logic translation_error;
     pte_t translation_result;
 
     logic [DATA_WIDTH-1:0] satp_o;
@@ -234,6 +235,7 @@ module MMU #(
 
         // Translation Unit -> TLB
         .translation_ack(translation_ack),
+        .translation_error(translation_error),
         .translation_result(translation_result),
 
         // TLB -> Translation Unit
@@ -264,6 +266,7 @@ module MMU #(
 
         // Translation Unit -> TLB.
         .translation_ack(translation_ack),
+        .translation_error(translation_error),
         .translation_result(translation_result),
 
         // TLB -> Translation Unit
@@ -327,7 +330,9 @@ module MMU #(
 
         // Wishbone Master -> Cache
         .wb_ack_i(wbm0_ack_i),
-        .wb_dat_i(wbm0_dat_i)
+        .wb_dat_i(wbm0_dat_i),
+
+        .master_owner(fence_i ? 1'b0 : master_owner_tlb)
     );
 
     MMU_master mmu_master (

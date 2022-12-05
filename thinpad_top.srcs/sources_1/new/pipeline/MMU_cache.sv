@@ -40,7 +40,9 @@ module MMU_cache #(
 
     // Wishbone Master -> Cache
     input wire wb_ack_i,
-    input wire [DATA_WIDTH-1:0] wb_dat_i
+    input wire [DATA_WIDTH-1:0] wb_dat_i,
+
+    input wire master_owner
 );
 
     // Buffer
@@ -273,7 +275,18 @@ module MMU_cache #(
 
                 cache_ack_fence_i <= 0;
 
-                if (state == STATE_IDLE) begin
+                if (master_owner) begin
+                    state <= STATE_IDLE;
+                    wb_stb_o <= 0;
+                    wb_adr_o <= 0;
+                    wb_dat_o <= 0;
+                    wb_we_o <= 0;
+
+                    cache_ack_fence_i <= 0;
+                    fence_i_stage <= 0;
+                end
+
+                else if (state == STATE_IDLE) begin
                     if (cache_en) begin
 
                         if (cache_hit && cache_wen) begin

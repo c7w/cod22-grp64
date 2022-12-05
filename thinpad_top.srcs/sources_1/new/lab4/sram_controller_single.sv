@@ -60,9 +60,16 @@ module sram_controller_single #(
     logic wb_we_i_cache;
 
     always_comb begin
-        if (state == STATE_READ_2 || state == STATE_WRITE_3) begin
+
+        if (wb_adr_i_cache != wb_adr_i) begin
+            wb_ack_o = 0;
+        end
+        
+        else if (state == STATE_READ_2 || state == STATE_WRITE_3) begin
             wb_ack_o = 1;
-        end else begin
+        end 
+        
+        else begin
             wb_ack_o = 0;
         end
     end
