@@ -1,4 +1,4 @@
-`define INC_INTERVAL 64'd4
+`define INC_INTERVAL 64'd5
 // 4 is right
 // 8 is stable
 // todo: maybe 16 for debugging?
