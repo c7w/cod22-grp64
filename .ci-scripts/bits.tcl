@@ -20,6 +20,8 @@ if { [llength [get_ips]] != 0} {
 
 }
 
+set_property strategy Flow_RunPostRoutePhysOpt [get_runs impl_1]
+
 reset_run impl_1
 reset_run synth_1
 launch_runs -jobs 2 impl_1 -to_step write_bitstream
