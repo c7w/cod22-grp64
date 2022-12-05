@@ -58,7 +58,6 @@ module vga #(
     reg [14:0] addr;
     reg [31:0] dout;
     reg [7:0]  color;
-    reg ack;
 
     always_ff @ (posedge clk_50M) begin
         if (rst_i) begin
@@ -70,11 +69,26 @@ module vga #(
         end
     end
 
+    typedef enum logic {
+        STATE_IDLE,
+        STATE_WRITE
+    } state_t;
+    state_t state, next_state;
+
+    always_comb begin
+        next_state = STATE_IDLE;
+        if (state == STATE_IDLE && wb_stb_i) begin
+            next_state = STATE_WRITE;
+        end else if (state == STATE_WRITE && wb_adr_i[14:0] == addr) begin
+            next_state = STATE_WRITE;
+        end
+    end
+
     always_ff @ (posedge clk_i) begin
         if (rst_i) begin
-            ack <= 0;
+            state <= STATE_IDLE;
         end else begin
-            ack <= wb_stb_i && (wb_adr_i[14:0] != addr);
+            state <= next_state;
         end
     end
 
@@ -110,7 +124,7 @@ module vga #(
         .clka(clk_i),
         .clkb(clk_50M),
         .dina(wb_dat_i),
-        .ena(wb_stb_i && wb_we_i && (wb_adr_i[14:2] != addr[14:2])),
+        .ena(state == STATE_WRITE && next_state == STATE_IDLE),
         .enb(1'b1),
         .rsta(rst_i),
         .rstb(rst_i),
@@ -133,6 +147,6 @@ module vga #(
     assign video_red_o   = color[COLOR_DEPTH-1-:RED_DEPTH];
     assign video_green_o = color[COLOR_DEPTH-RED_DEPTH-1-:GREEN_DEPTH];
     assign video_blue_o  = color[BLUE_DEPTH-1:0];
-    assign wb_ack_o      = ack;
+    assign wb_ack_o      = state == STATE_WRITE && next_state == STATE_IDLE;
 
 endmodule
