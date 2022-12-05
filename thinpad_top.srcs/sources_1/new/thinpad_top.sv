@@ -1411,7 +1411,7 @@ module thinpad_top #(
     );
 
     uart_controller #(
-        .CLK_FREQ(50_000_000),
+        .CLK_FREQ(30_000_000),
         .BAUD    (115200)
     ) uart_controller (
         .clk_i(sys_clk),
@@ -1430,6 +1430,6 @@ module thinpad_top #(
         .uart_txd_o(txd),
         .uart_rxd_i(rxd)
     );
-    assign sys_clk = clk_50M;
+    assign sys_clk = clk_30M;
 
 endmodule
