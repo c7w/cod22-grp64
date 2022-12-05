@@ -88,6 +88,11 @@ module CONTROLLER_pipeline #(
             bubble_o = 4'b1111;
         end
 
+        else if (stall_DM) begin
+            stall_o = 4'b1111;
+            bubble_o = 4'b0001;
+        end
+
         else if (CONTROLLER_exception == 1) begin
             stall_o = 4'b1000;
             bubble_o = 4'b1110;
@@ -104,11 +109,6 @@ module CONTROLLER_pipeline #(
         //     stall_o = 4'b1000;
         //     bubble_o = 4'b1111;
         // end
-
-        else if (stall_DM) begin
-            stall_o = 4'b1111;
-            bubble_o = 4'b0001;
-        end
 
         else if (branching) begin
             stall_o = 4'b0000;
