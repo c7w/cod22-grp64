@@ -159,11 +159,14 @@ module MMU_cache #(
     logic cache_ack_fence_i;
     logic [7:0] fence_i_stage;
 
+    logic cache_addr_not_valid;
+    assign cache_addr_not_valid = cache_addr < 32'h80000000 || cache_addr >= 32'h80800000;
+
     // Cache -> TLB
     always_comb begin
         cache_ack = 1'b0; data_o = 32'hadadadad;
         
-        if (cache_addr < 32'h80000000 || cache_addr >= 32'h80800000) begin
+        if (cache_addr_not_valid) begin
             cache_ack = 1'b1; data_o = 32'hacacacac;
         end
 
@@ -297,7 +300,7 @@ module MMU_cache #(
                             cache_table[cache_query.phys_tag].data <= dat_to_save;
                             cache_table[cache_query.phys_tag].dirty <= 1'b1;
                         
-                        end else if (~cache_hit) begin
+                        end else if (~cache_hit && ~cache_addr_not_valid) begin
 
                             // Replace cache
                             if (cache_entry.valid && cache_entry.dirty) begin
