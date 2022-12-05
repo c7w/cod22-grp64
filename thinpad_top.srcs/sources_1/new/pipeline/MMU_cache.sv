@@ -163,7 +163,11 @@ module MMU_cache #(
     always_comb begin
         cache_ack = 1'b0; data_o = 32'hadadadad;
         
-        if (fence_i) begin
+        if (cache_addr < 32'h80000000 || cache_addr >= 32'h80800000) begin
+            cache_ack = 1'b1; data_o = 32'hacacacac;
+        end
+
+        else if (fence_i) begin
             if (~fence_i_wb) begin
                 cache_ack = 1'b1;
             end else begin

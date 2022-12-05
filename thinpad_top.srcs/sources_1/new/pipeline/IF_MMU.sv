@@ -128,7 +128,7 @@ module IF_MMU #(
 
                 request_comb <= 1;
                 cnt <= 0;
-
+                
             end
 
             else begin
@@ -154,6 +154,6 @@ module IF_MMU #(
         end
     end
 
-    assign im_ack = (mmu_ack | (cnt >= 20)) & (pc_addr == request_addr);
+    assign im_ack = (mmu_ack) & (pc_addr == request_addr);
 
 endmodule

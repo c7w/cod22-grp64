@@ -1237,73 +1237,73 @@ module thinpad_top #(
 
 
     // Wishbone multiplexer
-    wb_mux_3 wb_mux (
-        .clk(sys_clk),
-        .rst(sys_rst),
+    // wb_mux_3 wb_mux (
+    //     .clk(sys_clk),
+    //     .rst(sys_rst),
 
-        // Master interface (to arbiter)
-        .wbm_adr_i(wbs_adr_o),
-        .wbm_dat_i(wbs_dat_i),
-        .wbm_dat_o(wbs_dat_o),
-        .wbm_we_i (wbs_we_o),
-        .wbm_sel_i(wbs_sel_o),
-        .wbm_stb_i(wbs_stb_o),
-        .wbm_ack_o(wbs_ack_i),
-        .wbm_err_o(),
-        .wbm_rty_o(),
-        .wbm_cyc_i(wbs_cyc_o),
+    //     // Master interface (to arbiter)
+    //     .wbm_adr_i(wbs_adr_o),
+    //     .wbm_dat_i(wbs_dat_i),
+    //     .wbm_dat_o(wbs_dat_o),
+    //     .wbm_we_i (wbs_we_o),
+    //     .wbm_sel_i(wbs_sel_o),
+    //     .wbm_stb_i(wbs_stb_o),
+    //     .wbm_ack_o(wbs_ack_i),
+    //     .wbm_err_o(),
+    //     .wbm_rty_o(),
+    //     .wbm_cyc_i(wbs_cyc_o),
 
-        // Slave interface 0 (to BaseRAM controller)
-        // Address range: 0x8000_0000 ~ 0x803F_FFFF
-        .wbs0_addr    (32'h8000_0000),
-        .wbs0_addr_msk(32'hFFC0_0000),
+    //     // Slave interface 0 (to BaseRAM controller)
+    //     // Address range: 0x8000_0000 ~ 0x803F_FFFF
+    //     .wbs0_addr    (32'h8000_0000),
+    //     .wbs0_addr_msk(32'hFFC0_0000),
 
-        .wbs0_adr_o(wbs0_adr_o),
-        .wbs0_dat_i(wbs0_dat_i),
-        .wbs0_dat_o(wbs0_dat_o),
-        .wbs0_we_o (wbs0_we_o),
-        .wbs0_sel_o(wbs0_sel_o),
-        .wbs0_stb_o(wbs0_stb_o),
-        .wbs0_ack_i(wbs0_ack_i),
-        .wbs0_err_i('0),
-        .wbs0_rty_i('0),
-        .wbs0_cyc_o(wbs0_cyc_o),
+    //     .wbs0_adr_o(wbs0_adr_o),
+    //     .wbs0_dat_i(wbs0_dat_i),
+    //     .wbs0_dat_o(wbs0_dat_o),
+    //     .wbs0_we_o (wbs0_we_o),
+    //     .wbs0_sel_o(wbs0_sel_o),
+    //     .wbs0_stb_o(wbs0_stb_o),
+    //     .wbs0_ack_i(wbs0_ack_i),
+    //     .wbs0_err_i('0),
+    //     .wbs0_rty_i('0),
+    //     .wbs0_cyc_o(wbs0_cyc_o),
 
-        // Slave interface 1 (to ExtRAM controller)
-        // Address range: 0x8040_0000 ~ 0x807F_FFFF
-        .wbs1_addr    (32'h8040_0000),
-        .wbs1_addr_msk(32'hFFC0_0000),
+    //     // Slave interface 1 (to ExtRAM controller)
+    //     // Address range: 0x8040_0000 ~ 0x807F_FFFF
+    //     .wbs1_addr    (32'h8040_0000),
+    //     .wbs1_addr_msk(32'hFFC0_0000),
 
-        .wbs1_adr_o(wbs1_adr_o),
-        .wbs1_dat_i(wbs1_dat_i),
-        .wbs1_dat_o(wbs1_dat_o),
-        .wbs1_we_o (wbs1_we_o),
-        .wbs1_sel_o(wbs1_sel_o),
-        .wbs1_stb_o(wbs1_stb_o),
-        .wbs1_ack_i(wbs1_ack_i),
-        .wbs1_err_i('0),
-        .wbs1_rty_i('0),
-        .wbs1_cyc_o(wbs1_cyc_o),
+    //     .wbs1_adr_o(wbs1_adr_o),
+    //     .wbs1_dat_i(wbs1_dat_i),
+    //     .wbs1_dat_o(wbs1_dat_o),
+    //     .wbs1_we_o (wbs1_we_o),
+    //     .wbs1_sel_o(wbs1_sel_o),
+    //     .wbs1_stb_o(wbs1_stb_o),
+    //     .wbs1_ack_i(wbs1_ack_i),
+    //     .wbs1_err_i('0),
+    //     .wbs1_rty_i('0),
+    //     .wbs1_cyc_o(wbs1_cyc_o),
 
-        // Slave interface 2 (to UART controller)
-        // Address range: 0x1000_0000 ~ 0x1000_FFFF
-        .wbs2_addr    (32'h1000_0000),
-        .wbs2_addr_msk(32'hFFFF_0000),
+    //     // Slave interface 2 (to UART controller)
+    //     // Address range: 0x1000_0000 ~ 0x1000_FFFF
+    //     .wbs2_addr    (32'h1000_0000),
+    //     .wbs2_addr_msk(32'hFFFF_0000),
 
-        .wbs2_adr_o(wbs2_adr_o),
-        .wbs2_dat_i(wbs2_dat_i),
-        .wbs2_dat_o(wbs2_dat_o),
-        .wbs2_we_o (wbs2_we_o),
-        .wbs2_sel_o(wbs2_sel_o),
-        .wbs2_stb_o(wbs2_stb_o),
-        .wbs2_ack_i(wbs2_ack_i),
-        .wbs2_err_i('0),
-        .wbs2_rty_i('0),
-        .wbs2_cyc_o(wbs2_cyc_o)
-    );
+    //     .wbs2_adr_o(wbs2_adr_o),
+    //     .wbs2_dat_i(wbs2_dat_i),
+    //     .wbs2_dat_o(wbs2_dat_o),
+    //     .wbs2_we_o (wbs2_we_o),
+    //     .wbs2_sel_o(wbs2_sel_o),
+    //     .wbs2_stb_o(wbs2_stb_o),
+    //     .wbs2_ack_i(wbs2_ack_i),
+    //     .wbs2_err_i('0),
+    //     .wbs2_rty_i('0),
+    //     .wbs2_cyc_o(wbs2_cyc_o)
+    // );
 
-    // Slaves
-    /* verilator lint_off PINMISSING */
+    // // Slaves
+    // /* verilator lint_off PINMISSING */
     // wb_dp_ram #(
     //     .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/rbl.img")
     //     // .INIT_FILE ("/home/gaoha_bak15/cod22-grp64/rbl.img")
