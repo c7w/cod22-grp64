@@ -1337,7 +1337,7 @@ module thinpad_top #(
         // Slave interface 4 (to Flash controller)
         // Address range: 0x8080_0000 ~ 0x80FF_FFFF
         .wbs4_addr    (32'h8080_0000),
-        .wbs4_addr_msk(32'hFFF8_0000),
+        .wbs4_addr_msk(32'hFF80_0000),
 
         .wbs4_adr_o(wbs4_adr_o),
         .wbs4_dat_i(wbs4_dat_i),
