@@ -88,8 +88,12 @@ module MMU #(
             device = DEVICE_VGA;
         end
 
+        else if (32'h8080_0000 <= virt_addr && virt_addr <= 32'h80FF_FFFF) begin
+            device = DEVICE_FLASH;
+        end
+
         else begin
-            // ? for Flash
+            // ?
         end
     end
 
@@ -153,7 +157,7 @@ module MMU #(
             query_ack = 1'b1;
             query_data_o = mtimer_rdata;
 
-        end else if (device == DEVICE_UART || device == DEVICE_VGA) begin
+        end else if (device == DEVICE_UART || device == DEVICE_VGA || device == DEVICE_FLASH) begin
 
             query_ack = query_ack_uart;
             query_data_o = query_data_o_uart;
@@ -387,7 +391,8 @@ module MMU #(
         STATE_IDLE,
         STATE_READ_UART,
         STATE_WRITE_UART,
-        STATE_WRITE_VGA
+        STATE_WRITE_VGA,
+        STATE_READ_FLASH
     } state_t;
     state_t state, state_nxt;
 
@@ -406,6 +411,10 @@ module MMU #(
 
             else if (device == DEVICE_VGA && query_en && query_wen) begin
                 state_nxt = STATE_WRITE_VGA;
+            end
+
+            else if (device == DEVICE_FLASH && query_en && ~query_wen) begin
+                state_nxt = STATE_READ_FLASH;
             end
         end
 
@@ -435,6 +444,15 @@ module MMU #(
                 state_nxt = STATE_WRITE_VGA;
             end
         end
+
+        else if (state == STATE_READ_FLASH) begin
+            if (wb_ack_i) begin
+                state_nxt = STATE_IDLE;
+            end
+            else begin
+                state_nxt = STATE_READ_FLASH;
+            end
+        end
     end
 
     always_ff @(posedge clk) begin
@@ -462,6 +480,13 @@ module MMU #(
         end else if (state == STATE_WRITE_VGA) begin
             if (wb_ack_i) begin
                 query_ack_uart = 1;
+            end
+        end
+        
+        else if (state == STATE_READ_FLASH) begin
+            if (wb_ack_i) begin
+                query_ack_uart = 1;
+                query_data_o_uart = wb_dat_i;
             end
         end
     end
@@ -499,6 +524,15 @@ module MMU #(
             wbm3_sel_o = 4'b1111;
             wbm3_we_o = 1'b1;
             wbm3_dat_o = query_data_i;
+            wbm3_adr_o = virt_addr;
+        end
+
+        else if (state == STATE_READ_FLASH) begin
+            wbm3_stb_o = 1;
+            wbm3_cyc_o = 1;
+            wbm3_sel_o = 4'b1111;
+            wbm3_we_o = 1'b0;
+            wbm3_dat_o = 32'haeaeaeae;
             wbm3_adr_o = virt_addr;
         end
     end
