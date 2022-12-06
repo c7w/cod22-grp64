@@ -8,6 +8,7 @@ module MMU_translation_unit #(
 
     // Translation Unit -> TLB
     output logic translation_ack,
+    output logic translation_error,
     output pte_t translation_result,
 
     // TLB -> Translation Unit
@@ -56,9 +57,11 @@ module MMU_translation_unit #(
         STATE_IDLE,
         STATE_READ1,
         STATE_READ1_NXT,
-        STATE_READ2
+        STATE_READ2,
+        STATE_ERROR
     } state_t;
-    state_t state, state_nxt;
+    state_t state;
+    assign translation_error = state == STATE_ERROR;
 
     virt_addr_t translation_addr_cache;
 
@@ -81,72 +84,86 @@ module MMU_translation_unit #(
 
             // if (translation_en) begin
 
-                case (state) 
-                    STATE_IDLE: begin
-                        translation_ack <= 0;
-                        if (translation_en) begin
+                if (translation_addr_cache != translation_addr && state != STATE_IDLE) begin
+                    state <= STATE_IDLE;
+                end else begin
 
-                            if (cache_request_valid) begin
+                    case (state) 
+                        STATE_IDLE: begin
+                            translation_ack <= 0;
+                            if (translation_en) begin
 
-                                pte1 <= cache_request_data;
-                                state <= STATE_READ1_NXT;
+                                if (cache_request_valid) begin
+                                    translation_addr_cache <= translation_addr;
+                                    pte1 <= cache_request_data;
+                                    state <= STATE_READ1_NXT;
 
+                                end else begin
+                                    translation_addr_cache <= translation_addr;
+                                    state <= STATE_READ1;
+
+                                    wb_stb_o <= 1;
+                                    wb_adr_o <= pte1_addr;
+                                end
+
+
+                            end
+                        end
+
+                        STATE_READ1: begin
+                            if (translation_en) begin
+                                if (wb_ack_i) begin
+                                    pte1 <= wb_dat_i;
+                                    wb_stb_o <= 0;
+                                    state <= STATE_READ1_NXT;
+                                end
                             end else begin
-                                translation_addr_cache <= translation_addr;
-                                state <= STATE_READ1;
-
-                                wb_stb_o <= 1;
-                                wb_adr_o <= pte1_addr;
-                            end
-
-
-                        end
-                    end
-
-                    STATE_READ1: begin
-                        if (translation_en) begin
-                            if (wb_ack_i) begin
-                                pte1 <= wb_dat_i;
-                                wb_stb_o <= 0;
-                                state <= STATE_READ1_NXT;
-                            end
-                        end else begin
-                            wb_stb_o <= 0;
-                            state <= STATE_IDLE;
-                        end
-                    end
-
-                    STATE_READ1_NXT: begin
-
-                        if (cache_request_valid) begin
-                            translation_result <= cache_request_data;
-                            state <= STATE_IDLE;
-                            translation_ack <= 1;
-                        end else begin
-                            wb_stb_o <= 1;
-                            wb_adr_o <= pte2_addr;
-                            state <= STATE_READ2;
-                        end
-
-
-                    end
-
-                    STATE_READ2: begin
-                        if (translation_en) begin
-                            if (wb_ack_i) begin
-                                translation_result <= wb_dat_i;
-                                translation_ack <= 1;
-
                                 wb_stb_o <= 0;
                                 state <= STATE_IDLE;
                             end
-                        end else begin
-                                wb_stb_o <= 0;
-                                state <= STATE_IDLE;
                         end
-                    end
 
-                endcase
+                        STATE_READ1_NXT: begin
+
+                            // Check if PTE1 valid.
+                            if ((pte1.V == 0) || (pte1.R == 0 && pte1.W == 1)) begin
+                                state <= STATE_ERROR;
+                            end else begin
+                                if (cache_request_valid) begin
+                                    translation_result <= cache_request_data;
+                                    state <= STATE_IDLE;
+                                    translation_ack <= 1;
+                                end else begin
+                                    wb_stb_o <= 1;
+                                    wb_adr_o <= pte2_addr;
+                                    state <= STATE_READ2;
+                                end
+                            end
+
+                        end
+
+                        STATE_READ2: begin
+                            if (translation_en) begin
+                                if (wb_ack_i) begin
+                                    translation_result <= wb_dat_i;
+                                    translation_ack <= 1;
+
+                                    wb_stb_o <= 0;
+                                    state <= STATE_IDLE;
+                                end
+                            end else begin
+                                    wb_stb_o <= 0;
+                                    state <= STATE_IDLE;
+                            end
+                        end
+
+                        STATE_ERROR: begin
+                            state <= STATE_IDLE;
+                        end
+
+                    endcase
+
+                end
 
             // end else begin
             //     state <= STATE_IDLE;

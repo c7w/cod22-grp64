@@ -1355,8 +1355,8 @@ module thinpad_top #(
     // Slaves
     /* verilator lint_off PINMISSING */
     // wb_dp_ram #(
-    //     // .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/rbl.img")
-    //     .INIT_FILE ("/home/gaoha_bak15/cod22-grp64/rbl.img")
+    //     .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/rbl.img")
+    //     // .INIT_FILE ("/home/gaoha_bak15/cod22-grp64/rbl.img")
     // ) sram_controller_base (
     //     .a_clk(sys_clk),
     //     .a_adr_i(wbs0_adr_o),
@@ -1372,8 +1372,8 @@ module thinpad_top #(
     // );
 
     // wb_dp_ram #(
-    //     // .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/ucore.img")
-    //     .INIT_FILE ("/home/gaoha_bak15/cod22-grp64/ucore.img")
+    //     .INIT_FILE ("/home/gaoha_bak15/cod-lab-ucore/labcodes_answer/lab8/bin/ucore.img")
+    //     // .INIT_FILE ("/home/gaoha_bak15/cod22-grp64/ucore.img")
     // ) sram_controller_exe (
     //     .a_clk(sys_clk),
     //     .a_adr_i(wbs1_adr_o),

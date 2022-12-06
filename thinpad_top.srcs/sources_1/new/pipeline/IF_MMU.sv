@@ -103,6 +103,8 @@ module IF_MMU #(
 
     );
 
+    logic [4:0] cnt;
+
     // request addr
     always_comb begin
 
@@ -117,20 +119,37 @@ module IF_MMU #(
     always_ff @(posedge clk) begin
         if (rst) begin
             request_comb <= 1;
+            cnt <= 0;
         end
 
         else begin
 
-            if (mmu_ack) begin
+            if (cnt >= 20) begin
 
                 request_comb <= 1;
-
-            end else begin
-                if (request_comb == 1) begin
-                    request_comb <= 0;
-                    pc_addr_cache <= pc_addr;
-                end
+                cnt <= 0;
+                
             end
+
+            else begin
+
+                if (mmu_ack) begin
+
+                    request_comb <= 1;
+                    cnt <= 0;
+
+                end else begin
+
+                    cnt <= cnt + 1;
+                    if (request_comb == 1) begin
+                        request_comb <= 0;
+                        pc_addr_cache <= pc_addr;
+                    end
+                end
+
+            end
+
+
 
         end
     end

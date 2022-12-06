@@ -32,6 +32,7 @@ module MMU_tlb #(
 
     // Translation Unit -> TLB
     input wire translation_ack,
+    input wire translation_error,
     input wire pte_t translation_result,
 
     // TLB -> Translation Unit
@@ -175,6 +176,18 @@ module MMU_tlb #(
 
         if (~query_en) begin
             // Do nothing
+        end
+
+        else if (~fence_i_wb & translation_error) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_INSTRUCTION_PAGE_FAULT;
+        end
+
+        else if (fence_i_wb & translation_error & ~query_wen) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_LOAD_PAGE_FAULT;
+        end
+
+        else if (fence_i_wb & translation_error & query_wen) begin
+            query_exception = 1; query_exception_code = `EXCEPTION_STORE_PAGE_FAULT;
         end
 
         else if ( ~fence_i_wb & tlb_hit & (~tlb_entry.pte.V | ~tlb_entry.pte.X )) begin

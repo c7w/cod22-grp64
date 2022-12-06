@@ -160,7 +160,7 @@ wire wbs2_match = ~|((wbm_adr_i ^ wbs2_addr) & wbs2_addr_msk);
 wire wbs3_match = ~|((wbm_adr_i ^ wbs3_addr) & wbs3_addr_msk);
 wire wbs4_match = ~|((wbm_adr_i ^ wbs4_addr) & wbs4_addr_msk);
 
-wire wbs0_sel = wbs0_match | (~wbs0_match & ~wbs1_match & ~wbs2_match & ~wbs3_match & ~wbs4_match);
+wire wbs0_sel = wbs0_match;
 wire wbs1_sel = wbs1_match & ~(wbs0_match);
 wire wbs2_sel = wbs2_match & ~(wbs0_match | wbs1_match);
 wire wbs3_sel = wbs3_match & ~(wbs0_match | wbs1_match | wbs2_match);
