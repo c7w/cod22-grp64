@@ -1317,10 +1317,10 @@ module thinpad_top #(
         .wbs2_cyc_o(wbs2_cyc_o),
         
         // Slave interface 3 (to VGA controller)
-        // Address range: 0x8100_0000 ~ 0x8100_1FFF
+        // Address range: 0x8100_0000 ~ 0x8100_3FFF
         // 100 * 75 pixels * 8 bit color depth
         .wbs3_addr    (32'h8100_0000),
-        .wbs3_addr_msk(32'hFFFF_E000),
+        .wbs3_addr_msk(32'hFFFF_C000),
 
         .wbs3_adr_o(wbs3_adr_o),
         .wbs3_dat_i(wbs3_dat_i),

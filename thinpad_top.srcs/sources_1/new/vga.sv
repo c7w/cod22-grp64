@@ -96,14 +96,14 @@ module vga #(
     assign addr = (hdata >> 3) + 14'd100 * (vdata >> 3);
 
     xpm_memory_dpdistram #(
-        .ADDR_WIDTH_A(13),
-        .ADDR_WIDTH_B(13),
+        .ADDR_WIDTH_A(14),
+        .ADDR_WIDTH_B(14),
         .BYTE_WRITE_WIDTH_A(32),
         .CLOCKING_MODE("independent_clock"),
         .MEMORY_INIT_FILE("none"),
         .MEMORY_INIT_PARAM("0"),
         .MEMORY_OPTIMIZATION("true"),
-        .MEMORY_SIZE(262144),
+        .MEMORY_SIZE(524288),
         .MESSAGE_CONTROL(0),
         .READ_DATA_WIDTH_A(32),
         .READ_DATA_WIDTH_B(32),

@@ -84,7 +84,7 @@ module MMU #(
             device = DEVICE_MTIMER;
         end
 
-        else if (32'h8100_0000 <= virt_addr && virt_addr <= 32'h8100_1FFF) begin
+        else if (32'h8100_0000 <= virt_addr && virt_addr <= 32'h8100_3FFF) begin
             device = DEVICE_VGA;
         end
 
