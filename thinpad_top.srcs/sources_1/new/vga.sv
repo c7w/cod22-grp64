@@ -84,6 +84,18 @@ module vga #(
         end
     end
 
+    reg mode;
+
+    always_ff @(posedge clk_i) begin
+        if (wb_stb_i && wb_adr_i == 32'h8100_3ffc) begin
+            if (wb_dat_i == 32'b0) begin
+                mode <= 0;
+            end else begin
+                mode <= 1;
+            end
+        end
+    end
+
     always_ff @ (posedge clk_i) begin
         if (rst_i) begin
             state <= STATE_IDLE;
@@ -92,18 +104,25 @@ module vga #(
         end
     end
 
-    // 64 倍压缩分辨率
-    assign addr = (hdata >> 3) + 14'd100 * (vdata >> 3);
+    always_comb begin
+        if (mode == 0) begin
+            // 4 倍压缩分辨率 + 8 倍压缩色彩深度
+            addr = (hdata >> 4) + 14'd50 * (vdata >> 1);
+       end else begin
+            // 64 倍压缩分辨率
+            addr = (hdata >> 3) + 14'd100 * (vdata >> 3);
+        end
+    end
 
     xpm_memory_dpdistram #(
-        .ADDR_WIDTH_A(13),
-        .ADDR_WIDTH_B(13),
+        .ADDR_WIDTH_A(14),
+        .ADDR_WIDTH_B(14),
         .BYTE_WRITE_WIDTH_A(32),
         .CLOCKING_MODE("independent_clock"),
         .MEMORY_INIT_FILE("none"),
         .MEMORY_INIT_PARAM("0"),
         .MEMORY_OPTIMIZATION("true"),
-        .MEMORY_SIZE(262144),
+        .MEMORY_SIZE(524288),
         .MESSAGE_CONTROL(0),
         .READ_DATA_WIDTH_A(32),
         .READ_DATA_WIDTH_B(32),
@@ -138,6 +157,9 @@ module vga #(
             2'b10: color = dout[23:16];
             2'b11: color = dout[31:24];
         endcase
+        if (mode == 0) begin
+            color = (((color >> hdata[3:1]) & 1'b1) == 1) ? 8'hFF : 8'h0;
+        end
     end
 
     // hsync & vsync & blank
