@@ -1,58 +1,58 @@
 `default_nettype none
 
 module lab4_top (
-    input wire clk_50M,     // 50MHz æ—¶é’Ÿè¾“å…¥
-    input wire clk_11M0592, // 11.0592MHz æ—¶é’Ÿè¾“å…¥ï¼ˆå¤‡ç”¨ï¼Œå¯ä¸ç”¨ï¼‰
+    input wire clk_50M,     // 50MHz Ê±ÖÓÊäÈë
+    input wire clk_11M0592, // 11.0592MHz Ê±ÖÓÊäÈë£¨±¸ÓÃ£¬¿É²»ÓÃ£©
 
-    input wire push_btn,  // BTN5 æŒ‰é’®å¼€å…³ï¼Œå¸¦æ¶ˆæŠ–ç”µè·¯ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
-    input wire reset_btn, // BTN6 å¤ä½æŒ‰é’®ï¼Œå¸¦æ¶ˆæŠ–ç”µè·¯ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
+    input wire push_btn,  // BTN5 °´Å¥¿ª¹Ø£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
+    input wire reset_btn, // BTN6 ¸´Î»°´Å¥£¬´øÏû¶¶µçÂ·£¬°´ÏÂÊ±Îª 1
 
-    input  wire [ 3:0] touch_btn,  // BTN1~BTN4ï¼ŒæŒ‰é’®å¼€å…³ï¼ŒæŒ‰ä¸‹æ—¶ä¸º 1
-    input  wire [31:0] dip_sw,     // 32 ä½æ‹¨ç å¼€å…³ï¼Œæ‹¨åˆ°â€œONâ€æ—¶ä¸º 1
-    output wire [15:0] leds,       // 16 ä½ LEDï¼Œè¾“å‡ºæ—¶ 1 ç‚¹äº®
-    output wire [ 7:0] dpy0,       // æ•°ç ç®¡ä½ä½ä¿¡å·ï¼ŒåŒ…æ‹¬å°æ•°ç‚¹ï¼Œè¾“å‡º 1 ç‚¹äº®
-    output wire [ 7:0] dpy1,       // æ•°ç ç®¡é«˜ä½ä¿¡å·ï¼ŒåŒ…æ‹¬å°æ•°ç‚¹ï¼Œè¾“å‡º 1 ç‚¹äº®
+    input  wire [ 3:0] touch_btn,  // BTN1~BTN4£¬°´Å¥¿ª¹Ø£¬°´ÏÂÊ±Îª 1
+    input  wire [31:0] dip_sw,     // 32 Î»²¦Âë¿ª¹Ø£¬²¦µ½¡°ON¡±Ê±Îª 1
+    output wire [15:0] leds,       // 16 Î» LED£¬Êä³öÊ± 1 µãÁÁ
+    output wire [ 7:0] dpy0,       // ÊıÂë¹ÜµÍÎ»ĞÅºÅ£¬°üÀ¨Ğ¡Êıµã£¬Êä³ö 1 µãÁÁ
+    output wire [ 7:0] dpy1,       // ÊıÂë¹Ü¸ßÎ»ĞÅºÅ£¬°üÀ¨Ğ¡Êıµã£¬Êä³ö 1 µãÁÁ
 
-    // CPLD ä¸²å£æ§åˆ¶å™¨ä¿¡å·
-    output wire uart_rdn,        // è¯»ä¸²å£ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    output wire uart_wrn,        // å†™ä¸²å£ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    input  wire uart_dataready,  // ä¸²å£æ•°æ®å‡†å¤‡å¥½
-    input  wire uart_tbre,       // å‘é€æ•°æ®æ ‡å¿—
-    input  wire uart_tsre,       // æ•°æ®å‘é€å®Œæ¯•æ ‡å¿—
+    // CPLD ´®¿Ú¿ØÖÆÆ÷ĞÅºÅ
+    output wire uart_rdn,        // ¶Á´®¿ÚĞÅºÅ£¬µÍÓĞĞ§
+    output wire uart_wrn,        // Ğ´´®¿ÚĞÅºÅ£¬µÍÓĞĞ§
+    input  wire uart_dataready,  // ´®¿ÚÊı¾İ×¼±¸ºÃ
+    input  wire uart_tbre,       // ·¢ËÍÊı¾İ±êÖ¾
+    input  wire uart_tsre,       // Êı¾İ·¢ËÍÍê±Ï±êÖ¾
 
-    // BaseRAM ä¿¡å·
-    inout wire [31:0] base_ram_data,  // BaseRAM æ•°æ®ï¼Œä½ 8 ä½ä¸ CPLD ä¸²å£æ§åˆ¶å™¨å…±äº«
-    output wire [19:0] base_ram_addr,  // BaseRAM åœ°å€
-    output wire [3:0] base_ram_be_n,  // BaseRAM å­—èŠ‚ä½¿èƒ½ï¼Œä½æœ‰æ•ˆã€‚å¦‚æœä¸ä½¿ç”¨å­—èŠ‚ä½¿èƒ½ï¼Œè¯·ä¿æŒä¸º 0
-    output wire base_ram_ce_n,  // BaseRAM ç‰‡é€‰ï¼Œä½æœ‰æ•ˆ
-    output wire base_ram_oe_n,  // BaseRAM è¯»ä½¿èƒ½ï¼Œä½æœ‰æ•ˆ
-    output wire base_ram_we_n,  // BaseRAM å†™ä½¿èƒ½ï¼Œä½æœ‰æ•ˆ
+    // BaseRAM ĞÅºÅ
+    inout wire [31:0] base_ram_data,  // BaseRAM Êı¾İ£¬µÍ 8 Î»Óë CPLD ´®¿Ú¿ØÖÆÆ÷¹²Ïí
+    output wire [19:0] base_ram_addr,  // BaseRAM µØÖ·
+    output wire [3:0] base_ram_be_n,  // BaseRAM ×Ö½ÚÊ¹ÄÜ£¬µÍÓĞĞ§¡£Èç¹û²»Ê¹ÓÃ×Ö½ÚÊ¹ÄÜ£¬Çë±£³ÖÎª 0
+    output wire base_ram_ce_n,  // BaseRAM Æ¬Ñ¡£¬µÍÓĞĞ§
+    output wire base_ram_oe_n,  // BaseRAM ¶ÁÊ¹ÄÜ£¬µÍÓĞĞ§
+    output wire base_ram_we_n,  // BaseRAM Ğ´Ê¹ÄÜ£¬µÍÓĞĞ§
 
-    // ExtRAM ä¿¡å·
-    inout wire [31:0] ext_ram_data,  // ExtRAM æ•°æ®
-    output wire [19:0] ext_ram_addr,  // ExtRAM åœ°å€
-    output wire [3:0] ext_ram_be_n,  // ExtRAM å­—èŠ‚ä½¿èƒ½ï¼Œä½æœ‰æ•ˆã€‚å¦‚æœä¸ä½¿ç”¨å­—èŠ‚ä½¿èƒ½ï¼Œè¯·ä¿æŒä¸º 0
-    output wire ext_ram_ce_n,  // ExtRAM ç‰‡é€‰ï¼Œä½æœ‰æ•ˆ
-    output wire ext_ram_oe_n,  // ExtRAM è¯»ä½¿èƒ½ï¼Œä½æœ‰æ•ˆ
-    output wire ext_ram_we_n,  // ExtRAM å†™ä½¿èƒ½ï¼Œä½æœ‰æ•ˆ
+    // ExtRAM ĞÅºÅ
+    inout wire [31:0] ext_ram_data,  // ExtRAM Êı¾İ
+    output wire [19:0] ext_ram_addr,  // ExtRAM µØÖ·
+    output wire [3:0] ext_ram_be_n,  // ExtRAM ×Ö½ÚÊ¹ÄÜ£¬µÍÓĞĞ§¡£Èç¹û²»Ê¹ÓÃ×Ö½ÚÊ¹ÄÜ£¬Çë±£³ÖÎª 0
+    output wire ext_ram_ce_n,  // ExtRAM Æ¬Ñ¡£¬µÍÓĞĞ§
+    output wire ext_ram_oe_n,  // ExtRAM ¶ÁÊ¹ÄÜ£¬µÍÓĞĞ§
+    output wire ext_ram_we_n,  // ExtRAM Ğ´Ê¹ÄÜ£¬µÍÓĞĞ§
 
-    // ç›´è¿ä¸²å£ä¿¡å·
-    output wire txd,  // ç›´è¿ä¸²å£å‘é€ç«¯
-    input  wire rxd,  // ç›´è¿ä¸²å£æ¥æ”¶ç«¯
+    // Ö±Á¬´®¿ÚĞÅºÅ
+    output wire txd,  // Ö±Á¬´®¿Ú·¢ËÍ¶Ë
+    input  wire rxd,  // Ö±Á¬´®¿Ú½ÓÊÕ¶Ë
 
-    // Flash å­˜å‚¨å™¨ä¿¡å·ï¼Œå‚è€ƒ JS28F640 èŠ¯ç‰‡æ‰‹å†Œ
-    output wire [22:0] flash_a,  // Flash åœ°å€ï¼Œa0 ä»…åœ¨ 8bit æ¨¡å¼æœ‰æ•ˆï¼Œ16bit æ¨¡å¼æ— æ„ä¹‰
-    inout wire [15:0] flash_d,  // Flash æ•°æ®
-    output wire flash_rp_n,  // Flash å¤ä½ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    output wire flash_vpen,  // Flash å†™ä¿æŠ¤ä¿¡å·ï¼Œä½ç”µå¹³æ—¶ä¸èƒ½æ“¦é™¤ã€çƒ§å†™
-    output wire flash_ce_n,  // Flash ç‰‡é€‰ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    output wire flash_oe_n,  // Flash è¯»ä½¿èƒ½ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    output wire flash_we_n,  // Flash å†™ä½¿èƒ½ä¿¡å·ï¼Œä½æœ‰æ•ˆ
-    output wire flash_byte_n, // Flash 8bit æ¨¡å¼é€‰æ‹©ï¼Œä½æœ‰æ•ˆã€‚åœ¨ä½¿ç”¨ flash çš„ 16 ä½æ¨¡å¼æ—¶è¯·è®¾ä¸º 1
+    // Flash ´æ´¢Æ÷ĞÅºÅ£¬²Î¿¼ JS28F640 Ğ¾Æ¬ÊÖ²á
+    output wire [22:0] flash_a,  // Flash µØÖ·£¬a0 ½öÔÚ 8bit Ä£Ê½ÓĞĞ§£¬16bit Ä£Ê½ÎŞÒâÒå
+    inout wire [15:0] flash_d,  // Flash Êı¾İ
+    output wire flash_rp_n,  // Flash ¸´Î»ĞÅºÅ£¬µÍÓĞĞ§
+    output wire flash_vpen,  // Flash Ğ´±£»¤ĞÅºÅ£¬µÍµçÆ½Ê±²»ÄÜ²Á³ı¡¢ÉÕĞ´
+    output wire flash_ce_n,  // Flash Æ¬Ñ¡ĞÅºÅ£¬µÍÓĞĞ§
+    output wire flash_oe_n,  // Flash ¶ÁÊ¹ÄÜĞÅºÅ£¬µÍÓĞĞ§
+    output wire flash_we_n,  // Flash Ğ´Ê¹ÄÜĞÅºÅ£¬µÍÓĞĞ§
+    output wire flash_byte_n, // Flash 8bit Ä£Ê½Ñ¡Ôñ£¬µÍÓĞĞ§¡£ÔÚÊ¹ÓÃ flash µÄ 16 Î»Ä£Ê½Ê±ÇëÉèÎª 1
 
-    // USB æ§åˆ¶å™¨ä¿¡å·ï¼Œå‚è€ƒ SL811 èŠ¯ç‰‡æ‰‹å†Œ
+    // USB ¿ØÖÆÆ÷ĞÅºÅ£¬²Î¿¼ SL811 Ğ¾Æ¬ÊÖ²á
     output wire sl811_a0,
-    // inout  wire [7:0] sl811_d,     // USB æ•°æ®çº¿ä¸ç½‘ç»œæ§åˆ¶å™¨çš„ dm9k_sd[7:0] å…±äº«
+    // inout  wire [7:0] sl811_d,     // USB Êı¾İÏßÓëÍøÂç¿ØÖÆÆ÷µÄ dm9k_sd[7:0] ¹²Ïí
     output wire sl811_wr_n,
     output wire sl811_rd_n,
     output wire sl811_cs_n,
@@ -61,7 +61,7 @@ module lab4_top (
     input  wire sl811_intrq,
     input  wire sl811_drq_n,
 
-    // ç½‘ç»œæ§åˆ¶å™¨ä¿¡å·ï¼Œå‚è€ƒ DM9000A èŠ¯ç‰‡æ‰‹å†Œ
+    // ÍøÂç¿ØÖÆÆ÷ĞÅºÅ£¬²Î¿¼ DM9000A Ğ¾Æ¬ÊÖ²á
     output wire dm9k_cmd,
     inout wire [15:0] dm9k_sd,
     output wire dm9k_iow_n,
@@ -70,34 +70,34 @@ module lab4_top (
     output wire dm9k_pwrst_n,
     input wire dm9k_int,
 
-    // å›¾åƒè¾“å‡ºä¿¡å·
-    output wire [2:0] video_red,    // çº¢è‰²åƒç´ ï¼Œ3 ä½
-    output wire [2:0] video_green,  // ç»¿è‰²åƒç´ ï¼Œ3 ä½
-    output wire [1:0] video_blue,   // è“è‰²åƒç´ ï¼Œ2 ä½
-    output wire       video_hsync,  // è¡ŒåŒæ­¥ï¼ˆæ°´å¹³åŒæ­¥ï¼‰ä¿¡å·
-    output wire       video_vsync,  // åœºåŒæ­¥ï¼ˆå‚ç›´åŒæ­¥ï¼‰ä¿¡å·
-    output wire       video_clk,    // åƒç´ æ—¶é’Ÿè¾“å‡º
-    output wire       video_de      // è¡Œæ•°æ®æœ‰æ•ˆä¿¡å·ï¼Œç”¨äºåŒºåˆ†æ¶ˆéšåŒº
+    // Í¼ÏñÊä³öĞÅºÅ
+    output wire [2:0] video_red,    // ºìÉ«ÏñËØ£¬3 Î»
+    output wire [2:0] video_green,  // ÂÌÉ«ÏñËØ£¬3 Î»
+    output wire [1:0] video_blue,   // À¶É«ÏñËØ£¬2 Î»
+    output wire       video_hsync,  // ĞĞÍ¬²½£¨Ë®Æ½Í¬²½£©ĞÅºÅ
+    output wire       video_vsync,  // ³¡Í¬²½£¨´¹Ö±Í¬²½£©ĞÅºÅ
+    output wire       video_clk,    // ÏñËØÊ±ÖÓÊä³ö
+    output wire       video_de      // ĞĞÊı¾İÓĞĞ§ĞÅºÅ£¬ÓÃÓÚÇø·ÖÏûÒşÇø
 );
 
   /* =========== Demo code begin =========== */
 
-  // PLL åˆ†é¢‘ç¤ºä¾‹
+  // PLL ·ÖÆµÊ¾Àı
   logic locked, clk_10M, clk_20M;
   pll_example clock_gen (
       // Clock in ports
-      .clk_in1(clk_50M),  // å¤–éƒ¨æ—¶é’Ÿè¾“å…¥
+      .clk_in1(clk_50M),  // Íâ²¿Ê±ÖÓÊäÈë
       // Clock out ports
-      .clk_out1(clk_10M),  // æ—¶é’Ÿè¾“å‡º 1ï¼Œé¢‘ç‡åœ¨ IP é…ç½®ç•Œé¢ä¸­è®¾ç½®
-      .clk_out2(clk_20M),  // æ—¶é’Ÿè¾“å‡º 2ï¼Œé¢‘ç‡åœ¨ IP é…ç½®ç•Œé¢ä¸­è®¾ç½®
+      .clk_out1(clk_10M),  // Ê±ÖÓÊä³ö 1£¬ÆµÂÊÔÚ IP ÅäÖÃ½çÃæÖĞÉèÖÃ
+      .clk_out2(clk_20M),  // Ê±ÖÓÊä³ö 2£¬ÆµÂÊÔÚ IP ÅäÖÃ½çÃæÖĞÉèÖÃ
       // Status and control signals
-      .reset(reset_btn),  // PLL å¤ä½è¾“å…¥
-      .locked(locked)  // PLL é”å®šæŒ‡ç¤ºè¾“å‡ºï¼Œ"1"è¡¨ç¤ºæ—¶é’Ÿç¨³å®šï¼Œ
-                       // åçº§ç”µè·¯å¤ä½ä¿¡å·åº”å½“ç”±å®ƒç”Ÿæˆï¼ˆè§ä¸‹ï¼‰
+      .reset(reset_btn),  // PLL ¸´Î»ÊäÈë
+      .locked(locked)  // PLL Ëø¶¨Ö¸Ê¾Êä³ö£¬"1"±íÊ¾Ê±ÖÓÎÈ¶¨£¬
+                       // ºó¼¶µçÂ·¸´Î»ĞÅºÅÓ¦µ±ÓÉËüÉú³É£¨¼ûÏÂ£©
   );
 
   logic reset_of_clk10M;
-  // å¼‚æ­¥å¤ä½ï¼ŒåŒæ­¥é‡Šæ”¾ï¼Œå°† locked ä¿¡å·è½¬ä¸ºåçº§ç”µè·¯çš„å¤ä½ reset_of_clk10M
+  // Òì²½¸´Î»£¬Í¬²½ÊÍ·Å£¬½« locked ĞÅºÅ×ªÎªºó¼¶µçÂ·µÄ¸´Î» reset_of_clk10M
   always_ff @(posedge clk_10M or negedge locked) begin
     if (~locked) reset_of_clk10M <= 1'b1;
     else reset_of_clk10M <= 1'b0;
@@ -111,7 +111,7 @@ module lab4_top (
   assign sys_clk = clk_10M;
   assign sys_rst = reset_of_clk10M;
 
-  // æœ¬å®éªŒä¸ä½¿ç”¨ CPLD ä¸²å£ï¼Œç¦ç”¨é˜²æ­¢æ€»çº¿å†²çª
+  // ±¾ÊµÑé²»Ê¹ÓÃ CPLD ´®¿Ú£¬½ûÓÃ·ÀÖ¹×ÜÏß³åÍ»
   assign uart_rdn = 1'b1;
   assign uart_wrn = 1'b1;
 
@@ -126,24 +126,24 @@ module lab4_top (
   logic [ 3:0] wbm_sel_o;
   logic        wbm_we_o;
 
-  // æµ‹è¯•æ§åˆ¶ä¿¡å·
+  // ²âÊÔ¿ØÖÆĞÅºÅ
   logic        test_start;
   logic [31:0] random_seed;
 
-  assign test_start  = push_btn;  // æŒ‰é’®å¼€å…³å¼€å§‹æµ‹è¯•
-  assign random_seed = dip_sw;  // æ‹¨ç å¼€å…³è¾“å…¥éšæœºæ•°ç§å­
+  assign test_start  = push_btn;  // °´Å¥¿ª¹Ø¿ªÊ¼²âÊÔ
+  assign random_seed = dip_sw;  // ²¦Âë¿ª¹ØÊäÈëËæ»úÊıÖÖ×Ó
 
-  // æµ‹è¯•ç»“æœè¾“å‡ºåˆ° LED
+  // ²âÊÔ½á¹ûÊä³öµ½ LED
   logic test_done, test_error;
   assign leds[0] = test_done;
   assign leds[1] = test_error;
   assign leds[15:2] = '0;
 
-  // è¯¦ç»†ç»“æœä¿¡æ¯ï¼Œä¿¡å·ä»…ç”¨äºä»¿çœŸæŸ¥çœ‹ï¼Œä¸è¿æ¥å¤–éƒ¨ç¡¬ä»¶
-  logic [31:0] test_error_round;  // æ•°æ®é”™è¯¯è½®æ¬¡
-  logic [31:0] test_error_addr;  // æ•°æ®é”™è¯¯åœ°å€
-  logic [31:0] test_error_read_data;  // é”™è¯¯åœ°å€è¯»å‡ºçš„æ•°æ®
-  logic [31:0] test_error_expected_data;  // é”™è¯¯åœ°å€é¢„æœŸçš„æ•°æ®
+  // ÏêÏ¸½á¹ûĞÅÏ¢£¬ĞÅºÅ½öÓÃÓÚ·ÂÕæ²é¿´£¬²»Á¬½ÓÍâ²¿Ó²¼ş
+  logic [31:0] test_error_round;  // Êı¾İ´íÎóÂÖ´Î
+  logic [31:0] test_error_addr;  // Êı¾İ´íÎóµØÖ·
+  logic [31:0] test_error_read_data;  // ´íÎóµØÖ·¶Á³öµÄÊı¾İ
+  logic [31:0] test_error_expected_data;  // ´íÎóµØÖ·Ô¤ÆÚµÄÊı¾İ
 
   sram_tester #(
       .ADDR_BASE(32'h8000_0000),

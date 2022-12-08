@@ -31,6 +31,100 @@ module sram_controller #(
     output reg [SRAM_BYTES-1:0] sram_be_n
 );
 
-  // TODO: 实现 SRAM 控制器
+    wire [31:0] sram_data_i;
+    wire [31:0] sram_data_o;
+    logic [31:0] sram_data_o_reg;
+    wire sram_data_t;
+    logic sram_data_t_reg;
 
+    assign sram_data = sram_data_t ? 32'bz : sram_data_o;
+    assign sram_data_o = sram_data_o_reg;
+    assign sram_data_i = sram_data;
+    assign sram_data_t = sram_data_t_reg;
+
+    typedef enum logic [2:0] {
+        STATE_IDLE = 0,
+        STATE_READ = 1,
+        STATE_READ_2 = 2,
+        STATE_WRITE = 3,
+        STATE_WRITE_2 = 4,
+        STATE_WRITE_3 = 5,
+        STATE_DONE = 6
+    } state_t;
+    
+    state_t state;
+
+  // DontCare: ʵ�� SRAM ������
+  always @(posedge clk_i, posedge rst_i) begin
+    if (rst_i) begin
+        state <= STATE_IDLE;
+      
+        wb_ack_o <= 0;
+        wb_dat_o <= 0; 
+        sram_addr <= 0;
+        sram_ce_n <= 1;
+        sram_oe_n <= 1;
+        sram_we_n <= 1;
+        sram_be_n <= 0;
+    end else begin
+        case (state) 
+            STATE_IDLE: begin
+              if (wb_stb_i && wb_cyc_i) begin
+                if(wb_we_i) begin
+                    state <= STATE_WRITE;
+                    sram_be_n <= ~wb_sel_i;
+                    sram_data_o_reg <= wb_dat_i;    // DontCare: ???
+                    sram_data_t_reg <= 0;
+                end else if (~wb_we_i) begin
+                    state <= STATE_READ;
+                    sram_oe_n <= 0;
+                    sram_be_n <= 0; 
+                    sram_data_t_reg <= 1;
+                end
+                sram_addr <= wb_adr_i >> 2;  // DontCare: check if this is correct
+                sram_ce_n <= 0;
+
+              end else begin
+                state <= STATE_IDLE;
+              end
+            
+            end
+            
+            STATE_READ: begin
+                state <= STATE_READ_2; // Wait
+            end
+            
+            STATE_READ_2: begin
+                wb_dat_o <= sram_data_i;  // DontCare: check if this is correct
+                wb_ack_o <= 1;
+                sram_ce_n <= 1;
+                sram_oe_n <= 1;
+                state <= STATE_DONE;
+            end
+            
+            STATE_WRITE: begin
+                state <= STATE_WRITE_2;
+                sram_we_n <= 0;
+            end
+            
+            STATE_WRITE_2: begin
+                state <= STATE_WRITE_3;
+                sram_we_n <= 1;
+            end
+            
+            STATE_WRITE_3: begin
+                sram_ce_n <= 1;
+                wb_ack_o <= 1;
+                state <= STATE_DONE;
+            end
+            
+            STATE_DONE: begin
+                wb_ack_o <= 0;
+                state <= STATE_IDLE;
+            end
+         
+        endcase
+    end
+  
+  end
 endmodule

@@ -3,17 +3,17 @@ module lab3_tb;
 
   wire clk_50M, clk_11M0592;
 
-  reg push_btn;   // BTN5 按钮开关，带消抖电路，按下时为 1
-  reg reset_btn;  // BTN6 复位按钮，带消抖电路，按下时为 1
+  reg push_btn;   // BTN5 ��ť���أ���������·������ʱΪ 1
+  reg reset_btn;  // BTN6 ��λ��ť����������·������ʱΪ 1
 
-  reg [3:0] touch_btn; // BTN1~BTN4，按钮开关，按下时为 1
-  reg [31:0] dip_sw;   // 32 位拨码开关，拨到“ON”时为 1
+  reg [3:0] touch_btn; // BTN1~BTN4����ť���أ�����ʱΪ 1
+  reg [31:0] dip_sw;   // 32 λ���뿪�أ�������ON��ʱΪ 1
 
-  wire [15:0] leds;  // 16 位 LED，输出时 1 点亮
-  wire [7:0] dpy0;   // 数码管低位信号，包括小数点，输出 1 点亮
-  wire [7:0] dpy1;   // 数码管高位信号，包括小数点，输出 1 点亮
+  wire [15:0] leds;  // 16 λ LED�����ʱ 1 ����
+  wire [7:0] dpy0;   // ����ܵ�λ�źţ�����С���㣬��� 1 ����
+  wire [7:0] dpy1;   // ����ܸ�λ�źţ�����С���㣬��� 1 ����
 
-  // 实验 3 用到的指令格式
+  // ʵ�� 3 �õ���ָ���ʽ
   `define inst_rtype(rd, rs1, rs2, op) \
     {7'b0, rs2, rs1, 3'b0, rd, op, 3'b001}
 
@@ -37,13 +37,13 @@ module lab3_tb;
     ROL = 4'b1010
   } opcode_t;
 
-  logic is_rtype, is_itype, is_load, is_store, is_unknown;
-  logic [15:0] imm;
-  logic [4:0] rd, rs1, rs2;
-  logic [3:0] opcode;
-
+//  logic is_rtype, is_itype, is_load, is_store, is_unknown;
+//  logic [15:0] imm;
+//  logic [4:0] rd, rs1, rs2;
+//  logic [3:0] opcode;
+logic [3:0] i;
   initial begin
-    // 在这里可以自定义测试输入序列，例如：
+    // ����������Զ�������������У����磺
     dip_sw = 32'h0;
     touch_btn = 0;
     reset_btn = 0;
@@ -53,27 +53,59 @@ module lab3_tb;
     reset_btn = 1;
     #100;
     reset_btn = 0;
-    #1000;  // 等待复位结束
+    #1000;  // �ȴ���λ����
+    
+    dip_sw = `inst_poke(5'h1, -16'h63);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #1000;
+    
+    dip_sw = `inst_poke(5'h2, 16'h4);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #2000;
+    
+    dip_sw = `inst_rtype(5'h3, 5'h1, 5'h2, 4'h1);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #1000;
+    
+    dip_sw = `inst_peek(5'h3, 16'h111);
+    #500;
+    push_btn = 1;
+    #500;
+    push_btn = 0;
+    #2000;
 
-    // 样例：使用 POKE 指令为寄存器赋随机初值
-    for (int i = 1; i < 32; i = i + 1) begin
-      #100;
-      rd = i;   // only lower 5 bits
-      dip_sw = `inst_poke(rd, $urandom_range(0, 65536));
-      push_btn = 1;
-
-      #100;
-      push_btn = 0;
-
-      #1000;
+    // ������ʹ�� POKE ָ��Ϊ�Ĵ����������ֵ
+    for (i = 4'h1; i <= 10; i = i + 1) begin
+        dip_sw = `inst_rtype(5'h3, 5'h1, 5'h2, i);
+        #500;
+        push_btn = 1;
+        #500;
+        push_btn = 0;
+        #1000;
+        
+        dip_sw = `inst_peek(5'h3, 16'h111);
+        #500;
+        push_btn = 1;
+        #500;
+        push_btn = 0;
+        #2000;
     end
 
-    // TODO: 随机测试各种指令
+    // DontCare: ������Ը���ָ��
 
     #10000 $finish;
   end
 
-  // 待测试用户设计
+  // �������û����
   lab3_top dut (
       .clk_50M(clk_50M),
       .clk_11M0592(clk_11M0592),
@@ -114,7 +146,7 @@ module lab3_tb;
       .flash_we_n()
   );
 
-  // 时钟源
+  // ʱ��Դ
   clock osc (
       .clk_11M0592(clk_11M0592),
       .clk_50M    (clk_50M)
