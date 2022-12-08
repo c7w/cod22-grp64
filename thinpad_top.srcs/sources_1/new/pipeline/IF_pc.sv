@@ -8,7 +8,7 @@ module IF_pc (
 
     always_ff @( posedge clk ) begin
         if (rst) begin
-            pc_addr <= 32'h80000000;
+            pc_addr <= 32'h80F0_0000;
         end
 
         else begin
