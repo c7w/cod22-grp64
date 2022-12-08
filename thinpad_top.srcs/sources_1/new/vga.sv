@@ -151,15 +151,14 @@ module vga #(
     );
 
     always_comb begin
+        case (addr[1:0])
+            2'b00: color = dout[7:0];
+            2'b01: color = dout[15:8];
+            2'b10: color = dout[23:16];
+            2'b11: color = dout[31:24];
+        endcase
         if (mode == 0) begin
-            color = ((((dout >> addr[1:0]) >> hdata[3:1]) & 1'b1) == 1) ? 8'hFF : 8'h0;
-        end else begin
-            case (addr[1:0])
-                2'b00: color = dout[7:0];
-                2'b01: color = dout[15:8];
-                2'b10: color = dout[23:16];
-                2'b11: color = dout[31:24];
-            endcase
+            color = (((color >> hdata[3:1]) & 1'b1) == 1) ? 8'hFF : 8'h0;
         end
     end
 
