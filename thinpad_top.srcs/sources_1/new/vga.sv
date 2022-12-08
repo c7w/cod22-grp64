@@ -152,7 +152,7 @@ module vga #(
 
     always_comb begin
         if (mode == 0) begin
-            color = (((dout >> hdata[5:1]) & 1'b1) == 1) ? 8'hFF : 8'h0;
+            color = ((((dout >> addr[1:0]) >> hdata[3:1]) & 1'b1) == 1) ? 8'hFF : 8'h0;
         end else begin
             case (addr[1:0])
                 2'b00: color = dout[7:0];
