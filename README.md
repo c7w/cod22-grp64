@@ -1,6 +1,6 @@
 # Repo 总不能叫 cod22-grp64 吧
 
-[ [Video](https://www.bilibili.com/video/BV1J24y1Q7s2/) ]
+[ [Video](https://www.bilibili.com/video/BV1J24y1Q7s2/) | [uCore](https://github.com/c7w/ucore-cod22-grp64) ]
 
 
 ## 实验过程
