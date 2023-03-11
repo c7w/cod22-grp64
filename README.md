@@ -17,3 +17,5 @@
 ## 其它
 
 仿真 Powered by Verilator，在 obj_dir 里有写好的 testbench，Verilator 救我狗命
+
+然后考试寄了等级吃灰，讲真的你们赶紧搞个龙芯杯一口气刷过计原 + 体系结构吧（
